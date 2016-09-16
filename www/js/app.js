@@ -29,17 +29,22 @@ app.controller("MainCtrl",function($scope){
 
 app.config(function($stateProvider, $urlRouterProvider){
   $stateProvider
-  
+
   .state('main', {
     url: "/main",
     templateUrl: "templates/main.html",
     controller: 'MainCtrl'
   })
-  
-  .state('page2', {
-    url: "/page2",
-    templateUrl: "templates/page2.html",
+
+  .state('level_select', {
+    url: "/level_select",
+    templateUrl: "templates/level_select.html",
+  })
+
+  .state('settings', {
+    url: "/settings",
+    templateUrl: "templates/settings.html",
   });
-  
+
   $urlRouterProvider.otherwise('/main');
 });
