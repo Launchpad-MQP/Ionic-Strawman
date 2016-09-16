@@ -1,0 +1,6 @@
+*
+!.gitignore
+!*.html
+!*/
+node_modules/
+platforms/
