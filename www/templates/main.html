@@ -2,8 +2,29 @@
   <ion-header-bar class="bar bar-header bar-dark">
     <h1 class="title">Heineman's MQP Strawman App</h1>
   </ion-header-bar>
-  <ion-content class="has-header" padding="true">
-    <p>Hello World, how are you?</p>
-    <a class="button icon-right ion-chevron-right" href="#/page2">Go to the music page!</a>
+  <ion-content class="has-header has-footer" padding="true">
+    <div class="row">
+      <div class="col col-33"></div>
+      <div class="col col-33 col-center">
+        <p>The puzzle app built with combinators</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col col-33"></div>
+      <div class="col col-33 col-center">
+        <a class="button icon-right ion-chevron-right" href="#/page2">PLAY</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col col-33"></div>
+      <div class="col col-33 col-center">
+        <a class="button icon-right ion-gear-b" href="#/page2">SETTINGS</a>
+      </div>
+    </div>
   </ion-content>
+  <ion-footer-bar class="bar bar-footer bar-stable" align-title"left">
+    <div vlass="buttons" ng-click="exitApp()">
+      <button class="button icon-left ion-close button-assertive">Exit</button>
+    </div>
+  </ion-footer-bar>
 </ion-view>
