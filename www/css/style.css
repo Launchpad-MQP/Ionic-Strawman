@@ -1,1 +1,10 @@
 /* Empty. Add your own CSS if you like */
+
+.row.unlimited-items {
+  flex-wrap: wrap;
+}
+
+.row.unlimited-items .col{
+  flex: none;
+  width: 20%;
+}
