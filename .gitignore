@@ -1,6 +1,12 @@
 *
 !.gitignore
 !*.html
+!*.js
 !*/
+# These contain .html and .js files which are generic to the system
+www/lib/
 node_modules/
+hooks/
 platforms/
+plugins/
+gulpfile.js
