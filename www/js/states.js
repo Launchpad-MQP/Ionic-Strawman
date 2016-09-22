@@ -16,11 +16,11 @@ angular.module("states", ["ionic"])
   })
 
   .state("level", {
-	url: "/level/{levelNum:int}",
-	templateUrl: "templates/level.html",
-	controller: "LevelCtrl"
+    url: "/level/{levelNum:int}",
+    templateUrl: "templates/level.html",
+    controller: "LevelCtrl"
   })
-  
+
   .state("settings", {
     url: "/settings",
     templateUrl: "templates/settings.html"
