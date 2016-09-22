@@ -1,10 +1,11 @@
 var app = angular.module("controllers", ["ionic"])
 
 app.controller("MainCtrl", function($scope) {
-  console.log("Main Controller says: Hello World");
+  console.log("Now in the Main Page");
 })
 
 .controller("LevelCtrl", function($scope) {
+  console.log("Now in the Level Select");
   var table = document.getElementsByClassName("levelTable")[0];
   var height = 5;
   var width = 4;

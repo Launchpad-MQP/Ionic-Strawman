@@ -3,9 +3,14 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // "starter" is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of "requires"
-var app = angular.module("starter", ["ionic", "states", "controllers"])
+angular.module("starter", [
+  "ionic", /* Base include for ionic */
+  "states", /* State transitions between pages */
+  "controllers", /* Individual page js */
+  "ngCordova" /* Used for Cordova-SQLite */
+])
 
-app.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $cordovaSQLite, $timeout) {
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

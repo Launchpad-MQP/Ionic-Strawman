@@ -1,6 +1,6 @@
-var app = angular.module("states", ["ionic"])
+angular.module("states", ["ionic"])
 
-app.config(function($stateProvider, $urlRouterProvider){
+.config(function($stateProvider, $urlRouterProvider){
   $stateProvider
 
   .state("main", {
