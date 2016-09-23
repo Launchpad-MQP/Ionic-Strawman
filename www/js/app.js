@@ -29,65 +29,70 @@ angular.module("starter", [
     if (window.cordova) {
       db = $cordovaSQLite.openDB("test.db");
     } else {
-      db = window.openDatabase("mytest.db", '1', 'mytest', 1024*1024*5);
+      db = window.openDatabase("mytest.db", "1", "mytest", 1024*1024*5);
     }
 
     // set up the apidb for future.
     apidb = $cordovaSQLite;
-    timeout = $timeout;
-    // deleteTable();
-    createTable();
-    if (getLevelState(1) == null) { // not working because async and my head hurts
-      addLevel(1, "Unsolved");
-    } else {
-      setLevelState(1, "In Progress");
-    }
-    var out = getLevelState(1);
-    console.log(out);
-    setLevelState(1, "Solved");
+    setup();
+
   });
 })
 
-function deleteTable() {
-  console.log("Hard reset: Dropping tables");
-  apidb.execute(db, "DROP TABLE IF EXISTS levels");
+function setup() {
+  console.log("Creating blank table if nonexistent");
+  apidb.execute(db, "CREATE TABLE IF NOT EXISTS games (level, number INTEGER, description VARCHAR(50))");
 }
 
-function createTable() {
-  console.log("Creating tables")
-  apidb.execute(db, "CREATE TABLE IF NOT EXISTS levels (num INTEGER, state VARCHAR(20))")
-  .then(timeout, (function(ret) {
+function reset() {
+  console.log("Dropping tables...");
+  apidb.execute(db, "DROP TABLE IF EXISTS games");
+  setup();
+}
+
+function addLevel(num) {
+  recordMove(num, "13", "Unsolved");
+}
+
+function recordMove(gameid, moveid, moveinfo) {
+  console.log ("Inserting " + gameid + "," + moveid + "," + moveinfo);
+  apidb.execute(db, "INSERT INTO games(level,number,description) VALUES(?,?,?)", [gameid, moveid, moveinfo])
+  .then(function(ret) {
+    console.log("Inserted");
     for (var i in ret) {
-      console.log(i+": ", ret);
+      console.log("\t"+i+": ", ret[i]);
     }
-  }, function (err) {console.log(error);}), 2000);
+  }, function (err) {console.log(err);});
 }
 
-function addLevel(num, state) {
-  console.log("Added level "+num+" at state "+state);
-  apidb.execute(db, "INSERT INTO levels (num, state) VALUES (?, ?)", [num, state])
+function setLevelState(num) {
+  deleteLevel(num);
+  recordMove(num, "14", "Solved");
 }
 
 function deleteLevel(num) {
-  console.log("Deleting level "+num);
-  apidb.execute(db, "DELETE FROM levels WHERE num=?", [num])
-}
+  console.log("Deleting level: "+num);
 
-function getLevelState(num) {
-  console.log("Getting state for level "+num);
-  apidb.execute(db, "SELECT * FROM levels WHERE num=?", [num])
+  apidb.execute(db, "DELETE FROM games WHERE level=? AND number=13", [num])
+  .then(function(ret) {
+    console.log("Deleted level: "+num);
+    for (var i in ret) {
+      try {
+        console.log("\t"+i+": ", ret[i]);
+      } catch (exc) {}
+    }
+  }, function (err) {console.log(err);});
+  }
+
+function getLevelState(num, callback) {
+  console.log("Getting state for level: "+num);
+
+  apidb.execute(db, "SELECT * FROM games WHERE level=?", [num])
   .then(function(ret) {
     if (ret.rows.length == 0) {
-      console.log("Got no data for level "+num);
-      return null;
+      console.log("Couldn"t find level: "+num);
+      return;
     }
-    var level = ret.rows.item(0);
-    console.log("Data for level "+num+": ", level);
-    // return level.state;
-  }, function (err) {console.log(error);});
-}
-
-function setLevelState(num, state) {
-  console.log("Setting level "+num+" to state "+state);
-  apidb.execute(db, "UPDATE levels SET state=? WHERE num=?", [state, num]);
+    callback(ret.rows.item(0));
+  }, function(err) {console.log(err);});
 }
