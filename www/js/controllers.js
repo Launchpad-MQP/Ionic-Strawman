@@ -54,28 +54,23 @@ app.controller("MainCtrl", function($scope) {
   $scope.levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
   for (var i in $scope.levels) {
-    recordMove($scope.levels[i], "13", "Unsolved");
+    addLevel($scope.levels[i]);
   }
 
   var buttons = document.getElementsByClassName("button");
   for (var i in $scope.levels) {
-    retrieveAllMoves($scope.levels[i], function(level) {
+    getLevelState($scope.levels[i], function(level) {
       console.log("Callback from getLevelState: ", level);
-      try {
-        if (level.description == "Solved") {
-          console.log("<68>");
-          for (var i in buttons) {
-            if (buttons[i].innerHTML == level.level) {
-              buttons[i].setAttribute("class", "button button-dark ng-binding");
-              console.log(buttons[i]);
-            }
+      if (level.description == "Solved") {
+        for (var i in buttons) {
+          if (buttons[i].innerHTML == level.level) {
+            buttons[i].setAttribute("class", "button button-dark ng-binding");
           }
         }
-      } catch (err) {console.log(err);}
+      }
     });
   }
 });
-
 
 function completeLevel(level) {
   var buttons = document.getElementsByClassName("button");
@@ -86,6 +81,5 @@ function completeLevel(level) {
     }
   }
 
-  deleteLastMove(level, "13");
-  recordMove(level, "14", "Solved");
+  setLevelState(level, "Solved");
 }

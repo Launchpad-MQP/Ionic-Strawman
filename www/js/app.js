@@ -34,21 +34,24 @@ angular.module("starter", [
 
     // set up the apidb for future.
     apidb = $cordovaSQLite;
-    resetEverything();
-    // retrieveAllMoves("6", 999, 999);
-    // recordMove("6", "13", "this is game");
+    setup();
+
   });
 })
 
-function resetEverything() {
-  console.log("Reset Everything....");
-
-  // only to reset
-  // apidb.execute(db, 'DROP TABLE IF EXISTS status');
-  // apidb.execute(db, 'DROP TABLE IF EXISTS games');
-
+function setup() {
+  console.log("Creating blank table if nonexistent");
   apidb.execute(db, 'CREATE TABLE IF NOT EXISTS games (level, number INTEGER, description VARCHAR(50))');
-  apidb.execute(db, 'CREATE TABLE IF NOT EXISTS status (level, state VARCHAR(20))');
+}
+
+function reset() {
+  console.log("Dropping tables...");
+  apidb.execute(db, 'DROP TABLE IF EXISTS games');
+  setup();
+}
+
+function addLevel(num) {
+  recordMove(num, "13", "Unsolved");
 }
 
 function recordMove(gameid, moveid, moveinfo) {
@@ -62,12 +65,17 @@ function recordMove(gameid, moveid, moveinfo) {
   }, function (err) {console.log(err);});
 }
 
-function deleteLastMove(gameid, moveid) {
-  console.log("Deleting level: "+gameid);
+function setLevelState(num) {
+  deleteLevel(num);
+  recordMove(num, "14", "Solved");
+}
 
-  apidb.execute(db, 'DELETE FROM games WHERE level=? AND number=?', [gameid, moveid])
+function deleteLevel(num) {
+  console.log("Deleting level: "+num);
+
+  apidb.execute(db, 'DELETE FROM games WHERE level=? AND number=13', [num])
   .then(function(ret) {
-    console.log("Deleted level: "+gameid);
+    console.log("Deleted level: "+num);
     for (var i in ret) {
       try {
         console.log("\t"+i+": ", ret[i]);
@@ -76,13 +84,13 @@ function deleteLastMove(gameid, moveid) {
   }, function (err) {console.log(err);});
   }
 
-function retrieveAllMoves(gameid, callback) {
-  console.log("Getting state for level: "+gameid);
+function getLevelState(num, callback) {
+  console.log("Getting state for level: "+num);
 
-  apidb.execute(db, "SELECT * FROM games WHERE level=?", [gameid])
+  apidb.execute(db, "SELECT * FROM games WHERE level=?", [num])
   .then(function(ret) {
     if (ret.rows.length == 0) {
-      console.log("Couldn't find level: "+gameid);
+      console.log("Couldn't find level: "+num);
       return;
     }
     callback(ret.rows.item(0));
