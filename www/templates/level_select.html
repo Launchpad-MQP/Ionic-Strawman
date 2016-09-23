@@ -5,7 +5,7 @@
   <ion-content class="has-header" padding="true">
     <div class="container">
       <div class="row unlimited-items">
-        <div class="col" ng-repeat="level in levels">
+        <div class="col" ng-repeat="level in levels track by $index">
           <a class="button button-block" ng-click="loadLevel({{level}})">{{level}}</a>
         </div>
       </div>

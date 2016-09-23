@@ -40,14 +40,36 @@ app.controller("MainCtrl", function($scope) {
 	}
 })
 
-.controller("LevelSelectCtrl", function($scope, $state) {
+.controller("LevelSelectCtrl", function($scope, $state, $cordovaSQLite) {
   console.log("Now in the Level Select");
 
 	$scope.loadLevel = function(levelNum) {
-		console.log("Entering level " + levelNum);
-		$state.go("level", {'levelNum': levelNum});
-	}
+    console.log("Entering level " + levelNum);
+    $state.go("level", {'levelNum': levelNum});
+  }
+
+  if (window.cordova) {
+    db = $cordovaSQLite.openDB("test.db");
+  } else {
+    db = window.openDatabase("mytest.db", '1', 'mytest', 1024*1024*5);
+  }
+  $scope.levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+  var query = "SELECT * FROM levels";
+  $cordovaSQLite.execute(db, query, []).then(function(res) {
+    console.log("done");
+    if(res.rows.length > 0) {
+      console.log("SELECTED -> " + res.rows.item(0).num + " " + res.rows.item(0).state);
+      for(i = 0; i < res.rows.length; i++){
+        console.log(res.rows.item(i));
+        $scope.levels.push(res.rows.item(i).num);
+      }
+    } else {
+      console.log("No results found");
+    }
+  }, function (err) {
+      console.error(err);
+  });
+  console.log("abc");
 
     $scope.myTitle = 'Template';
-    $scope.levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 });
