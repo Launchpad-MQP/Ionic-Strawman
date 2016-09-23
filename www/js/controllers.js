@@ -16,20 +16,20 @@ app.controller("MainCtrl", function($scope) {
       scope: $scope,
       buttons: [
       {
-        text: 'Level Select',
+        text: "Level Select",
         onTap: function(e) {
           completeLevel($stateParams.levelNum);
           console.log("Back to level select.");
-          $state.go('level_select');
+          $state.go("level_select");
         }
         },
       {
-        text: 'Next',
-        type: 'button-positive',
+        text: "Next",
+        type: "button-positive",
         onTap: function(e) {
           completeLevel($stateParams.levelNum);
           console.log("On to the next level.");
-          $state.go('level', {'levelNum': $stateParams.levelNum+1});
+          $state.go("level", {"levelNum": $stateParams.levelNum+1});
         }
         }]
     });
@@ -47,10 +47,10 @@ app.controller("MainCtrl", function($scope) {
 
   $scope.loadLevel = function(levelNum) {
     console.log("Entering level " + levelNum);
-    $state.go("level", {'levelNum': levelNum});
+    $state.go("level", {"levelNum": levelNum});
   }
 
-  $scope.myTitle = 'Template';
+  $scope.myTitle = "Template";
   $scope.levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
   for (var i in $scope.levels) {

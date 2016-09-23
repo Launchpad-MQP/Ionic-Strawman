@@ -29,7 +29,7 @@ angular.module("starter", [
     if (window.cordova) {
       db = $cordovaSQLite.openDB("test.db");
     } else {
-      db = window.openDatabase("mytest.db", '1', 'mytest', 1024*1024*5);
+      db = window.openDatabase("mytest.db", "1", "mytest", 1024*1024*5);
     }
 
     // set up the apidb for future.
@@ -41,12 +41,12 @@ angular.module("starter", [
 
 function setup() {
   console.log("Creating blank table if nonexistent");
-  apidb.execute(db, 'CREATE TABLE IF NOT EXISTS games (level, number INTEGER, description VARCHAR(50))');
+  apidb.execute(db, "CREATE TABLE IF NOT EXISTS games (level, number INTEGER, description VARCHAR(50))");
 }
 
 function reset() {
   console.log("Dropping tables...");
-  apidb.execute(db, 'DROP TABLE IF EXISTS games');
+  apidb.execute(db, "DROP TABLE IF EXISTS games");
   setup();
 }
 
@@ -56,7 +56,7 @@ function addLevel(num) {
 
 function recordMove(gameid, moveid, moveinfo) {
   console.log ("Inserting " + gameid + "," + moveid + "," + moveinfo);
-  apidb.execute(db, 'INSERT INTO games(level,number,description) VALUES(?,?,?)', [gameid, moveid, moveinfo])
+  apidb.execute(db, "INSERT INTO games(level,number,description) VALUES(?,?,?)", [gameid, moveid, moveinfo])
   .then(function(ret) {
     console.log("Inserted");
     for (var i in ret) {
@@ -73,7 +73,7 @@ function setLevelState(num) {
 function deleteLevel(num) {
   console.log("Deleting level: "+num);
 
-  apidb.execute(db, 'DELETE FROM games WHERE level=? AND number=13', [num])
+  apidb.execute(db, "DELETE FROM games WHERE level=? AND number=13", [num])
   .then(function(ret) {
     console.log("Deleted level: "+num);
     for (var i in ret) {
@@ -90,7 +90,7 @@ function getLevelState(num, callback) {
   apidb.execute(db, "SELECT * FROM games WHERE level=?", [num])
   .then(function(ret) {
     if (ret.rows.length == 0) {
-      console.log("Couldn't find level: "+num);
+      console.log("Couldn"t find level: "+num);
       return;
     }
     callback(ret.rows.item(0));
