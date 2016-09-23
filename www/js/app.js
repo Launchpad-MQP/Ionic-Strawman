@@ -41,39 +41,39 @@ angular.module("starter", [
 
 function setup() {
   console.log("Creating blank table if nonexistent");
-  apidb.execute(db, "CREATE TABLE IF NOT EXISTS games (level, number INTEGER, description VARCHAR(50))");
+  apidb.execute(db, "CREATE TABLE IF NOT EXISTS levels (number, stupid INTEGER, state VARCHAR(50))");
 }
 
 function reset() {
   console.log("Dropping tables...");
-  apidb.execute(db, "DROP TABLE IF EXISTS games");
+  apidb.execute(db, "DROP TABLE IF EXISTS levels");
   setup();
 }
 
 function addLevel(num) {
-  recordMove(num, "13", "Unsolved");
+  setLevelState2(num, "13", "Unsolved");
 }
 
-function recordMove(gameid, moveid, moveinfo) {
-  console.log ("Inserting " + gameid + "," + moveid + "," + moveinfo);
-  apidb.execute(db, "INSERT INTO games(level,number,description) VALUES(?,?,?)", [gameid, moveid, moveinfo])
+function setLevelState2(num, _, state) {
+  console.log ("Setting level "+num+" to "+state);
+  apidb.execute(db, "INSERT INTO levels (number, stupid, state) VALUES (?, ?, ?)", [num, _, state])
   .then(function(ret) {
-    console.log("Inserted");
+    console.log("Set level "+num+" to "+state);
     for (var i in ret) {
       console.log("\t"+i+": ", ret[i]);
     }
   }, function (err) {console.log(err);});
 }
 
-function setLevelState(num) {
+function setLevelState(num, state) {
   deleteLevel(num);
-  recordMove(num, "14", "Solved");
+  setLevelState2(num, "14", state);
 }
 
 function deleteLevel(num) {
   console.log("Deleting level: "+num);
 
-  apidb.execute(db, "DELETE FROM games WHERE level=? AND number=13", [num])
+  apidb.execute(db, "DELETE FROM levels WHERE number=? AND stupid=13", [num])
   .then(function(ret) {
     console.log("Deleted level: "+num);
     for (var i in ret) {
@@ -87,7 +87,7 @@ function deleteLevel(num) {
 function getLevelState(num, callback) {
   console.log("Getting state for level: "+num);
 
-  apidb.execute(db, "SELECT * FROM games WHERE level=?", [num])
+  apidb.execute(db, "SELECT * FROM levels WHERE number=?", [num])
   .then(function(ret) {
     if (ret.rows.length == 0) {
       console.log("Could not find level: "+num);

@@ -61,9 +61,9 @@ app.controller("MainCtrl", function($scope) {
   for (var i in $scope.levels) {
     getLevelState($scope.levels[i], function(level) {
       console.log("Callback from getLevelState: ", level);
-      if (level.description == "Solved") {
+      if (level.state == "Solved") {
         for (var i in buttons) {
-          if (buttons[i].innerHTML == level.level) {
+          if (buttons[i].innerHTML == level.number) {
             buttons[i].setAttribute("class", "button button-dark ng-binding");
           }
         }
