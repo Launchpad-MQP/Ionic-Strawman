@@ -52,43 +52,39 @@ function resetEverything() {
 }
 
 function recordMove(gameid, moveid, moveinfo) {
-  console.log ("+ (" + gameid + "," + moveid + "," + moveinfo + ")");
-  apidb.execute(db, 'INSERT INTO games(level,number,description) VALUES(?,?,?)',
-    [ gameid, moveid, moveinfo ]).then (function(resp) {
-      for (var k in resp) {
-    console.log ("[" + k + "," + resp[k] + "]");
-      }
-      console.log ("+++ Inserted +++");
-  }, function (error) {
-    console.log ("** ERROR ** " + JSON.stringify(error));
-  });
+  console.log ("Inserting " + gameid + "," + moveid + "," + moveinfo);
+  apidb.execute(db, 'INSERT INTO games(level,number,description) VALUES(?,?,?)', [gameid, moveid, moveinfo])
+  .then(function(ret) {
+    console.log("Inserted");
+    for (var i in ret) {
+      console.log("\t"+i+": ", ret[i]);
+    }
+  }, function (err) {console.log(err);});
 }
 
 function deleteLastMove(gameid, moveid) {
-    console.log ("- (" + gameid + "," + moveid + ")");
-    apidb.execute (db, 'DELETE FROM games WHERE level=? AND number=?',
-       [ gameid, moveid ]);
+  console.log("Deleting level: "+gameid);
+
+  apidb.execute(db, 'DELETE FROM games WHERE level=? AND number=?', [gameid, moveid])
+  .then(function(ret) {
+    console.log("Deleted level: "+gameid);
+    for (var i in ret) {
+      try {
+        console.log("\t"+i+": ", ret[i]);
+      } catch (exc) {}
+    }
+  }, function (err) {console.log(err);});
   }
 
-  /** bring in status information for past puzzles. */
-function resetPuzzle(gameid) {
-    console.log ("Request to reset:" + gameid);
-
-    // remove all moves...
-    apidb.execute (db, 'DELETE FROM games WHERE level=?',
-       [ gameid ]);
-
-  }
-
-  /** Updates puzzle directly since can't easily process SQL select. */
 function retrieveAllMoves(gameid, callback) {
-    console.log ("RETRIEVE (" + gameid + ")");
+  console.log("Getting state for level: "+gameid);
 
-    return apidb.execute (db, 'SELECT * FROM games WHERE level=?', [gameid]).then (function (resp) {
-      if (resp.rows.length == 0) {
-        console.log("Got no rows");
-        return;
-      }
-      callback(resp.rows.item(0));
-    }, function(err) {console.log(err);});
+  apidb.execute(db, "SELECT * FROM games WHERE level=?", [gameid])
+  .then(function(ret) {
+    if (ret.rows.length == 0) {
+      console.log("Couldn't find level: "+gameid);
+      return;
+    }
+    callback(ret.rows.item(0));
+  }, function(err) {console.log(err);});
 }
