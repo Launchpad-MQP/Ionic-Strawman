@@ -41,7 +41,7 @@ angular.module("starter", [
 
 function setup() {
   console.log("Creating blank table if nonexistent");
-  apidb.execute(db, "CREATE TABLE IF NOT EXISTS levels (number, stupid INTEGER, state VARCHAR(50))");
+  apidb.execute(db, "CREATE TABLE IF NOT EXISTS levels (number, state VARCHAR(50))");
 }
 
 function reset() {
@@ -56,7 +56,7 @@ function addLevel(num) {
 
 function setLevelState2(num, _, state) {
   console.log ("Setting level "+num+" to "+state);
-  apidb.execute(db, "INSERT INTO levels (number, stupid, state) VALUES (?, ?, ?)", [num, _, state])
+  apidb.execute(db, "INSERT INTO levels (number, state) VALUES (?, ?)", [num, state])
   .then(function(ret) {
     console.log("Set level "+num+" to "+state);
     for (var i in ret) {
@@ -73,7 +73,7 @@ function setLevelState(num, state) {
 function deleteLevel(num) {
   console.log("Deleting level: "+num);
 
-  apidb.execute(db, "DELETE FROM levels WHERE number=? AND stupid=13", [num])
+  apidb.execute(db, "DELETE FROM levels WHERE number=?", [num])
   .then(function(ret) {
     console.log("Deleted level: "+num);
     for (var i in ret) {
