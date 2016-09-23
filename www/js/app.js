@@ -51,10 +51,10 @@ function reset() {
 }
 
 function addLevel(num) {
-  setLevelState2(num, "13", "Unsolved");
+  setLevelState2(num, "Unsolved");
 }
 
-function setLevelState2(num, _, state) {
+function setLevelState2(num, state) {
   console.log ("Setting level "+num+" to "+state);
   apidb.execute(db, "INSERT INTO levels (number, state) VALUES (?, ?)", [num, state])
   .then(function(ret) {
@@ -67,7 +67,7 @@ function setLevelState2(num, _, state) {
 
 function setLevelState(num, state) {
   deleteLevel(num);
-  setLevelState2(num, "14", state);
+  setLevelState2(num, state);
 }
 
 function deleteLevel(num) {
