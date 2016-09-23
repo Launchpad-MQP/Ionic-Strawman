@@ -90,7 +90,7 @@ function getLevelState(num, callback) {
   apidb.execute(db, "SELECT * FROM games WHERE level=?", [num])
   .then(function(ret) {
     if (ret.rows.length == 0) {
-      console.log("Couldn"t find level: "+num);
+      console.log("Could not find level: "+num);
       return;
     }
     callback(ret.rows.item(0));
