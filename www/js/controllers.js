@@ -4,12 +4,11 @@ app.controller("MainCtrl", function($scope) {
   console.log("Now in the Main Page");
 })
 
-.controller("LevelCtrl", function($scope, $state, $stateParams, $ionicPopup) {
+.controller("LevelCtrl", function($scope, $rootScope, $state, $stateParams, $ionicPopup) {
   console.log($stateParams.levelNum);
 
   //Creates a popup when the level is complete.
   $scope.completeLevel = function() {
-    $scope.data = {};
     completeLevel($stateParams.levelNum);
 
     var levelOverPopUp = $ionicPopup.show({
@@ -28,7 +27,11 @@ app.controller("MainCtrl", function($scope) {
         type: "button-positive",
         onTap: function(e) {
           console.log("On to the next level.");
-          $state.go("level", {"levelNum": $stateParams.levelNum+1});
+					if($rootScope.levels.includes($stateParams.levelNum+1)) {
+						$state.go("level", {"levelNum": $stateParams.levelNum+1});
+					} else {
+						$state.go("level_select");
+					}
         }
         }]
     });
@@ -41,7 +44,7 @@ app.controller("MainCtrl", function($scope) {
   }
 })
 
-.controller("LevelSelectCtrl", function($scope, $state) {
+.controller("LevelSelectCtrl", function($scope, $rootScope, $state) {
   console.log("Now in the Level Select");
 
   $scope.loadLevel = function(levelNum) {
@@ -50,18 +53,18 @@ app.controller("MainCtrl", function($scope) {
   }
 
   $scope.myTitle = "Template";
-  $scope.levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+  $rootScope.levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
   setupSQL();
 
-  for (var i in $scope.levels) {
+  for (var i in $rootScope.levels) {
     // Adds a level if it doesn't exist, e.g. the database
     // wasn't yet initialized.
-    addLevel($scope.levels[i], "Unsolved");
+    addLevel($rootScope.levels[i], "Unsolved");
   }
 
-  for (var i in $scope.levels) {
-    getLevelState($scope.levels[i], function(level) {
+  for (var i in $rootScope.levels) {
+    getLevelState($rootScope.levels[i], function(level) {
       console.log("Callback from getLevelState: ", level);
       if (level.state == "Solved") {
         button = document.getElementById("level_"+level.number);
