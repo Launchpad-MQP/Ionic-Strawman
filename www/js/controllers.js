@@ -58,29 +58,20 @@ app.controller("MainCtrl", function($scope) {
     addLevel($scope.levels[i]);
   }
 
-  var buttons = document.getElementsByClassName("button");
   for (var i in $scope.levels) {
     getLevelState($scope.levels[i], function(level) {
       console.log("Callback from getLevelState: ", level);
       if (level.state == "Solved") {
-        for (var i in buttons) {
-          if (buttons[i].innerHTML == level.number) {
-            buttons[i].setAttribute("class", "button button-dark ng-binding");
-          }
-        }
+        button = document.getElementById("level_"+level.number);
+        button.setAttribute("class", "button button-dark ng-binding");
       }
     });
   }
 });
 
-function completeLevel(level) {
-  var buttons = document.getElementsByClassName("button");
-  for (var i in buttons) {
-    if (buttons[i].innerHTML == level) {
-      buttons[i].setAttribute("class", "button button-dark ng-binding");
-      console.log(buttons[i]);
-    }
-  }
+function completeLevel(number) {
+  button = document.getElementById("level_"+number);
+  button.setAttribute("class", "button button-dark ng-binding");
 
-  setLevelState(level, "Solved");
+  setLevelState(number, "Solved");
 }
