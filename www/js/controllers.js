@@ -1,16 +1,20 @@
-var app = angular.module("controllers", ["ionic"])
+angular.module("controllers", ["ionic", "sql"])
 
-app.controller("MainCtrl", function($scope) {
+.controller("MainCtrl", function($scope) {
   console.log("Now in the Main Page");
 })
 
 .controller("LevelCtrl", function($scope, $rootScope, $state, $stateParams, $ionicPopup) {
-  console.log($stateParams.levelNum);
+  console.log("Now in level: " + $stateParams.levelNum);
+  if(!$rootScope.levels.includes($stateParams.levelNum)) {
+    console.log("Went to level " + $stateParams.levelNum + " redirecting to level select.");
+    $state.go("level_select");
+  }
 
-  //Creates a popup when the level is complete.
+  // Begin: The entirety of our "game". Shows a button, which when clicked
+  // beats the level. It also shows "back" and "next" options.
   $scope.completeLevel = function() {
     completeLevel($stateParams.levelNum);
-
     var levelOverPopUp = $ionicPopup.show({
       title: "Level Complete!",
       scope: $scope,
@@ -21,25 +25,20 @@ app.controller("MainCtrl", function($scope) {
           console.log("Back to level select.");
           $state.go("level_select");
         }
-        },
+      },
       {
         text: "Next",
         type: "button-positive",
         onTap: function(e) {
           console.log("On to the next level.");
-					if($rootScope.levels.includes($stateParams.levelNum+1)) {
-						$state.go("level", {"levelNum": $stateParams.levelNum+1});
-					} else {
-						$state.go("level_select");
-					}
+    			$state.go("level", {"levelNum": $stateParams.levelNum+1});
         }
-        }]
-    });
+      }]
+    }); // Don't lose track of the semicolons, this ends .show();
   }
 
-  //Restarts the level.
   $scope.restart = function() {
-    console.log("Restarts level.");
+    console.log("Restarting level...");
     $state.reload();
   }
 })
@@ -47,9 +46,9 @@ app.controller("MainCtrl", function($scope) {
 .controller("LevelSelectCtrl", function($scope, $rootScope, $state) {
   console.log("Now in the Level Select");
 
-  $scope.loadLevel = function(levelNum) {
-    console.log("Entering level " + levelNum);
-    $state.go("level", {"levelNum": levelNum});
+  $scope.loadLevel = function(num) {
+    console.log("Entering level " + num);
+    $state.go("level", {"levelNum": num});
   }
 
   $scope.myTitle = "Template";
