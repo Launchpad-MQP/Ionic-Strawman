@@ -5,10 +5,10 @@ function setupSQL() {
   apidb.execute(db, "CREATE TABLE IF NOT EXISTS levels (number, state VARCHAR(50))");
 }
 
-function reset() {
+function resetSQL() {
   console.log("Dropping tables...");
   apidb.execute(db, "DROP TABLE IF EXISTS levels");
-  setup();
+  setupSQL();
 }
 
 function addLevel(num) {
