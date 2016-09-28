@@ -55,7 +55,9 @@ app.controller("MainCtrl", function($scope) {
   setupSQL();
 
   for (var i in $scope.levels) {
-    addLevel($scope.levels[i]);
+    // Adds a level if it doesn't exist, e.g. the database
+    // wasn't yet initialized.
+    addLevel($scope.levels[i], "Unsolved");
   }
 
   for (var i in $scope.levels) {
