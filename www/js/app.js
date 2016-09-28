@@ -9,11 +9,12 @@ var apidb = undefined;
 angular.module("starter", [
   "ionic", /* Base include for ionic */
   "states", /* State transitions between pages */
+  "sql", /* Persistent level storage */
   "controllers", /* Individual page js */
   "ngCordova" /* Used for Cordova-SQLite */
 ])
 
-.run(function($ionicPlatform, $cordovaSQLite, $timeout) {
+.run(function($ionicPlatform, $cordovaSQLite) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -27,72 +28,12 @@ angular.module("starter", [
     }
 
     if (window.cordova) {
-      db = $cordovaSQLite.openDB("test.db");
+      db = $cordovaSQLite.openDB("levels.db");
     } else {
-      db = window.openDatabase("mytest.db", "1", "mytest", 1024*1024*5);
+      db = window.openDatabase("levels.db", "1", "levels", 1024*1024*5);
     }
 
-    // set up the apidb for future.
     apidb = $cordovaSQLite;
-    setup();
 
   });
 })
-
-function setup() {
-  console.log("Creating blank table if nonexistent");
-  apidb.execute(db, "CREATE TABLE IF NOT EXISTS levels (number, state VARCHAR(50))");
-}
-
-function reset() {
-  console.log("Dropping tables...");
-  apidb.execute(db, "DROP TABLE IF EXISTS levels");
-  setup();
-}
-
-function addLevel(num) {
-  setLevelState2(num, "Unsolved");
-}
-
-function setLevelState2(num, state) {
-  console.log ("Setting level "+num+" to "+state);
-  apidb.execute(db, "INSERT INTO levels (number, state) VALUES (?, ?)", [num, state])
-  .then(function(ret) {
-    console.log("Set level "+num+" to "+state);
-    for (var i in ret) {
-      console.log("\t"+i+": ", ret[i]);
-    }
-  }, function (err) {console.log(err);});
-}
-
-function setLevelState(num, state) {
-  deleteLevel(num);
-  setLevelState2(num, state);
-}
-
-function deleteLevel(num) {
-  console.log("Deleting level: "+num);
-
-  apidb.execute(db, "DELETE FROM levels WHERE number=?", [num])
-  .then(function(ret) {
-    console.log("Deleted level: "+num);
-    for (var i in ret) {
-      try {
-        console.log("\t"+i+": ", ret[i]);
-      } catch (exc) {}
-    }
-  }, function (err) {console.log(err);});
-  }
-
-function getLevelState(num, callback) {
-  console.log("Getting state for level: "+num);
-
-  apidb.execute(db, "SELECT * FROM levels WHERE number=?", [num])
-  .then(function(ret) {
-    if (ret.rows.length == 0) {
-      console.log("Could not find level: "+num);
-      return;
-    }
-    callback(ret.rows.item(0));
-  }, function(err) {console.log(err);});
-}
