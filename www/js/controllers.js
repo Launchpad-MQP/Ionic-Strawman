@@ -10,6 +10,7 @@ app.controller("MainCtrl", function($scope) {
   //Creates a popup when the level is complete.
   $scope.completeLevel = function() {
     $scope.data = {};
+    completeLevel($stateParams.levelNum);
 
     var levelOverPopUp = $ionicPopup.show({
       title: "Level Complete!",
@@ -18,7 +19,6 @@ app.controller("MainCtrl", function($scope) {
       {
         text: "Level Select",
         onTap: function(e) {
-          completeLevel($stateParams.levelNum);
           console.log("Back to level select.");
           $state.go("level_select");
         }
@@ -27,7 +27,6 @@ app.controller("MainCtrl", function($scope) {
         text: "Next",
         type: "button-positive",
         onTap: function(e) {
-          completeLevel($stateParams.levelNum);
           console.log("On to the next level.");
           $state.go("level", {"levelNum": $stateParams.levelNum+1});
         }
