@@ -11,6 +11,9 @@ angular.module("controllers", ["ionic", "sql"])
     $state.go("level_select");
   }
 
+  // Redefined so that it can be used in the HTML.
+  $scope.levelNum = $stateParams.levelNum;
+
   // Begin: The entirety of our "game". Shows a button, which when clicked
   // beats the level. It also shows "back" and "next" options.
   $scope.completeLevel = function() {
