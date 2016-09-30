@@ -1,3 +1,9 @@
+/**
+ * A list of all the levels and states. This is what allows us to switch
+ * between the different "pages". Each html page should have an associated
+ * javascript controller, even if that controller is unused.
+**/
+
 angular.module("states", ["ionic"])
 
 .config(function($stateProvider, $urlRouterProvider){

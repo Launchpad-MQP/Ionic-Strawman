@@ -4,6 +4,10 @@
   </ion-header-bar>
   <ion-content class="has-header" padding="true">
     <div class="container">
+      <!-- Here's where a bit of magic happens: Ionic will pupulate this table
+        with all the levels in the "$scope.levels" variable, and it fills them
+        according to the pattern we specified with {{level}}.
+      -->
       <div class="row unlimited-items">
         <div class="col" ng-repeat="level in levels">
           <a class="button button-stable" ng-click="loadLevel({{level}})" id="level_{{level}}">{{level}}</a>

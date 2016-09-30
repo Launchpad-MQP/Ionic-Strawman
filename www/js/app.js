@@ -1,23 +1,25 @@
-// Ionic Starter App
+/**
+ * The main javascript file. Contains global variable definitions, and loads
+ * other javascript templates.
+**/
 
+// Initialize SQL database and database access so that they
+// are available at global scope
 var db = undefined;
 var apidb = undefined;
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// "starter" is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of "requires"
+// A list of other javascript files to include
 angular.module("starter", [
   "ionic", /* Base include for ionic */
   "states", /* State transitions between pages */
-  "sql", /* Persistent level storage */
   "controllers", /* Individual page js */
   "ngCordova" /* Used for Cordova-SQLite */
 ])
 
+// Runs when the app is fully loaded.
 .run(function($ionicPlatform, $cordovaSQLite) {
   $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
+    // When running on mobile, hide the accessory bar by default.
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
@@ -27,10 +29,10 @@ angular.module("starter", [
       StatusBar.styleDefault();
     }
 
-    if (window.cordova) {
+    if (window.cordova) { // If true, running in an emulator.
       db = $cordovaSQLite.openDB("levels.db");
-    } else {
-      db = window.openDatabase("levels.db", "1", "levels", 1024*1024*5);
+    } else { // If false, running in a browser.
+      db = window.openDatabase("levels.db", "1", "levels", 10000000);
     }
 
     apidb = $cordovaSQLite;
