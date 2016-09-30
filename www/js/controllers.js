@@ -6,12 +6,12 @@
 angular.module("controllers", ["ionic", "sql"])
 
 /* Controller for the main page */
-.controller("MainCtrl", function($scope) {
+.controller("MainCtrl", function ($scope) {
   console.log("Now in the Main Page");
 })
 
 /* Controller for the individual levels. */
-.controller("LevelCtrl", function($scope, $rootScope, $state, $stateParams, $ionicPopup, sqlfactory) {
+.controller("LevelCtrl", function ($scope, $rootScope, $state, $stateParams, $ionicPopup, sqlfactory) {
   // Check for invalid level number
   if(!$rootScope.levels.includes($stateParams.levelNum)) {
     console.log("Went to level " + $stateParams.levelNum + " redirecting to level select.");
@@ -25,7 +25,7 @@ angular.module("controllers", ["ionic", "sql"])
 
   // Begin: The entirety of our "game". Shows a button, which when clicked
   // beats the level. It also shows "back" and "next" options.
-  $scope.completeLevel = function() {
+  $scope.completeLevel = function () {
     completeLevel($stateParams.levelNum, sqlfactory);
 
     var levelOverPopUp = $ionicPopup.show({
@@ -34,7 +34,7 @@ angular.module("controllers", ["ionic", "sql"])
       buttons: [
       {
         text: "Level Select",
-        onTap: function(e) {
+        onTap: function (e) {
           console.log("Back to level select.");
           $state.go("level_select");
         }
@@ -42,7 +42,7 @@ angular.module("controllers", ["ionic", "sql"])
       {
         text: "Next",
         type: "button-positive",
-        onTap: function(e) {
+        onTap: function (e) {
           console.log("On to the next level.");
           $state.go("level", {"levelNum": $stateParams.levelNum+1});
         }
@@ -51,17 +51,17 @@ angular.module("controllers", ["ionic", "sql"])
   }
   // End: The entirety of our "game".
 
-  $scope.restart = function() {
+  $scope.restart = function () {
     console.log("Restarting level...");
     $state.reload();
   }
 })
 
 /* Controller for the settings page. */
-.controller("SettingsCtrl", function($scope, $rootScope, sqlfactory) {
+.controller("SettingsCtrl", function ($scope, $rootScope, sqlfactory) {
   console.log("Now in the Settings page");
   // Defining a local function so it can be used by ng-click
-  $scope.resetSQL = function() {
+  $scope.resetSQL = function () {
     sqlfactory.resetSQL();
     sqlfactory.setupSQL();
   }
@@ -69,10 +69,10 @@ angular.module("controllers", ["ionic", "sql"])
 })
 
 /* Controller for the level select, aka list of levels */
-.controller("LevelSelectCtrl", function($scope, $rootScope, $state, sqlfactory) {
+.controller("LevelSelectCtrl", function ($scope, $rootScope, $state, sqlfactory) {
   console.log("Now in the Level Select");
 
-  $scope.loadLevel = function(num) {
+  $scope.loadLevel = function (num) {
     console.log("Entering level " + num);
     $state.go("level", {"levelNum": num});
   }
@@ -93,7 +93,7 @@ angular.module("controllers", ["ionic", "sql"])
   // For each level, if it is completed we need to recolor the button.
   // This uses a callback function, since talking to SQL is an async operation.
   for (var i in $rootScope.levels) {
-    sqlfactory.getLevelState($rootScope.levels[i], function(level) {
+    sqlfactory.getLevelState($rootScope.levels[i], function (level) {
       console.log("Callback from getLevelState: ", level);
       if (level.state == "Solved") {
         button = document.getElementById("level_"+level.number);
@@ -104,7 +104,7 @@ angular.module("controllers", ["ionic", "sql"])
 });
 
 // When a level is completed, find the appropriate button and make it gray.
-function completeLevel(number, sqlfactory) {
+function completeLevel (number, sqlfactory) {
   button = document.getElementById("level_"+number);
   button.setAttribute("class", "button button-dark ng-binding");
 

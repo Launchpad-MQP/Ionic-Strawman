@@ -6,7 +6,7 @@
 
 angular.module("states", ["ionic"])
 
-.config(function($stateProvider, $urlRouterProvider){
+.config(function ($stateProvider, $urlRouterProvider){
   $stateProvider
 
   .state("main", {

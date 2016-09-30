@@ -17,8 +17,8 @@ angular.module("starter", [
 ])
 
 // Runs when the app is fully loaded.
-.run(function($ionicPlatform, $cordovaSQLite) {
-  $ionicPlatform.ready(function() {
+.run(function ($ionicPlatform, $cordovaSQLite) {
+  $ionicPlatform.ready( function () {
     // When running on mobile, hide the accessory bar by default.
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -38,4 +38,4 @@ angular.module("starter", [
     apidb = $cordovaSQLite;
 
   });
-})
+});
