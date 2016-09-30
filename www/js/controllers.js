@@ -44,7 +44,7 @@ angular.module("controllers", ["ionic", "sql"])
         type: "button-positive",
         onTap: function(e) {
           console.log("On to the next level.");
-    			$state.go("level", {"levelNum": $stateParams.levelNum+1});
+          $state.go("level", {"levelNum": $stateParams.levelNum+1});
         }
       }]
     });
@@ -59,13 +59,13 @@ angular.module("controllers", ["ionic", "sql"])
 
 /* Controller for the settings page. */
 .controller("SettingsCtrl", function($scope, $rootScope, sqlfactory) {
-	console.log("Now in the Settings page");
-	// Defining a local function so it can be used by ng-click
-	$scope.resetSQL = function() {
-		sqlfactory.resetSQL();
-		sqlfactory.setupSQL();
-	}
-	console.log($scope);
+  console.log("Now in the Settings page");
+  // Defining a local function so it can be used by ng-click
+  $scope.resetSQL = function() {
+    sqlfactory.resetSQL();
+    sqlfactory.setupSQL();
+  }
+  console.log($scope);
 })
 
 /* Controller for the level select, aka list of levels */

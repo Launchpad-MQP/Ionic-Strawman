@@ -30,7 +30,7 @@ angular.module("states", ["ionic"])
   .state("settings", {
     url: "/settings",
     templateUrl: "templates/settings.html",
-		controller: "SettingsCtrl"
+    controller: "SettingsCtrl"
   });
 
   $urlRouterProvider.otherwise("/main");
