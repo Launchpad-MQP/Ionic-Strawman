@@ -11,9 +11,6 @@ object SimpleNameWhichDoesntMatchFileName extends App {
   trait SimpleTrait {
 
     // Defines a list of types. Basically the function prototypes. Includes parameters.
-    // trait Expr
-    // case class BaseFramework ()
-    // case class MainPage ()
 
     // Very basic returns a string.
     @combinator object EmptyApp {
