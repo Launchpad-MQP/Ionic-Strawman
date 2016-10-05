@@ -27,23 +27,22 @@ object SimpleNameWhichDoesntMatchFileName extends App {
       val semanticType:Type = 'mainPage;
     }
 
-    @combinator object SimpleApp extends BasicCombinator()
-
-    // Combines the basic EmptyApp with a basic MainPage and returns it. No parameters needed.
-    class BasicCombinator() {
-      // takes a (String) and b (String) returns (String) according to <java code>
+    class StringConcatenator(a:Type, b:Type, c:Type) {
       def apply(a:String, b:String) : String = {
         return a + '\n' + b;
       }
-      val semanticType:Type = 'emptyApp =>: 'mainPage =>: 'appWithMainPage;
+      val semanticType:Type = a =>: b =>: c;
     }
-  }
 
+    @combinator object Comb1 extends StringConcatenator('emptyApp, 'mainPage, 'appWithMainPage)
+    @combinator object Comb2 extends StringConcatenator('appWithMainPage, 'mainPage, 'appWithTwoMainPages)
+
+  }
   // Initializes the CLS system
   val reflectedRepository = ReflectedRepository (new SimpleTrait {})
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[String] ('appWithMainPage)
+  val reply = reflectedRepository.inhabit[String] ('appWithTwoMainPages)
 
   // Pass the response into our defined output, currently just a printer
   val it = reply.interpretedTerms.values.flatMap(_._2).iterator
