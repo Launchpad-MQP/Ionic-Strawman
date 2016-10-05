@@ -14,14 +14,16 @@ object SimpleNameWhichDoesntMatchFileName extends App {
 
     // Very basic returns a string.
     @combinator object EmptyApp {
-      // def apply() : String = { <java code> }
-      def apply() : String = { return "angular.module('starter', ['ionic'])"; }
+      def apply() : String = {
+        return "angular.module('starter', ['ionic'])";
+      }
       val semanticType:Type = 'emptyApp;
     }
 
     @combinator object MainPage {
-      // def apply() : String = { <java code> }
-      def apply() : String = { return ".run(function ($ionicPlatform){})"; }
+      def apply() : String = {
+        return ".run(function ($ionicPlatform){})";
+      }
       val semanticType:Type = 'mainPage;
     }
 
@@ -30,7 +32,9 @@ object SimpleNameWhichDoesntMatchFileName extends App {
     // Combines the basic EmptyApp with a basic MainPage and returns it. No parameters needed.
     class BasicCombinator() {
       // takes a (String) and b (String) returns (String) according to <java code>
-      def apply(a:String, b:String) : String = { return a + '\n' + b; }
+      def apply(a:String, b:String) : String = {
+        return a + '\n' + b;
+      }
       val semanticType:Type = 'emptyApp =>: 'mainPage =>: 'appWithMainPage;
     }
   }
