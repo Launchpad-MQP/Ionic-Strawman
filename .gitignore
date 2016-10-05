@@ -2,6 +2,8 @@
 !.gitignore
 !*.html
 !*.js
+!*.scala
+!*.java
 !*/
 # These contain .html and .js files which are generic to the system
 www/lib/
