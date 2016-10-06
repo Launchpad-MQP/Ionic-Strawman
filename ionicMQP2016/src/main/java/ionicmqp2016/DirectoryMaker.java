@@ -5,19 +5,19 @@ import java.io.Writer;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 public class DirectoryMaker {
 
   final static String BASEPATH = "../TestDirectory/";
 
   //called by scala program to parse results (should only be one result, ideally)
-  public static void parseResults(Iterator<String> it) {
-    String file = it.next();
-    String lines[] = file.split("\\r?\\n");
-
-    String newfile = "";
-    String newpath = "";
-    boolean isPathLine = false;
+  public static void parseResults(Iterator<String> iter) throws IOException {
+    BufferedReader br = new BufferedReader(new StringReader(iter.next()));
+    String buffer = "";
+    String path = null;
 
     //refresh all relevant directories
     refreshDirectory("");
@@ -26,37 +26,26 @@ public class DirectoryMaker {
     refreshDirectory("www/templates");
 
     //parse
-    for(String l : lines) {
-
-      //check line for new file header
-      if(isPathLine) {
-        //set newpath to path pulled from header
-        String paths[] = l.split(" ");
-        if(paths.length>0)
-          newpath = paths[paths.length-1];
-        System.out.println("New Path Found: " + newpath);
-        isPathLine = false;
-      }
-
-      //if valid header
-      if(l.equals("/**") || l.equals("<--")) {
-        //createFile() with old file contents, if non-empty
-        if(!newfile.isEmpty() && !newpath.isEmpty()) {
-          System.out.println("Creating file " + newpath);
-          createFile(newfile, newpath);
+    String line;
+    while ((line = br.readLine()) != null) {
+      // Found the start of a new file (as noted by a block comment). Flush the
+      // output of the buffer to the old file,
+      if("/**".equals(line) || "<--".equals(line)) {
+        if (path != null) {
+          System.out.println("Creating file " + path);
+          createFile(buffer, path);
+          buffer = "";
         }
-        //clear newfile, newpath
-        newfile = "";
-        newpath = "";
-        isPathLine = true;
+        // Find the path, located on the next line
+        path = br.readLine().split("Path: ")[1];
       }
-      //add line to newfile
-      newfile += l;
+      //add line to buffer
+      buffer += line;
     }
     //create final file
-    if(!newfile.isEmpty() && !newpath.isEmpty()) {
-      System.out.println("Creating file " + newpath);
-      createFile(newfile, newpath);
+    if(path != null) {
+      System.out.println("Creating file " + path);
+      createFile(buffer, path);
     }
   }
 
