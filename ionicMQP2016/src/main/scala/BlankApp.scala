@@ -10,6 +10,13 @@ import _root_.java.nio.file._
 object BlankApp extends App {
   trait BlankAppTrait {
 
+    @combinator object SimpleListOfStates {
+      def apply() : Array[String] = {
+        return Array("main", "level_select", "level", "settings")
+      }
+      val semanticType:Type = 'stateList
+    }
+
     @combinator object Controllers {
       def apply(subPages:Array[String]) : String = {
         var stateList = ""
@@ -63,10 +70,10 @@ angular.module(\""""+subPage+"""\", ["ionic"])
         }
         return controllerJs
       }
-      val semanticType:Type = 'controllers
+      val semanticType:Type = 'stateList =>: 'controllers
     }
 
-    class Blank {
+    @combinator object App {
       def apply(subPages:Array[String]) : String = {
         var modules = "\"ionic\""
         var scripts = "    <script src=\"js/app.js\"></script>"
@@ -137,18 +144,25 @@ angular.module("starter", ["""+modules+"""])
 </html>
 """
       }
-      val semanticType:Type = 'app :&: 'blank
+      val semanticType:Type = 'stateList =>: 'app
     }
 
-    @combinator object BlankApp extends Blank()
-    @combinator object SimpleApp extends Blank()
+    class StringConcatenator(typeA:Type, typeB:Type, typeC:Type) {
+      def apply(a:String, b:String) : String = {
+        return a + '\n' + b;
+      }
+      val semanticType:Type = typeA =>: typeB =>: typeC;
+    }
+
+    @combinator object Comb1 extends StringConcatenator('app, 'controllers, 'dummy)
+
   }
 
   // Initializes the CLS system
   val reflectedRepository = ReflectedRepository (new BlankAppTrait {})
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[String] ('app)
+  val reply = reflectedRepository.inhabit[String] ('dummy)
 
   // Pass the response into our defined output, currently just a printer
   val it = reply.interpretedTerms.values.flatMap(_._2).iterator
