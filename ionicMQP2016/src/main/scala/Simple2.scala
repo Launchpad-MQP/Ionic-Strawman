@@ -76,6 +76,7 @@ angular.module("starter", ["ionic"])
 
   // Pass the response into our defined output, currently just a printer
   val it = reply.interpretedTerms.values.flatMap(_._2).iterator
+  DirectoryMaker.parseResults(it.asJava)
   PrintFragments.processResults(it.asJava)
 
 }
