@@ -12,6 +12,7 @@ object BlankApp extends App {
 
     @combinator object Controllers {
       def apply(subPages:Array[String]) : String = {
+        var stateList = ""
         for (subPage <- "main" +: subPages) {
           stateList += """
   .state(\""""+subPage.capitalize+"""\", {
@@ -47,20 +48,20 @@ angular.module("states", ["ionic"])
 angular.module("controllers", ["ionic"])
 """
         for (subPage <- subPages) {
-          templateJs = """
+          controllerJs = """
 /**
  * Path: www/js/"""+subPage+""".js
 **/
 
 angular.module(\""""+subPage+"""\", ["ionic"])
 
-"""+templateJs+"""
+"""+controllerJs+"""
 .controller(\""""+subPage.capitalize+"""Ctrl", function ($scope) {
   console.log("Now in the """+subPage.capitalize+"""\");
 })
 """
         }
-        return templateJs;
+        return controllerJs
       }
       val semanticType:Type = 'controllers
     }
