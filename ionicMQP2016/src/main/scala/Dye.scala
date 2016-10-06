@@ -13,52 +13,36 @@ object DyeExample extends App {
     // Defines a list of types. Basically the function prototypes. Includes parameters.
 
     // Represents the color red
-    @combinator object Red {
+    @combinator object RedCloth {
       def apply() : String = {
-        return "red";
+        return "red"
       }
-      val semanticType:Type = 'color :&: 'red;
+      val semanticType:Type = 'cloth :&: 'red
     }
 
     // Represents the color blue
-    @combinator object Blue {
+    @combinator object BlueCloth {
       def apply() : String = {
-        return "blue";
+        return "blue"
       }
-      val semanticType:Type = 'color :&: 'blue;
-    }
-
-    // Represents a shirt
-    @combinator object Shirt {
-      def apply() : String = {
-        return "shirt";
-      }
-      val semanticType:Type = 'thing;
-    }
-
-    // Represents a car
-    @combinator object Car {
-      def apply() : String = {
-        return "car";
-      }
-      val semanticType:Type = 'thing;
+      val semanticType:Type = 'cloth :&: 'blue
     }
 
     class Dyer(a:Type, b:Type) {
-      def apply(d:String, e:String) : String = {
-        return d + " " + e;
+      def apply(c:String) : String = {
+        return c + " shirt"
       }
-      val semanticType:Type = a =>: b =>: 'dyedthing :&: a;
+      val semanticType:Type = a =>: b
     }
 
-    @combinator object Comb1 extends Dyer('color :&: 'blue, 'thing)
+    @combinator object Comb1 extends Dyer('cloth, 'shirt)
 
   }
   // Initializes the CLS system
   val reflectedRepository = ReflectedRepository (new SimpleTrait {})
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[String] ('color)
+  val reply = reflectedRepository.inhabit[String] ('shirt)
 
   // Pass the response into our defined output, currently just a printer
   val it = reply.interpretedTerms.values.flatMap(_._2).iterator
