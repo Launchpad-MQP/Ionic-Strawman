@@ -69,10 +69,10 @@ angular.module(\""""+subPage+"""\", ["ionic"])
     class Blank {
       def apply(subPages:Array[String]) : String = {
         var modules = "\"ionic\""
-        var scripts = "\t\t<script src=\"js/app.js\"></script>"
+        var scripts = "    <script src=\"js/app.js\"></script>"
         for (subPage <- subPages) {
           modules += ", \""+subPage+"\""
-          scripts += "\n\t\t<script src=\"js/"+subPage+".js\"></script>"
+          scripts += "\n    <script src=\"js/"+subPage+".js\"></script>"
         }
         return """
 /**
@@ -96,7 +96,6 @@ angular.module("starter", ["""+modules+"""])
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-
   });
 });
 
