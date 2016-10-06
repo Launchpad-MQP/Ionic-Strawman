@@ -19,11 +19,15 @@ public class DirectoryMaker {
     String buffer = "";
     String path = null;
 
-    //refresh all relevant directories
-    refreshDirectory("");
-    refreshDirectory("www");
-    refreshDirectory("www/js");
-    refreshDirectory("www/templates");
+    //make sure relevant directories exist
+    makeDirectory("");  //BASEPATH directory is created
+    makeDirectory("www");
+
+    //clearing /js and /templates because there's only user-created code
+    removeDirectory("www/js")
+    makeDirectory("www/js");
+    removeDirectory("www/templates")
+    makeDirectory("www/templates");
 
     //parse
     String line;
@@ -40,7 +44,7 @@ public class DirectoryMaker {
         path = br.readLine().split("Path: ")[1];
       }
       //add line to buffer
-      buffer += line;
+      buffer += line + '\n';
     }
     //create final file
     if(path != null) {
@@ -49,22 +53,27 @@ public class DirectoryMaker {
     }
   }
 
-  //clears the given directory/file and creates it again
-  public static void refreshDirectory(String filepath) {
-    File f = new File(BASEPATH + filepath);
-    String[] files = f.list();
+  //makes the given directory
+  public static void makeDirectory(String filepath) {
+    File dir = new File(BASEPATH + filepath);
+    if(dir.mkdir()) {
+      System.out.println("Made directory " + filepath);
+    } else {
+      System.out.println("Couldn't make directory, or already exists.");
+    }
+  }
+
+  //removes the given directory
+  public static void removeDirectory(String filepath) {
+    File dir = new File(BASEPATH + filepath);
+    String[] files = dir.list();
     if(files != null) {
       System.out.println("Flushing directory " + filepath);
-      for(String s: files){
-        File currentFile = new File(f.getPath(),s);
+      for(String file: files){
+        File currentFile = new File(dir.getPath(), file);
         currentFile.delete();
       }
-    } else {
-      if(f.mkdir()) {
-        System.out.println("Made directory " + filepath);
-      } else {
-        System.out.println("Couldn't make directory.");
-      }
+      dir.delete();
     }
   }
 
