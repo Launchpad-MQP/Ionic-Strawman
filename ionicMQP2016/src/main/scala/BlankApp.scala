@@ -100,7 +100,7 @@ angular.module("starter", ["""+modules+"""])
 });
 
 <!--
-  Path: www/templates/index.html
+  Path: www/index.html
   The main page. Loads all javascript and stylesheets,
 -->
 <!DOCTYPE html>
