@@ -24,9 +24,9 @@ public class DirectoryMaker {
     makeDirectory("www");
 
     //clearing /js and /templates because there's only user-created code
-    removeDirectory("www/js")
+    removeDirectory("www/js");
     makeDirectory("www/js");
-    removeDirectory("www/templates")
+    removeDirectory("www/templates");
     makeDirectory("www/templates");
 
     //parse
