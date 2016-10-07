@@ -17,6 +17,13 @@ object BlankApp extends App {
       val semanticType:Type = 'stateList
     }
 
+    @combinator object BlankListOfStates {
+      def apply : Array[String] = {
+        return Array()
+      }
+      val semanticType:Type = 'stateList :&: 'blank
+    }
+
     @combinator object Controllers {
       def apply(subPages:Array[String]) : String = {
         var stateList = ""
@@ -106,10 +113,10 @@ angular.module("starter", ["""+modules+"""])
   });
 });
 
-<!--
-  Path: www/index.html
-  The main page. Loads all javascript and stylesheets,
--->
+/**
+ * Path: www/index.html
+ * The main page. Loads all javascript and stylesheets,
+**/
 <!DOCTYPE html>
 <html>
   <head>
@@ -147,6 +154,80 @@ angular.module("starter", ["""+modules+"""])
       val semanticType:Type = 'stateList =>: 'app
     }
 
+        @combinator object BlankApp {
+      def apply(subPages:Array[String]) : String = {
+        var modules = "\"ionic\""
+        var scripts = "    <script src=\"js/app.js\"></script>"
+        for (subPage <- subPages) {
+          modules += ", \""+subPage+"\""
+          scripts += "\n    <script src=\"js/"+subPage+".js\"></script>"
+        }
+        return """
+/**
+ * Path: www/js/app.js
+ * The main javascript file. Contains global variable definitions, and loads
+ * other javascript templates.
+**/
+
+// A list of other javascript files to include
+angular.module("starter", ["""+modules+"""])
+
+// Runs when the app is fully loaded.
+.run(function ($ionicPlatform) {
+  $ionicPlatform.ready( function () {
+    // When running on mobile, hide the accessory bar by default.
+    if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      cordova.plugins.Keyboard.disableScroll(true);
+    }
+    if (window.StatusBar) {
+      // org.apache.cordova.statusbar required
+      StatusBar.styleDefault();
+    }
+  });
+});
+
+/**
+ * Path: www/index.html
+ * The main page. Loads all javascript and stylesheets,
+**/
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link rel="manifest" href="manifest.json">
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+"""+scripts+"""
+  </head>
+  <body ng-app="starter">
+
+    <ion-pane>
+      <ion-header-bar class="bar-stable">
+        <h1 class="title">Ionic Blank Starter</h1>
+      </ion-header-bar>
+      <ion-content>
+      </ion-content>
+    </ion-pane>
+  </body>
+</html>
+"""
+      }
+      val semanticType:Type = 'stateList :&: 'blank =>: 'app :&: 'blank
+    }
+
     class StringConcatenator(typeA:Type, typeB:Type, typeC:Type) {
       def apply(a:String, b:String) : String = {
         return a + '\n' + b;
@@ -162,10 +243,11 @@ angular.module("starter", ["""+modules+"""])
   val reflectedRepository = ReflectedRepository (new BlankAppTrait {})
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[String] ('dummy)
+  val reply = reflectedRepository.inhabit[String] ('app :&: 'blank)
 
   // Pass the response into our defined output, currently just a printer
   val it = reply.interpretedTerms.values.flatMap(_._2).iterator
-  PrintFragments.processResults(it.asJava)
+  //PrintFragments.processResults(it.asJava)
+  DirectoryMaker.parseResults(it.asJava)
 
 }
