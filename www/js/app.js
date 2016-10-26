@@ -13,7 +13,8 @@ angular.module("starter", [
   "ionic", /* Base include for ionic */
   "states", /* State transitions between pages */
   "controllers", /* Individual page js */
-  "ngCordova" /* Used for Cordova-SQLite */
+  "ngCordova", /* Used for Cordova-SQLite */
+  "dummy" /* Our game */
 ])
 
 // Runs when the app is fully loaded.

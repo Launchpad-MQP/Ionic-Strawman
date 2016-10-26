@@ -23,7 +23,7 @@ angular.module("states", ["ionic"])
 
   .state("level", {
     url: "/level/{levelNum:int}",
-    templateUrl: "templates/level.html",
+    templateUrl: "games/dummy.html",
     controller: "LevelCtrl"
   })
 
