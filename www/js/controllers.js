@@ -17,8 +17,8 @@ angular.module("controllers", ["ionic", "sql"])
   $scope.resetSQL = function () {
     sqlfactory.resetSQL();
     sqlfactory.setupSQL();
+    location.reload();
   }
-  console.log($scope);
 })
 
 /* Controller for the level select, aka list of levels */
