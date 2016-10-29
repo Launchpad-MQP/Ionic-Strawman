@@ -23,13 +23,13 @@ angular.module("dummy", ["ionic", "sql"])
 
     sqlfactory.setLevelState($stateParams.levelNum, "Solved");
 
-    var levelOverPopUp = $ionicPopup.show({
+    $ionicPopup.show({
       title: "Level Complete!",
       scope: $scope,
       buttons: [
       {
         text: "Level Select",
-        onTap: function (e) {
+        onTap: function () {
           console.log("Back to level select.");
           $state.go("level_select");
         }
@@ -37,7 +37,7 @@ angular.module("dummy", ["ionic", "sql"])
       {
         text: "Next",
         type: "button-positive",
-        onTap: function (e) {
+        onTap: function () {
           console.log("On to the next level.");
           $state.go("level", {"levelNum": $stateParams.levelNum+1});
         }

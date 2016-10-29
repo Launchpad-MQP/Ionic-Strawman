@@ -2,7 +2,10 @@ angular.module("mastermind", ["ionic", "sql"])
 
 .controller("LevelCtrl", function ($scope, $rootScope, $state, $stateParams, $ionicPopup, sqlfactory, $http) {
   // Check for invalid level number
-  if(!$rootScope.levels.includes($stateParams.levelNum)) {
+  if ($rootScope.levels === undefined) {
+    console.log("Level loaded but level list undefined, going to main")
+    $state.go("main");
+  } else if (!$rootScope.levels.includes($stateParams.levelNum)) {
     console.log("Went to level " + $stateParams.levelNum + " redirecting to level select.");
     $state.go("level_select");
   } else {
@@ -58,13 +61,13 @@ angular.module("mastermind", ["ionic", "sql"])
 
     sqlfactory.setLevelState($stateParams.levelNum, "Solved");
 
-    var levelOverPopUp = $ionicPopup.show({
+    $ionicPopup.show({
       title: "Level Complete!",
       scope: $scope,
       buttons: [
       {
         text: "Level Select",
-        onTap: function (e) {
+        onTap: function () {
           console.log("Back to level select.");
           $state.go("level_select");
         }
@@ -72,7 +75,7 @@ angular.module("mastermind", ["ionic", "sql"])
       {
         text: "Next",
         type: "button-positive",
-        onTap: function (e) {
+        onTap: function () {
           console.log("On to the next level.");
           $state.go("level", {"levelNum": $stateParams.levelNum+1});
         }
@@ -80,11 +83,3 @@ angular.module("mastermind", ["ionic", "sql"])
     });
   }
 });
-
-// When a level is completed, find the appropriate button and make it gray.
-function completeLevel (number, sqlfactory) {
-  button = document.getElementById("level_"+number);
-  button.setAttribute("class", "button button-dark ng-binding");
-
-  sqlfactory.setLevelState(number, "Solved");
-}
