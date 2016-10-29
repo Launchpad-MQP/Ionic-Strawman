@@ -9,7 +9,7 @@ angular.module("mastermind", ["ionic", "sql"])
     console.log("Now in level: " + $stateParams.levelNum);
   }
 
-  $scope.word = ["rest", "cats", "hurt", "wolf", "kilt", "yaks"][$stateParams.levelNum-1];
+  $scope.word = ["rest", "cats", "hurt", "wolf", "milk", "yaks"][$stateParams.levelNum-1];
   console.log("Word for this level:", $scope.word);
 
   // Redefined so that it can be used in the HTML.
@@ -17,11 +17,10 @@ angular.module("mastermind", ["ionic", "sql"])
 
   $scope.result = "";
   $scope.submit = function() {
-    console.log("<20>");
-    guess = document.getElementById("submit").value;
-    if (guess.length != word.length) {
-      console.log(guess.length, "didn't match", word.length);
-      $scope.result = "Please guess a word of length "+word.length;
+    guess = document.getElementById("guess").value;
+    if (guess.length != $scope.word.length) {
+      console.log(guess.length, "didn't match", $scope.word.length);
+      $scope.result = "Please guess a word of length "+$scope.word.length;
       return;
     }
     $http.get("https://owlbot.info/api/v1/dictionary/"+guess+"?format=json")
@@ -33,15 +32,49 @@ angular.module("mastermind", ["ionic", "sql"])
         return;
       }
       console.log("Valid word");
+      if (guess == $scope.word) {
+        $scope.result = "";
+        $scope.completeLevel();
+        return;
+      }
+
       matches = 0;
       for (var letter in $scope.word) {
-        if (guess.includes(letter)) {
+        if (guess.includes($scope.word[letter])) {
           matches++;
         }
       }
-      console.log(matches, "letters match between", $scope.word, "and", guess);
-      $scope.result = matches + " matching letters";
+      console.log(matches+" letters match between "+$scope.word+" and "+guess);
+      $scope.result = matches+" matching letter"+(matches==1?"":"s");
     }, function (err) {console.log(err);});
+  }
+  $scope.restart = function () {
+    console.log("Restarting level...");
+    $state.reload();
+  }
+  $scope.completeLevel = function () {
+    completeLevel($stateParams.levelNum, sqlfactory);
+
+    var levelOverPopUp = $ionicPopup.show({
+      title: "Level Complete!",
+      scope: $scope,
+      buttons: [
+      {
+        text: "Level Select",
+        onTap: function (e) {
+          console.log("Back to level select.");
+          $state.go("level_select");
+        }
+      },
+      {
+        text: "Next",
+        type: "button-positive",
+        onTap: function (e) {
+          console.log("On to the next level.");
+          $state.go("level", {"levelNum": $stateParams.levelNum+1});
+        }
+      }]
+    });
   }
 });
 
