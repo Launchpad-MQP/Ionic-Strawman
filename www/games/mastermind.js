@@ -53,7 +53,10 @@ angular.module("mastermind", ["ionic", "sql"])
     $state.reload();
   }
   $scope.completeLevel = function () {
-    completeLevel($stateParams.levelNum, sqlfactory);
+    button = document.getElementById("level_"+$stateParams.levelNum);
+    button.setAttribute("class", "button button-dark ng-binding");
+
+    sqlfactory.setLevelState($stateParams.levelNum, "Solved");
 
     var levelOverPopUp = $ionicPopup.show({
       title: "Level Complete!",

@@ -18,7 +18,10 @@ angular.module("dummy", ["ionic", "sql"])
   // Begin: The entirety of our "game". Shows a button, which when clicked
   // beats the level. It also shows "back" and "next" options.
   $scope.completeLevel = function () {
-    completeLevel($stateParams.levelNum, sqlfactory);
+    button = document.getElementById("level_"+$stateParams.levelNum);
+    button.setAttribute("class", "button button-dark ng-binding");
+
+    sqlfactory.setLevelState($stateParams.levelNum, "Solved");
 
     var levelOverPopUp = $ionicPopup.show({
       title: "Level Complete!",
@@ -48,11 +51,3 @@ angular.module("dummy", ["ionic", "sql"])
     $state.reload();
   }
 });
-
-// When a level is completed, find the appropriate button and make it gray.
-function completeLevel (number, sqlfactory) {
-  button = document.getElementById("level_"+number);
-  button.setAttribute("class", "button button-dark ng-binding");
-
-  sqlfactory.setLevelState(number, "Solved");
-}
