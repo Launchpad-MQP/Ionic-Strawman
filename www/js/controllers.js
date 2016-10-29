@@ -22,7 +22,7 @@ angular.module("controllers", ["ionic", "sql"])
 })
 
 /* Controller for the level select, aka list of levels */
-.controller("LevelSelectCtrl", function ($scope, $rootScope, $state, sqlfactory) {
+.controller("LevelSelectCtrl", function ($scope, $rootScope, $state, $ionicPopup, sqlfactory) {
   console.log("Now in the Level Select");
 
   $scope.loadLevel = function (num) {
@@ -52,6 +52,32 @@ angular.module("controllers", ["ionic", "sql"])
         button = document.getElementById("level_"+level.number);
         button.setAttribute("class", "button button-dark ng-binding");
       }
+    });
+  }
+
+  $rootScope.completeLevel = function($state, levelNum) {
+    button = document.getElementById("level_"+levelNum);
+    button.setAttribute("class", "button button-dark ng-binding");
+    sqlfactory.setLevelState(levelNum, "Solved");
+
+    $ionicPopup.show({
+      title: "Level Complete!",
+      buttons: [
+      {
+        text: "Level Select",
+        onTap: function () {
+          console.log("Back to level select.");
+          $state.go("level_select");
+        }
+      },
+      {
+        text: "Next",
+        type: "button-positive",
+        onTap: function () {
+          console.log("On to the next level.");
+          $state.go("level", {"levelNum": levelNum+1});
+        }
+      }]
     });
   }
 });

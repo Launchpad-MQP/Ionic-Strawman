@@ -1,6 +1,6 @@
 angular.module("dummy", ["ionic", "sql"])
 
-.controller("LevelCtrl", function ($scope, $rootScope, $state, $stateParams, $ionicPopup, sqlfactory) {
+.controller("LevelCtrl", function ($scope, $rootScope, $state, $stateParams, sqlfactory) {
   // Check for invalid state
   if ($rootScope.levels === undefined) {
     console.log("Level loaded but level list undefined, going to main")
@@ -18,31 +18,7 @@ angular.module("dummy", ["ionic", "sql"])
   // Begin: The entirety of our "game". Shows a button, which when clicked
   // beats the level. It also shows "back" and "next" options.
   $scope.completeLevel = function () {
-    button = document.getElementById("level_"+$stateParams.levelNum);
-    button.setAttribute("class", "button button-dark ng-binding");
-
-    sqlfactory.setLevelState($stateParams.levelNum, "Solved");
-
-    $ionicPopup.show({
-      title: "Level Complete!",
-      scope: $scope,
-      buttons: [
-      {
-        text: "Level Select",
-        onTap: function () {
-          console.log("Back to level select.");
-          $state.go("level_select");
-        }
-      },
-      {
-        text: "Next",
-        type: "button-positive",
-        onTap: function () {
-          console.log("On to the next level.");
-          $state.go("level", {"levelNum": $stateParams.levelNum+1});
-        }
-      }]
-    });
+    $rootScope.completeLevel($state, $stateParams.levelNum);
   }
   // End: The entirety of our "game".
 
