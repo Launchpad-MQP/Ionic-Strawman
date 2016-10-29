@@ -3,20 +3,16 @@
     <h1 class="title">Level {{levelNum}}</h1>
   </ion-header-bar>
   <ion-content class="has-header" padding="true">
-    <div class="row">
-      <div class="col" style="text-align:center">
-        Guess:
-        <input style="border: 1px solid black" id="guess">
-        <button class="button" ng-click="submit()">Submit</button>
+    <div class="col" style="text-align:center">
+      <button class="button button-assertive levelBtn" ng-click="checkCompleteLevel()">Click Me!</button>
+    </div>
+    <div class="row" ng-repeat="row in buttons">
+      <div class="col" ng-repeat="button in row">
+        <a class="button button-energized lit" ng-click="toggle({{button}})" id="{{button}}">&nbsp</a>
       </div>
     </div>
-    <div class="row">
-      <div class="col" style="text-align:center">
-        {{result}}
-      </div>
-    </div>
-  </ion-content>
 
+  </ion-content>
   <ion-footer-bar class="bar bar-footer bar-stable" align-title="left">
     <a class="button ion-home" href="#/level_select">&nbsp; BACK</a>
     <button class="button button-calm" ng-click="restart()">&nbsp; RESTART</button>
