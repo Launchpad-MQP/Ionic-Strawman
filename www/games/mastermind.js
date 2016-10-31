@@ -12,7 +12,13 @@ angular.module("mastermind", ["ionic", "sql"])
     console.log("Now in level: " + $stateParams.levelNum);
   }
 
-  $scope.word = ["rest", "cats", "hurt", "wolf", "milk", "yaks"][$stateParams.levelNum-1];
+  // Word to guess for each level
+  $scope.word = [
+     "rest",  "cats",  "fate",  "hurt",  "note",
+     "wolf",  "milk",  "yaks",  "know",  "sync",
+    "spade", "exist", "group", "topic", "fruit",
+    "movie", "style", "vital", "lynch", "rythm"
+  ][$stateParams.levelNum-1];
   console.log("Word for this level:", $scope.word);
 
   // Redefined so that it can be used in the HTML.
