@@ -11,60 +11,72 @@ angular.module("hangman", ["ionic", "sql"])
 
   // Redefined so that it can be used in the HTML.
   $scope.levelNum = $stateParams.levelNum;
-	$rootScope.letters = ['h', 'e', 'l','l', 'o'];
-	var card = document.getElementById("hang-letters");
-	for(var l in $rootScope.letters) {
-		var thingy = document.createElement("div");
-		var thingy2 = document.createTextNode($rootScope.letters[l]);
-		thingy.append(thingy2);
-		thingy.className += " " + $rootScope.letters[l];
-		thingy.style.visibility = "hidden";
-		card.appendChild(thingy);
-	}
-	$scope.guess = 3;
+	console.log($scope.levelNum);
+	$scope.words = [['h', 'e', 'l','l', 'o'], ['w', 'o', 'l', 'f'], ['r', 'a', 't']];
+	$rootScope.letters = $scope.words[$scope.levelNum-1];
 	
-	$scope.removeOne = function () {
+	var card = document.getElementById("hang-letters_" + $scope.levelNum);
+	console.log(card);
+	if(card!==null) {
+		for(var l in $rootScope.letters) {
+			console.log("Creating letter div");
+			var letterdiv = document.createElement("div");
+			console.log(letterdiv);
+			letterdiv.className += " " + $rootScope.letters[l];
+			var ltr = document.createTextNode($rootScope.letters[l]);
+			letterdiv.append(ltr);
+			letterdiv.style.color = "rgba(0, 0, 0, 0)";
+			letterdiv.style.width = "30px";
+			letterdiv.style.border = "thin solid black";
+			letterdiv.style.backgroundColor = "powderblue";
+			card.append(letterdiv);
+		}
+		
+		var guessed = document.createElement("p");
+		guessed.append("Guessed letters: ");
+		card.append(guessed);
+	}
+	
+	console.log(card);
+	
+	$scope.makeGuess = function () {
 		console.log($rootScope.letters);
-		var guess = document.getElementById("letterguess").value;
+		var a = "letterguess_" + $scope.levelNum;
+		var guess = document.getElementById("letterguess_" + $scope.levelNum).value;
 		console.log(guess);
 		var fields = document.getElementsByClassName(guess);
 		console.log(fields);
 		for(var i = 0; i<fields.length; i++) {
-				fields[i].style.visibility = "visible";
+				//fields[i].style.visibility = "visible";
+				if(!fields[i].className.includes("discovered")) {
+					fields[i].style.color = "rgba(0, 0, 0, 1)";
+					fields[i].className += " discovered";
+				}
 		}
+		//var card = document.getElementById("hang-letters_" + $scope.levelNum);
+		//card.append(guess + " ");
+		$scope.checkComplete();
 	}
 	
   // Begin: The entirety of our "game". Shows a button, which when clicked
   // beats the level. It also shows "back" and "next" options.
   $scope.completeLevel = function () {
-    completeLevel($stateParams.levelNum, sqlfactory);
-
-    var levelOverPopUp = $ionicPopup.show({
-      title: "Level Complete!",
-      scope: $scope,
-      buttons: [
-      {
-        text: "Level Select",
-        onTap: function (e) {
-          console.log("Back to level select.");
-          $state.go("level_select");
-        }
-      },
-      {
-        text: "Next",
-        type: "button-positive",
-        onTap: function (e) {
-          console.log("On to the next level.");
-          $state.go("level", {"levelNum": $stateParams.levelNum+1});
-        }
-      }]
-    });
+    $rootScope.completeLevel($state, $stateParams.levelNum);
   }
+	
+	$scope.checkComplete = function () {
+		var correct = document.getElementsByClassName("discovered");
+		console.log(correct.length);
+		console.log($rootScope.letters.length)
+		if(correct.length === $rootScope.letters.length)
+			$scope.completeLevel();
+	}
+	
   // End: The entirety of our "game".
 
   $scope.restart = function () {
     console.log("Restarting level...");
-    $state.reload();
+    $state.go($state.current, {}, {reload: true});
   }
 });
 

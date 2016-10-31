@@ -4,15 +4,15 @@
   </ion-header-bar>
   <ion-content class="has-header" padding="true">
     <div class="col" style="text-align:center">
-      <button class="button button-assertive levelBtn" ng-click="removeOne()">Click Me!</button>
+      <button class="button button-assertive levelBtn" ng-click="makeGuess()">Click Me!</button>
     </div>
 		<div class="card">
-			<div class="item row" id="hang-letters"></div>
+			<div class="item row" id="hang-letters_{{levelNum}}"></div>
 		</div>
 		
 		<ion-input class="item item-input item-stacked-label">
 			<ion-label >Guess</ion-label>
-			<input type="text" id="letterguess" placeholder="Type a letter here" ng-model="guess" required>
+			<input type="text" class= "letterguess" id="letterguess_{{levelNum}}" placeholder="Type a letter here">
 		</ion-input>
 
   </ion-content>
