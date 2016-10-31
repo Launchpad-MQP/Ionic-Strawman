@@ -58,35 +58,12 @@ angular.module("mastermind", ["ionic", "sql"])
       $scope.result = matches+" matching letter"+(matches==1?"":"s");
     }, function (err) {console.log(err);});
   }
+
+  $scope.completeLevel = function () {
+    $rootScope.completeLevel($state, $stateParams.levelNum);
+  }
   $scope.restart = function () {
     console.log("Restarting level...");
     $state.reload();
-  }
-  $scope.completeLevel = function () {
-    button = document.getElementById("level_"+$stateParams.levelNum);
-    button.setAttribute("class", "button button-dark ng-binding");
-
-    sqlfactory.setLevelState($stateParams.levelNum, "Solved");
-
-    $ionicPopup.show({
-      title: "Level Complete!",
-      scope: $scope,
-      buttons: [
-      {
-        text: "Level Select",
-        onTap: function () {
-          console.log("Back to level select.");
-          $state.go("level_select");
-        }
-      },
-      {
-        text: "Next",
-        type: "button-positive",
-        onTap: function () {
-          console.log("On to the next level.");
-          $state.go("level", {"levelNum": $stateParams.levelNum+1});
-        }
-      }]
-    });
   }
 });
