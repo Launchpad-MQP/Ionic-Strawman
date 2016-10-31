@@ -26,7 +26,8 @@ angular.module("mastermind", ["ionic", "sql"])
 
   $scope.result = "";
   $scope.submit = function() {
-    guess = document.getElementById("guess").value;
+    guess = document.getElementById("guess_"+$stateParams.levelNum).value;
+    console.log("Guess: "+guess);
     if (guess.length != $scope.word.length) {
       console.log(guess.length, "didn't match", $scope.word.length);
       $scope.result = "Please guess a word of length "+$scope.word.length;
