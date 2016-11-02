@@ -35,13 +35,14 @@ angular.module("lightsout", ["ionic", "sql"])
     ]
   ];
   $scope.buttons = [ // $scope.buttonsList[$stateParams.levelNum-1];
-    [ 0,  1,  2,  3,  4,  5],
-    [ 6,  7,  8,  9, 10, 11],
-    [12, 13, 14, 15, 16, 17],
-    [18, 19, 20, 21, 22, 23],
-    [24, 25, 26, 27, 28, 29],
-    [30, 31, 32, 33, 34, 35],
+    ["0_0", "0_1", "0_2", "0_3", "0_4", "0_5"],
+    ["1_0", "1_1", "1_2", "1_3", "1_4", "1_5"],
+    ["2_0", "2_1", "2_2", "2_3", "2_4", "2_5"],
+    ["3_0", "3_1", "3_2", "3_3", "3_4", "3_5"],
+    ["4_0", "4_1", "4_2", "4_3", "4_4", "4_5"],
+    ["5_0", "5_1", "5_2", "5_3", "5_4", "5_5"],
   ];
+
   //console.log($stateParams.levelNum);
   //console.log(document.getElementsByClassName("lit"));
   $scope.Math = window.Math;
@@ -49,73 +50,76 @@ angular.module("lightsout", ["ionic", "sql"])
     console.log("Document loaded");
   }, false);
 
-  $scope.toggleButton = function (levelNumber, buttonNum) {
-    var button = document.getElementById(levelNumber.toString().concat(buttonNum.toString()));
+  // This runs whenever a level is entered
+  $scope.$on("$ionicView.afterEnter", function(scopes, states){
+    console.log(states.stateName);
+    console.log($stateParams.levelNum);
+    $scope.initializeLevel();
+  });
+
+  $scope.initializeLevel = function() {
+    for(var r=0; r < 6; r++){
+      for(var c=0; c < 6; c++){
+        var button = document.getElementById(($stateParams.levelNum-1)+"_"+r+"_"+c);
+        if(button===null){
+          console.log("Button "+($stateParams.levelNum-1)+"_"+r+"_"+c+" does not exist!");
+        }
+        else{
+          if($scope.buttonsList[$stateParams.levelNum-1][r][c]===1){
+            button.className = "button button-energized";
+          }
+          else{
+            button.className = "button button-dark";
+          }
+        }
+      }
+    }
+  }
+
+  $scope.toggleButton = function (buttonNum) {
+    var button = document.getElementById(($stateParams.levelNum-1) + "_" + buttonNum);
     if(button===null){
       return;
     }
     //console.log(button.className);
-    if (button.className === "button button-energized lit activated" || button.className === "button button-energized lit"){
+    if (button.className.includes("button-energized")){
       button.className = "button button-dark";
-    } else {
-      button.className = "button button-energized lit";
+    } else if(button.className.includes("button-dark")){
+      button.className = "button button-energized";
     }
   }
 
   // Logic for toggling lights.
-  $scope.toggle = function (levelNumber, buttonNum) {
-    var buttonAbove = buttonNum-$scope.buttons[0].length;
-    var buttonBelow = buttonNum+$scope.buttons[0].length;
+  $scope.toggle = function (levelNumber, buttonRowCol) {
+    var row = parseInt(buttonRowCol.charAt(0));
+    var col = parseInt(buttonRowCol.charAt(2));
 
-    $scope.toggleButton(levelNumber, buttonNum);
-    $scope.toggleButton(levelNumber, buttonAbove);
-    $scope.toggleButton(levelNumber, buttonBelow);
-    if(buttonNum%6>0){
-      $scope.toggleButton(levelNumber, buttonNum-1);
-    }
-    if(buttonNum%6<5){
-      $scope.toggleButton(levelNumber, buttonNum+1);
-    }
+    $scope.toggleButton(row+"_"+col);
+    $scope.toggleButton(row+"_"+(col+1));
+    $scope.toggleButton(row+"_"+(col-1));
+    $scope.toggleButton((row+1)+"_"+col);
+    $scope.toggleButton((row-1)+"_"+col);
     $scope.checkCompleteLevel();
   }
 
   // Begin: The entirety of our "game".
   // When all buttons (lights) are out the game ends.
   $scope.checkCompleteLevel = function () {
-    var buttonList = document.getElementsByClassName("lit");
-
-    if (buttonList.length == 0){
-      //console.log("All lights out.");
-      $scope.completeLevel();
+    var allDark = true;
+    for(var r=0; r<6; r++){
+      for(var c=0; c<6; c++){
+        var bttns = document.getElementById(($stateParams.levelNum-1)+"_"+r+"_"+c);
+        if(bttns.className.includes("button-energized")){
+          allDark = false;
+          return;
+        }
+      }
     }
-  }
 
-  $scope.completeLevel = function () {
-    button = document.getElementById("level_"+$stateParams.levelNum);
-    button.setAttribute("class", "button button-dark ng-binding");
-
-    sqlfactory.setLevelState($stateParams.levelNum, "Solved");
-
-    $ionicPopup.show({
-      title: "Level Complete!",
-      scope: $scope,
-      buttons: [
-      {
-        text: "Level Select",
-        onTap: function () {
-          console.log("Back to level select.");
-          $state.go("level_select");
-        }
-      },
-      {
-        text: "Next",
-        type: "button-positive",
-        onTap: function () {
-          console.log("On to the next level.");
-          $state.go("level", {"levelNum": $stateParams.levelNum+1});
-        }
-      }]
-    });
+    if (allDark){
+      //console.log("All lights out.");
+      $rootScope.completeLevel($state, $stateParams.levelNum);
+    }
   }
 
   $scope.restart = function () {
