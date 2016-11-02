@@ -16,7 +16,25 @@ angular.module("lightsout", ["ionic", "sql"])
   $scope.levelNum = $stateParams.levelNum;
 
   // Define buttons for use in HTML
-  $scope.buttons = [
+  $scope.buttonsList = [
+    [
+      [0, 1, 0, 0, 0, 0],
+      [1, 1, 1, 0, 0, 0],
+      [0, 1, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+    ],
+    [
+      [0, 1, 0, 0, 0, 0],
+      [1, 1, 1, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [1, 1, 1, 0, 0, 0],
+      [0, 1, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+    ]
+  ];
+  $scope.buttons = [ // $scope.buttonsList[$stateParams.levelNum-1];
     [ 0,  1,  2,  3,  4,  5],
     [ 6,  7,  8,  9, 10, 11],
     [12, 13, 14, 15, 16, 17],
@@ -24,11 +42,20 @@ angular.module("lightsout", ["ionic", "sql"])
     [24, 25, 26, 27, 28, 29],
     [30, 31, 32, 33, 34, 35],
   ];
+  //console.log($stateParams.levelNum);
+  //console.log(document.getElementsByClassName("lit"));
+  $scope.Math = window.Math;
+  document.addEventListener('DOMContentLoaded', function(){
+    console.log("Document loaded");
+  }, false);
 
-  $scope.toggleButton = function (buttonNum) {
-    var button = document.getElementById(buttonNum.toString());
-    console.log(button.className);
-    if (button.className === "button button-energized lit activated"){
+  $scope.toggleButton = function (levelNumber, buttonNum) {
+    var button = document.getElementById(levelNumber.toString().concat(buttonNum.toString()));
+    if(button===null){
+      return;
+    }
+    //console.log(button.className);
+    if (button.className === "button button-energized lit activated" || button.className === "button button-energized lit"){
       button.className = "button button-dark";
     } else {
       button.className = "button button-energized lit";
@@ -36,11 +63,19 @@ angular.module("lightsout", ["ionic", "sql"])
   }
 
   // Logic for toggling lights.
-  $scope.toggle = function (buttonNum) {
+  $scope.toggle = function (levelNumber, buttonNum) {
     var buttonAbove = buttonNum-$scope.buttons[0].length;
-    var buttonBelow = buttonNum-$scope.buttons[0].length;
+    var buttonBelow = buttonNum+$scope.buttons[0].length;
 
-    $scope.toggleButton(buttonNum);
+    $scope.toggleButton(levelNumber, buttonNum);
+    $scope.toggleButton(levelNumber, buttonAbove);
+    $scope.toggleButton(levelNumber, buttonBelow);
+    if(buttonNum%6>0){
+      $scope.toggleButton(levelNumber, buttonNum-1);
+    }
+    if(buttonNum%6<5){
+      $scope.toggleButton(levelNumber, buttonNum+1);
+    }
     $scope.checkCompleteLevel();
   }
 
@@ -50,7 +85,8 @@ angular.module("lightsout", ["ionic", "sql"])
     var buttonList = document.getElementsByClassName("lit");
 
     if (buttonList.length == 0){
-      console.log("All lights out.");
+      //console.log("All lights out.");
+      $scope.completeLevel();
     }
   }
 
