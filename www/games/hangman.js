@@ -12,32 +12,18 @@ angular.module("hangman", ["ionic", "sql"])
   // Redefined so that it can be used in the HTML.
   $scope.levelNum = $stateParams.levelNum;
 	console.log($scope.levelNum);
-	$scope.words = [['h', 'e', 'l','l', 'o'], ['w', 'o', 'l', 'f'], ['r', 'a', 't']];
+	$scope.stringList = ['hello', 'wolf', 'rat', 'xylophone'];
+	$scope.words = [];
+	for(var i = 0; i < $scope.stringList.length; i++) {
+		$scope.words[i] = $scope.stringList[i].split("");
+	}
+	console.log($scope.words);
+	$scope.myLetters = $scope.words[$scope.levelNum-1];
 	$rootScope.letters = $scope.words[$scope.levelNum-1];
-	
-	var card = document.getElementById("hang-letters_" + $scope.levelNum);
-	console.log(card);
-	if(card!==null) {
-		for(var l in $rootScope.letters) {
-			console.log("Creating letter div");
-			var letterdiv = document.createElement("div");
-			console.log(letterdiv);
-			letterdiv.className += " " + $rootScope.letters[l];
-			var ltr = document.createTextNode($rootScope.letters[l]);
-			letterdiv.append(ltr);
-			letterdiv.style.color = "rgba(0, 0, 0, 0)";
-			letterdiv.style.width = "30px";
-			letterdiv.style.border = "thin solid black";
-			letterdiv.style.backgroundColor = "powderblue";
-			card.append(letterdiv);
-		}
 		
 		var guessed = document.createElement("p");
 		guessed.append("Guessed letters: ");
-		card.append(guessed);
-	}
-	
-	console.log(card);
+		//card.append(guessed);
 	
 	$scope.makeGuess = function () {
 		console.log($rootScope.letters);
@@ -49,12 +35,12 @@ angular.module("hangman", ["ionic", "sql"])
 		for(var i = 0; i<fields.length; i++) {
 				//fields[i].style.visibility = "visible";
 				if(!fields[i].className.includes("discovered")) {
-					fields[i].style.color = "rgba(0, 0, 0, 1)";
-					fields[i].className += " discovered";
+					fields[i].className = "discovered " + $scope.levelNum + " " + guess;
 				}
 		}
-		//var card = document.getElementById("hang-letters_" + $scope.levelNum);
-		//card.append(guess + " ");
+		var card = document.getElementById("guessed_" + $scope.levelNum);
+		if(!card.innerHTML.includes(guess))
+			card.append(guess + " ");
 		$scope.checkComplete();
 	}
 	
@@ -65,7 +51,7 @@ angular.module("hangman", ["ionic", "sql"])
   }
 	
 	$scope.checkComplete = function () {
-		var correct = document.getElementsByClassName("discovered");
+		var correct = document.getElementsByClassName("discovered " + $scope.levelNum);
 		console.log(correct.length);
 		console.log($rootScope.letters.length)
 		if(correct.length === $rootScope.letters.length)
