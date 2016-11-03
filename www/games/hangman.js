@@ -25,6 +25,8 @@ angular.module("hangman", ["ionic", "sql"])
 	
 	$scope.makeGuess = function () {
 		var guess = document.getElementById("letterguess_" + $scope.levelNum).value;
+		var card = document.getElementById("guessed_" + $scope.levelNum);
+		
 		console.log("Guess", guess);
 		// Fields are the elements which match the letter guessed.
 		var fields = document.getElementsByClassName(guess);
@@ -36,13 +38,13 @@ angular.module("hangman", ["ionic", "sql"])
 				$scope.miss = false;
 		}
 		if($scope.miss) {
-			$scope.guessesLeft--;
+			if(!card.innerHTML.includes(guess))
+				$scope.guessesLeft--;
 			if($scope.guessesLeft===0)
 				$scope.loseLevel();
 		}
 		
 		$scope.miss = true;
-		var card = document.getElementById("guessed_" + $scope.levelNum);
 		if(!card.innerHTML.includes(guess))
 			card.append(guess + " ");
 		$scope.checkComplete();
