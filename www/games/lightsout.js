@@ -21,70 +21,70 @@ angular.module("lightsout", ["ionic", "sql"])
       [0, 1, 0, 0, 0, 0],
       [1, 1, 1, 0, 0, 0],
       [0, 1, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 0],
+      [0, 0, 0, 1, 1, 1],
+      [0, 0, 0, 0, 1, 0]
     ],
     [
-      [0, 1, 0, 0, 0, 0],
-      [1, 1, 1, 0, 0, 0],
+      [0, 0, 0, 1, 0, 0],
+      [0, 0, 1, 1, 1, 0],
       [0, 0, 0, 0, 0, 0],
-      [1, 1, 1, 0, 0, 0],
-      [0, 1, 0, 0, 0, 0],
+      [0, 0, 1, 1, 1, 0],
+      [0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0]
+    ],
+    [
+      [0, 0, 1, 1, 0, 0],
+      [0, 1, 0, 0, 1, 0],
       [0, 0, 0, 0, 0, 0],
+      [0, 1, 0, 0, 1, 0],
+      [0, 0, 1, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0]
     ]
-  ];
-  $scope.buttons = [ // $scope.buttonsList[$stateParams.levelNum-1];
+  ][$stateParams.levelNum-1];
+
+  // Used by the HTML to name the buttons
+  $scope.buttons = [
     ["0_0", "0_1", "0_2", "0_3", "0_4", "0_5"],
     ["1_0", "1_1", "1_2", "1_3", "1_4", "1_5"],
     ["2_0", "2_1", "2_2", "2_3", "2_4", "2_5"],
     ["3_0", "3_1", "3_2", "3_3", "3_4", "3_5"],
     ["4_0", "4_1", "4_2", "4_3", "4_4", "4_5"],
-    ["5_0", "5_1", "5_2", "5_3", "5_4", "5_5"],
+    ["5_0", "5_1", "5_2", "5_3", "5_4", "5_5"]
   ];
-
-  //console.log($stateParams.levelNum);
-  //console.log(document.getElementsByClassName("lit"));
-  $scope.Math = window.Math;
-  document.addEventListener('DOMContentLoaded', function(){
-    console.log("Document loaded");
-  }, false);
 
   // This runs whenever a level is entered
   $scope.$on("$ionicView.afterEnter", function(scopes, states){
-    console.log(states.stateName);
-    console.log($stateParams.levelNum);
+    console.log("Entered "+states.stateName+" "+$stateParams.levelNum);
     $scope.initializeLevel();
   });
 
-  $scope.initializeLevel = function() {
-    for(var r=0; r < 6; r++){
-      for(var c=0; c < 6; c++){
-        var button = document.getElementById(($stateParams.levelNum-1)+"_"+r+"_"+c);
-        if(button===null){
-          console.log("Button "+($stateParams.levelNum-1)+"_"+r+"_"+c+" does not exist!");
-        }
-        else{
-          if($scope.buttonsList[$stateParams.levelNum-1][r][c]===1){
-            button.className = "button button-energized";
-          }
-          else{
-            button.className = "button button-dark";
-          }
+  $scope.initializeLevel = function () {
+    for (var row=0; row < $scope.buttonsList.length; row++) {
+      for (var col=0; col < $scope.buttonsList[0].length; col++) {
+        var name = $stateParams.levelNum + "_" + row + "_" + col;
+        var button = document.getElementById(name);
+        if (button === null) {
+          console.log("Couldn't find button "+name);
+        } else if ($scope.buttonsList[row][col] == 1) {
+          button.className = "button button-energized";
+        } else {
+          button.className = "button button-dark";
         }
       }
     }
   }
 
-  $scope.toggleButton = function (buttonNum) {
-    var button = document.getElementById(($stateParams.levelNum-1) + "_" + buttonNum);
-    if(button===null){
+  $scope.toggleButton = function (row, col) {
+    var name = $stateParams.levelNum + "_" + row + "_" + col;
+    var button = document.getElementById(name);
+    if (button === null) {
       return;
     }
     //console.log(button.className);
-    if (button.className.includes("button-energized")){
+    if (button.className.includes("button-energized")) {
       button.className = "button button-dark";
-    } else if(button.className.includes("button-dark")){
+    } else if (button.className.includes("button-dark")) {
       button.className = "button button-energized";
     }
   }
@@ -96,32 +96,25 @@ angular.module("lightsout", ["ionic", "sql"])
     var row = parseInt(button_name.charAt(0));
     var col = parseInt(button_name.charAt(2));
 
-    $scope.toggleButton(row+"_"+col);
-    $scope.toggleButton(row+"_"+(col+1));
-    $scope.toggleButton(row+"_"+(col-1));
-    $scope.toggleButton((row+1)+"_"+col);
-    $scope.toggleButton((row-1)+"_"+col);
-    $scope.checkCompleteLevel();
-  }
+    $scope.toggleButton(row, col);
+    $scope.toggleButton(row, col+1);
+    $scope.toggleButton(row, col-1);
+    $scope.toggleButton(row+1, col);
+    $scope.toggleButton(row-1, col);
 
-  // Begin: The entirety of our "game".
-  // When all buttons (lights) are out the game ends.
-  $scope.checkCompleteLevel = function () {
-    var allDark = true;
-    for(var r=0; r<6; r++){
-      for(var c=0; c<6; c++){
-        var bttns = document.getElementById(($stateParams.levelNum-1)+"_"+r+"_"+c);
-        if(bttns.className.includes("button-energized")){
-          allDark = false;
+    // Check for game completion
+    for (var row=0; row < $scope.buttonsList.length; row++) {
+      for (var col=0; col < $scope.buttonsList[0].length; col++) {
+        var name = $stateParams.levelNum + "_" + row + "_" + col;
+        var button = document.getElementById(name);
+        if (button.className.includes("button-energized")) {
+          // Found a button which wasn't off, level not complete
           return;
         }
       }
     }
-
-    if (allDark){
-      //console.log("All lights out.");
-      $rootScope.completeLevel($state, $stateParams.levelNum);
-    }
+    console.log("All lights out, completing level.")
+    $rootScope.completeLevel($state, $stateParams.levelNum);
   }
 
   $scope.restart = function () {
