@@ -14,9 +14,15 @@ angular.module("hangman", ["ionic", "sql"])
 
   // Redefined so that it can be used in the HTML.
   $scope.levelNum = $stateParams.levelNum;
-
-  $scope.letters = ['hello', 'wolf', 'rat', 'xylophone'][$scope.levelNum-1].split('');
-
+	console.log($scope.levelNum);
+	$scope.myLetters = ['hello', 'wolf', 'rat', 'xylophone', 'attention',
+																'school', 'ruling', 'poison', 'tree', 'prison',
+																'abacus', 'toothache', 'short', 'bacon', 'crossroads',
+																'darkness', 'candle', 'quadruple', 'extraordinary', 'declaration'][$scope.levelNum-1].split("");
+	$rootScope.letters = $scope.myLetters;
+	$scope.guessesLeft = 7;
+	$scope.miss = true;
+	
 	$scope.makeGuess = function () {
 		var guess = document.getElementById("letterguess_" + $scope.levelNum).value;
 		console.log("Guess", guess);
@@ -24,23 +30,56 @@ angular.module("hangman", ["ionic", "sql"])
 		var fields = document.getElementsByClassName(guess);
 		console.log("Fields", fields);
 		for(var i = 0; i<fields.length; i++) {
-			if (!fields[i].className.includes("discovered")) {
-				fields[i].className = "discovered " + $scope.levelNum + " " + guess;
-				fields[i].innerHTML = guess;
-			}
+				if(!fields[i].className.includes("discovered")) {
+					fields[i].className = "discovered " + $scope.levelNum + " " + guess;
+				}
+				$scope.miss = false;
 		}
+		if($scope.miss) {
+			$scope.guessesLeft--;
+			if($scope.guessesLeft===0)
+				$scope.loseLevel();
+		}
+		
+		$scope.miss = true;
 		var card = document.getElementById("guessed_" + $scope.levelNum);
-		// After the "Letters Guessed:", if our letter isn't included, add it.
-		if(!card.innerHTML.slice(16).includes(guess)) {
-			card.append(" " + guess);
-		}
-
-    // Find all elements which have been discovered on this level.
-    var correct = document.getElementsByClassName("discovered " + $scope.levelNum);
-    // If we have all of them, complete the level.
-    if (correct.length == $scope.letters.length) {
-		  $rootScope.completeLevel($state, $stateParams.levelNum);
-		}
+		if(!card.innerHTML.includes(guess))
+			card.append(guess + " ");
+		$scope.checkComplete();
+	}
+	
+	$scope.loseLevel = function() {
+		$ionicPopup.show({
+      title: "You lose!",
+      buttons: [
+      {
+        text: "Level Select",
+        onTap: function () {
+          console.log("Back to level select.");
+          $state.go("level_select");
+        }
+      },
+      {
+        text: "Retry",
+        type: "button-positive",
+        onTap: function () {
+          console.log("Reloading...");
+          $scope.restart();
+        }
+      }]
+    });
+	}
+	
+  $scope.completeLevel = function () {
+    $rootScope.completeLevel($state, $stateParams.levelNum);
+  }
+	
+	$scope.checkComplete = function () {
+		var correct = document.getElementsByClassName("discovered " + $scope.levelNum);
+		console.log(correct.length);
+		console.log($rootScope.letters.length)
+		if(correct.length === $rootScope.letters.length)
+			$scope.completeLevel();
 	}
 
   $scope.restart = function () {
