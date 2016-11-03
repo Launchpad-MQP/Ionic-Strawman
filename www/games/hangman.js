@@ -1,8 +1,11 @@
 angular.module("hangman", ["ionic", "sql"])
 
 .controller("LevelCtrl", function ($scope, $rootScope, $state, $stateParams, $ionicPopup, sqlfactory) {
-  // Check for invalid level number
-  if(!$rootScope.levels.includes($stateParams.levelNum)) {
+  // Check for invalid state
+  if ($rootScope.levels === undefined) {
+    console.log("Level loaded but level list undefined, going to main")
+    $state.go("main");
+  } else if (!$rootScope.levels.includes($stateParams.levelNum)) {
     console.log("Went to level " + $stateParams.levelNum + " redirecting to level select.");
     $state.go("level_select");
   } else {
