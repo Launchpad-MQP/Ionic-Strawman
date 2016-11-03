@@ -6,7 +6,7 @@
     <div class="row" ng-repeat="row in buttons">
       <div class="col col-25"> </div>
       <div class="col" ng-repeat="button in row">
-        <a class="button button-dark" ng-click="toggle({{levelNum}},'{{button}}')" id="{{levelNum-1}}_{{button}}">&nbsp</a>
+        <a class="button button-dark" ng-click="toggle('{{button}}')" id="{{levelNum}}_{{button}}">&nbsp</a>
       </div>
       <div class="col col-25"> </div>
     </div>

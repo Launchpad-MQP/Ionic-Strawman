@@ -90,9 +90,11 @@ angular.module("lightsout", ["ionic", "sql"])
   }
 
   // Logic for toggling lights.
-  $scope.toggle = function (levelNumber, buttonRowCol) {
-    var row = parseInt(buttonRowCol.charAt(0));
-    var col = parseInt(buttonRowCol.charAt(2));
+  $scope.toggle = function (button_name) {
+    // All of our buttons are named "#_#", so if the table was 10 rows or 10
+    // columns, this logic would need to change.
+    var row = parseInt(button_name.charAt(0));
+    var col = parseInt(button_name.charAt(2));
 
     $scope.toggleButton(row+"_"+col);
     $scope.toggleButton(row+"_"+(col+1));
