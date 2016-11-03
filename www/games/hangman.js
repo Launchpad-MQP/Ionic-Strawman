@@ -1,8 +1,11 @@
 angular.module("hangman", ["ionic", "sql"])
 
 .controller("LevelCtrl", function ($scope, $rootScope, $state, $stateParams, $ionicPopup, sqlfactory) {
-  // Check for invalid level number
-  if(!$rootScope.levels.includes($stateParams.levelNum)) {
+  // Check for invalid state
+  if ($rootScope.levels === undefined) {
+    console.log("Level loaded but level list undefined, going to main")
+    $state.go("main");
+  } else if (!$rootScope.levels.includes($stateParams.levelNum)) {
     console.log("Went to level " + $stateParams.levelNum + " redirecting to level select.");
     $state.go("level_select");
   } else {
@@ -12,27 +15,20 @@ angular.module("hangman", ["ionic", "sql"])
   // Redefined so that it can be used in the HTML.
   $scope.levelNum = $stateParams.levelNum;
 	console.log($scope.levelNum);
-	$scope.stringList = ['hello', 'wolf', 'rat', 'xylophone', 'attention',
+	$scope.myLetters = ['hello', 'wolf', 'rat', 'xylophone', 'attention',
 																'school', 'ruling', 'poison', 'tree', 'prison',
 																'abacus', 'toothache', 'short', 'bacon', 'crossroads',
-																'darkness', 'candle', 'quadruple', 'extraordinary', 'declaration'];
-	$scope.words = [];
-	for(var i = 0; i < $scope.stringList.length; i++) {
-		$scope.words[i] = $scope.stringList[i].split("");
-	}
-	console.log($scope.words);
-	$scope.myLetters = $scope.words[$scope.levelNum-1];
-	$rootScope.letters = $scope.words[$scope.levelNum-1];
+																'darkness', 'candle', 'quadruple', 'extraordinary', 'declaration'][$scope.levelNum-1].split("");
+	$rootScope.letters = $scope.myLetters;
 	$scope.guessesLeft = 7;
 	$scope.miss = true;
 	
 	$scope.makeGuess = function () {
-		console.log($rootScope.letters);
-		var a = "letterguess_" + $scope.levelNum;
 		var guess = document.getElementById("letterguess_" + $scope.levelNum).value;
-		console.log(guess);
+		console.log("Guess", guess);
+		// Fields are the elements which match the letter guessed.
 		var fields = document.getElementsByClassName(guess);
-		console.log(fields);
+		console.log("Fields", fields);
 		for(var i = 0; i<fields.length; i++) {
 				if(!fields[i].className.includes("discovered")) {
 					fields[i].className = "discovered " + $scope.levelNum + " " + guess;
@@ -68,13 +64,12 @@ angular.module("hangman", ["ionic", "sql"])
         type: "button-positive",
         onTap: function () {
           console.log("Reloading...");
-          $state.go("level", {"levelNum": $scope.levelNum});
+          $scope.restart();
         }
       }]
     });
 	}
-  // Begin: The entirety of our "game". Shows a button, which when clicked
-  // beats the level. It also shows "back" and "next" options.
+	
   $scope.completeLevel = function () {
     $rootScope.completeLevel($state, $stateParams.levelNum);
   }
@@ -86,8 +81,6 @@ angular.module("hangman", ["ionic", "sql"])
 		if(correct.length === $rootScope.letters.length)
 			$scope.completeLevel();
 	}
-	
-  // End: The entirety of our "game".
 
   $scope.restart = function () {
     console.log("Restarting level...");

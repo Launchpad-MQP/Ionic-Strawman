@@ -6,7 +6,7 @@
     <div class="row" ng-repeat="row in buttons">
       <div class="col col-25"> </div>
       <div class="col" ng-repeat="button in row">
-        <a class="button {{buttonsList[levelNum-1][Math.floor(button/6)][button%6]===1 ? 'button-energized lit' : 'button-dark'}}" ng-click="toggle({{levelNum}},{{button}})" id="{{levelNum}}{{button}}">&nbsp</a>
+        <a class="button button-dark" ng-click="toggle({{levelNum}},'{{button}}')" id="{{levelNum-1}}_{{button}}">&nbsp</a>
       </div>
       <div class="col col-25"> </div>
     </div>
