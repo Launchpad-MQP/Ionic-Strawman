@@ -14,54 +14,34 @@ angular.module("hangman", ["ionic", "sql"])
 
   // Redefined so that it can be used in the HTML.
   $scope.levelNum = $stateParams.levelNum;
-	console.log($scope.levelNum);
-	$scope.stringList = ['hello', 'wolf', 'rat', 'xylophone'];
-	$scope.words = [];
-	for(var i = 0; i < $scope.stringList.length; i++) {
-		$scope.words[i] = $scope.stringList[i].split("");
-	}
-	console.log($scope.words);
-	$scope.myLetters = $scope.words[$scope.levelNum-1];
-	$rootScope.letters = $scope.words[$scope.levelNum-1];
-		
-		var guessed = document.createElement("p");
-		guessed.append("Guessed letters: ");
-		//card.append(guessed);
-	
+
+  $scope.letters = ['hello', 'wolf', 'rat', 'xylophone'][$scope.levelNum-1].split('');
+
 	$scope.makeGuess = function () {
-		console.log($rootScope.letters);
-		var a = "letterguess_" + $scope.levelNum;
 		var guess = document.getElementById("letterguess_" + $scope.levelNum).value;
-		console.log(guess);
+		console.log("Guess", guess);
+		// Fields are the elements which match the letter guessed.
 		var fields = document.getElementsByClassName(guess);
-		console.log(fields);
+		console.log("Fields", fields);
 		for(var i = 0; i<fields.length; i++) {
-				//fields[i].style.visibility = "visible";
-				if(!fields[i].className.includes("discovered")) {
-					fields[i].className = "discovered " + $scope.levelNum + " " + guess;
-				}
+			if (!fields[i].className.includes("discovered")) {
+				fields[i].className = "discovered " + $scope.levelNum + " " + guess;
+				fields[i].innerHTML = guess;
+			}
 		}
 		var card = document.getElementById("guessed_" + $scope.levelNum);
-		if(!card.innerHTML.includes(guess))
-			card.append(guess + " ");
-		$scope.checkComplete();
+		// After the "Letters Guessed:", if our letter isn't included, add it.
+		if(!card.innerHTML.slice(16).includes(guess)) {
+			card.append(" " + guess);
+		}
+
+    // Find all elements which have been discovered on this level.
+    var correct = document.getElementsByClassName("discovered " + $scope.levelNum);
+    // If we have all of them, complete the level.
+    if (correct.length == $scope.letters.length) {
+		  $rootScope.completeLevel($state, $stateParams.levelNum);
+		}
 	}
-	
-  // Begin: The entirety of our "game". Shows a button, which when clicked
-  // beats the level. It also shows "back" and "next" options.
-  $scope.completeLevel = function () {
-    $rootScope.completeLevel($state, $stateParams.levelNum);
-  }
-	
-	$scope.checkComplete = function () {
-		var correct = document.getElementsByClassName("discovered " + $scope.levelNum);
-		console.log(correct.length);
-		console.log($rootScope.letters.length)
-		if(correct.length === $rootScope.letters.length)
-			$scope.completeLevel();
-	}
-	
-  // End: The entirety of our "game".
 
   $scope.restart = function () {
     console.log("Restarting level...");
