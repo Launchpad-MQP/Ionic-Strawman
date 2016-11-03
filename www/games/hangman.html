@@ -1,15 +1,17 @@
 <style>
-	guessable {
-				color : "rgba(0, 0, 0, 0)";
-				width : "30px";
-				border : "thin solid black";
-				backgroundColor : "powderblue";}
+	.guessable {
+				color : rgba(0, 0, 0, 0);
+				width : 30px;
+				border : thin solid black;
+				backgroundColor : powderblue;
+				}
 				
-	discovered {
-				color : "rgba(0, 0, 0, 0)";
-				width : "30px";
-				border : "thin solid black";
-				backgroundColor : "powderblue";}
+	.discovered {
+				color : rgba(0, 0, 0, 1);
+				width : 30px;
+				border : thin solid black;
+				backgroundColor : powderblue;
+				}
 </style>
 
 <ion-view view-title="Level {{levelNum}}">
@@ -17,21 +19,26 @@
     <h1 class="title">Level {{levelNum}}</h1>
   </ion-header-bar>
   <ion-content class="has-header" padding="true">
-    <div class="col" style="text-align:center">
-      <button class="button button-assertive levelBtn" ng-click="makeGuess()">Click Me!</button>
-    </div>
+		
 		<div class="card">
-		<div class= "item row" ng-repeat="ltr in myLetters track by $index">
-			<div class= "col guessable {{levelNum}} {{ltr}}">{{ltr}}</div>
-		</div>
-		<p>Guessed Letters:</p>
-		<div class = "row" id="guessed_{{levelNum}}"></div>
+			<div class= "item row">
+				<div class= "col" ng-repeat="ltr in myLetters track by $index">
+					<div class= "guessable {{levelNum}} {{ltr}}">{{ltr}}</div>
+				</div>
+			</div>
+			<p>Guessed Letters:</p>
+			<div class = "row" id="guessed_{{levelNum}}"></div>
+			<p>Tries Left: {{guessesLeft}}</p>
 		</div>
 		
 		<ion-input class="item item-input item-stacked-label">
 			<ion-label >Guess</ion-label>
 			<input type="text" maxLength="1" class= "letterguess" id="letterguess_{{levelNum}}" placeholder="Type a letter here">
 		</ion-input>
+		
+		<div class="col" style="text-align:center">
+      <button class="button button-assertive levelBtn" ng-click="makeGuess()">Guess</button>
+    </div>
 
   </ion-content>
   <ion-footer-bar class="bar bar-footer bar-stable" align-title="left">

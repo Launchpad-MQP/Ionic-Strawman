@@ -12,7 +12,10 @@ angular.module("hangman", ["ionic", "sql"])
   // Redefined so that it can be used in the HTML.
   $scope.levelNum = $stateParams.levelNum;
 	console.log($scope.levelNum);
-	$scope.stringList = ['hello', 'wolf', 'rat', 'xylophone'];
+	$scope.stringList = ['hello', 'wolf', 'rat', 'xylophone', 'attention',
+																'school', 'ruling', 'poison', 'tree', 'prison',
+																'abacus', 'toothache', 'short', 'bacon', 'crossroads',
+																'darkness', 'candle', 'quadruple', 'extraordinary', 'declaration'];
 	$scope.words = [];
 	for(var i = 0; i < $scope.stringList.length; i++) {
 		$scope.words[i] = $scope.stringList[i].split("");
@@ -20,10 +23,8 @@ angular.module("hangman", ["ionic", "sql"])
 	console.log($scope.words);
 	$scope.myLetters = $scope.words[$scope.levelNum-1];
 	$rootScope.letters = $scope.words[$scope.levelNum-1];
-		
-		var guessed = document.createElement("p");
-		guessed.append("Guessed letters: ");
-		//card.append(guessed);
+	$scope.guessesLeft = 7;
+	$scope.miss = true;
 	
 	$scope.makeGuess = function () {
 		console.log($rootScope.letters);
@@ -33,17 +34,45 @@ angular.module("hangman", ["ionic", "sql"])
 		var fields = document.getElementsByClassName(guess);
 		console.log(fields);
 		for(var i = 0; i<fields.length; i++) {
-				//fields[i].style.visibility = "visible";
 				if(!fields[i].className.includes("discovered")) {
 					fields[i].className = "discovered " + $scope.levelNum + " " + guess;
 				}
+				$scope.miss = false;
 		}
+		if($scope.miss) {
+			$scope.guessesLeft--;
+			if($scope.guessesLeft===0)
+				$scope.loseLevel();
+		}
+		
+		$scope.miss = true;
 		var card = document.getElementById("guessed_" + $scope.levelNum);
 		if(!card.innerHTML.includes(guess))
 			card.append(guess + " ");
 		$scope.checkComplete();
 	}
 	
+	$scope.loseLevel = function() {
+		$ionicPopup.show({
+      title: "You lose!",
+      buttons: [
+      {
+        text: "Level Select",
+        onTap: function () {
+          console.log("Back to level select.");
+          $state.go("level_select");
+        }
+      },
+      {
+        text: "Retry",
+        type: "button-positive",
+        onTap: function () {
+          console.log("Reloading...");
+          $state.go("level", {"levelNum": $scope.levelNum});
+        }
+      }]
+    });
+	}
   // Begin: The entirety of our "game". Shows a button, which when clicked
   // beats the level. It also shows "back" and "next" options.
   $scope.completeLevel = function () {
