@@ -19,7 +19,6 @@ angular.module("hangman", ["ionic", "sql"])
 																'school', 'ruling', 'poison', 'tree', 'prison',
 																'abacus', 'toothache', 'short', 'bacon', 'crossroads',
 																'darkness', 'candle', 'quadruple', 'extraordinary', 'declaration'][$scope.levelNum-1].split("");
-	$rootScope.letters = $scope.myLetters;
 	$scope.guessesLeft = 7;
 	$scope.miss = true;
 	
@@ -79,8 +78,7 @@ angular.module("hangman", ["ionic", "sql"])
 	$scope.checkComplete = function () {
 		var correct = document.getElementsByClassName("discovered " + $scope.levelNum);
 		console.log(correct.length);
-		console.log($rootScope.letters.length)
-		if(correct.length === $rootScope.letters.length)
+		if(correct.length === $scope.myLetters.length)
 			$scope.completeLevel();
 	}
 
