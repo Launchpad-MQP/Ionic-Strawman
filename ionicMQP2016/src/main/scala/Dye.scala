@@ -12,22 +12,21 @@ object DyeExample extends App {
 
     // Defines a list of types. Basically the function prototypes. Includes parameters.
 
-    // Represents the color red
-    @combinator object RedCloth {
+    @combinator object Red {
       def apply() : String = {
         return "red"
       }
-      val semanticType:Type = 'cloth :&: 'red
+      val semanticType:Type = 'color :&: 'red
     }
 
-    // Represents the color blue
-    @combinator object BlueCloth {
+    @combinator object Blue {
       def apply() : String = {
         return "blue"
       }
-      val semanticType:Type = 'cloth :&: 'blue
+      val semanticType:Type = 'color :&: 'blue
     }
 
+    // Represents the action of dying a shirt
     class Dyer(a:Type, b:Type) {
       def apply(c:String) : String = {
         return c + " shirt"
@@ -35,9 +34,28 @@ object DyeExample extends App {
       val semanticType:Type = a =>: b
     }
 
-    @combinator object Comb1 extends Dyer('cloth, 'shirt)
+    // Represents the action of painting a car
+    class Painter(a:Type, b:Type) {
+      def apply(c:String) : String = {
+        return c + " car"
+      }
+      val semanticType:Type = a =>: b
+    }
+
+    // Represents the action of painting a house
+    class Painter2(a:Type, b:Type) {
+      def apply(c:String) : String = {
+        return c + " house"
+      }
+      val semanticType:Type = a =>: b
+    }
+
+    @combinator object Comb1 extends Dyer('color, 'shirt)
+    @combinator object Comb2 extends Painter('color, 'car)
+    @combinator object Comb3 extends Painter2('color, 'house)
 
   }
+
   // Initializes the CLS system
   val reflectedRepository = ReflectedRepository (new SimpleTrait {})
 
