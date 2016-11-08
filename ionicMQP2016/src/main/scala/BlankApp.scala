@@ -45,10 +45,10 @@ object BlankApp extends App {
 </ion-view>
 """
       }
-      val semanticType:Type = 'mainFile
+      val semanticType:Type = 'mainPage
     }
 
-    @combinator object LevelSelectSubPage {
+    @combinator object LevelSelect {
       def apply(): String = {
         return """
 <ion-view view-title="Level Select">
@@ -76,10 +76,10 @@ object BlankApp extends App {
 </ion-view>
 """
       }
-      val semanticType:Type = 'levelSelectFile
+      val semanticType:Type = 'levelSelect
     }
 
-    @combinator object DummyLevelSubPage {
+    @combinator object DummyHTML {
       def apply(): String = {
         return """
 <ion-view view-title="Level {{levelNum}}">
@@ -99,10 +99,10 @@ object BlankApp extends App {
 </ion-view>
 """
       }
-      val semanticType:Type = 'dummyLevelFile
+      val semanticType:Type = 'gameHtml
     }
 
-    @combinator object SettingsSubPage {
+    @combinator object Settings {
       def apply(): String = {
         return """
 <ion-view view-title="Options">
@@ -135,10 +135,10 @@ object BlankApp extends App {
 </ion-view>
 """
       }
-      val semanticType:Type = 'settingsFile
+      val semanticType:Type = 'settings
     }
 
-    @combinator object DummyController {
+    @combinator object DummyJs {
       def apply(): String = {
         return """
 angular.module("dummy", ["ionic", "sql"])
@@ -172,10 +172,10 @@ angular.module("dummy", ["ionic", "sql"])
 });
 """
       }
-      val semanticType:Type = 'dummyControllerFile
+      val semanticType:Type = 'gameJs
     }
 
-    @combinator object DummyIndex {
+    @combinator object IndexHTML {
       def apply(): String = {
         return """
 <!DOCTYPE html>
@@ -212,10 +212,10 @@ angular.module("dummy", ["ionic", "sql"])
 </html>
 """
       }
-      val semanticType:Type = 'dummyIndexFile
+      val semanticType:Type = 'indexHtml
     }
 
-    @combinator object DummyApp {
+    @combinator object AppJs {
       def apply(): String = {
         return """
 /**
@@ -262,10 +262,10 @@ angular.module("starter", [
 });
 """
       }
-      val semanticType:Type = 'dummyAppFile
+      val semanticType:Type = 'appJs
     }
 
-    @combinator object DummySql {
+    @combinator object SQL {
       def apply(): String = {
         return """
 /**
@@ -351,10 +351,10 @@ angular.module("sql", ["ionic"])
 });
 """
       }
-      val semanticType:Type = 'dummySqlFile
+      val semanticType:Type = 'sql
     }
 
-    @combinator object DummyGenericStates {
+    @combinator object States {
       def apply(): String = {
         return """
 /**
@@ -396,10 +396,10 @@ angular.module("states", ["ionic"])
 });
 """
       }
-      val semanticType:Type = 'dummyGenericStatesFile
+      val semanticType:Type = 'states
     }
 
-    @combinator object DummyGenericControllers {
+    @combinator object Controllers {
       def apply(): String = {
         return """
 /**
@@ -497,27 +497,29 @@ angular.module("controllers", ["ionic", "sql"])
       val semanticType:Type = sym =>: 'BoundFile :&: sym
     }
 
-    @combinator object BindDummyLevelPage extends Bind('dummyLevelFile, "www/games/dummy.html")
-    @combinator object BindLevelSelectPage extends Bind('levelSelectFile, "www/templates/level_select.html")
-    @combinator object BindMainPage extends Bind('mainFile, "www/templates/main.html")
-    @combinator object BindDummyControllerPage extends Bind('dummyControllerFile, "www/games/dummy.js")
-    @combinator object BindSettingsPage extends Bind('settingsFile, "www/templates/settings.html")
-    @combinator object BindDummyCtrlsPage extends Bind('dummyGenericControllersFile, "www/js/controllers.js")
-    @combinator object BindDummySettingsPage extends Bind('dummyGenericStatesFile, "www/js/states.js")
-    @combinator object BindDummyAppPage extends Bind('dummyAppFile, "www/js/app.js")
-    @combinator object BindDummySqlPage extends Bind('dummySqlFile, "www/js/sql.js")
-    @combinator object BindIndexPage extends Bind('dummyIndexFile, "www/index.html")
+    @combinator object Bind0 extends Bind('indexHtml, "www/index.html")
+
+    @combinator object Bind1 extends Bind('states, "www/js/states.js")
+    @combinator object Bind2 extends Bind('appJs, "www/js/app.js")
+    @combinator object Bind3 extends Bind('controllers, "www/js/controllers.js")
+    @combinator object Bind4 extends Bind('sql, "www/js/sql.js")
+
+    @combinator object Bind5 extends Bind('gameHtml, "www/games/dummy.html")
+    @combinator object Bind6 extends Bind('gameJs, "www/games/dummy.js")
+
+    @combinator object Bind7 extends Bind('levelSelect, "www/templates/level_select.html")
+    @combinator object Bind8 extends Bind('mainPage, "www/templates/main.html")
+    @combinator object Bind9 extends Bind('settings, "www/templates/settings.html")
   }
 
   // Initializes the CLS system
-  val repository = new BlankAppTrait {}
-  val reflectedRepository = ReflectedRepository (repository)
+  val reflectedRepository = ReflectedRepository (new BlankAppTrait {})
 
   // Get the interpreted response from CLS
   val reply = reflectedRepository.inhabit[Tuple] ('BoundFile)
 
   // Pass the response into our defined output, currently just a printer
-  val it = reply.interpretedTerms.values.flatMap(_._2).iterator
-  DirectoryMaker.parseResults(it.asJava)
+  val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
+  DirectoryMaker.parseResults(iter)
 
 }
