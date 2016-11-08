@@ -13,7 +13,7 @@ public class Tuple {
 	}
 
 	public String toString() {
-		return b + ": " + a.split("\n", 1);
+		return b + ": " + a.split("\n", 1)[0];
 	}
 
 	//creates a file with the given contents at the given path
