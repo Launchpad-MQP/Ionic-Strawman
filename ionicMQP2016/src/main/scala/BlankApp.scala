@@ -10,6 +10,106 @@ import _root_.java.nio.file._
 object BlankApp extends App {
   trait BlankAppTrait {
 
+    @combinator object DummyHTML {
+      def apply(): String = {
+        return """
+<ion-view view-title="Level {{levelNum}}">
+  <ion-header-bar class="bar bar-header bar-dark">
+    <h1 class="title">Level {{levelNum}}</h1>
+  </ion-header-bar>
+  <ion-content class="has-header" padding="true">
+    <div class="col" style="text-align:center">
+      <button class="button button-assertive levelBtn" ng-click="completeLevel()">Click Me!</button>
+    </div>
+
+  </ion-content>
+  <ion-footer-bar class="bar bar-footer bar-stable" align-title="left">
+    <a class="button ion-home" href="#/level_select">&nbsp; BACK</a>
+    <button class="button button-calm" ng-click="restart()">&nbsp; RESTART</button>
+  </ion-footer-bar>
+</ion-view>
+"""
+      }
+      val semanticType:Type = 'gameHtml
+    }
+
+    @combinator object DummyJs {
+      def apply(): String = {
+        return """
+angular.module("dummy", ["ionic", "sql"])
+
+.controller("LevelCtrl", function ($scope, $rootScope, $state, $stateParams, sqlfactory) {
+  // Check for invalid state
+  if ($rootScope.levels === undefined) {
+    console.log("Level loaded but level list undefined, going to main")
+    $state.go("main");
+  } else if (!$rootScope.levels.includes($stateParams.levelNum)) {
+    console.log("Went to level " + $stateParams.levelNum + " redirecting to level select.");
+    $state.go("level_select");
+  } else {
+    console.log("Now in level: " + $stateParams.levelNum);
+  }
+
+  // Redefined so that it can be used in the HTML.
+  $scope.levelNum = $stateParams.levelNum;
+
+  // Begin: The entirety of our "game". Shows a button, which when clicked
+  // beats the level. It also shows "back" and "next" options.
+  $scope.completeLevel = function () {
+    $rootScope.completeLevel($state, $stateParams.levelNum);
+  }
+  // End: The entirety of our "game".
+
+  $scope.restart = function () {
+    console.log("Restarting level...");
+    $state.reload();
+  }
+});
+"""
+      }
+      val semanticType:Type = 'gameJs
+    }
+
+    @combinator object IndexHTML {
+      def apply(): String = {
+        return """
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link rel="manifest" href="manifest.json">
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/ngCordova/dist/ng-cordova.min.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="js/sql.js"></script> <!-- Must load before controllers, they use sql. -->
+    <script src="js/states.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="games/dummy.js"></script>
+    <script src="js/app.js"></script>
+  </head>
+  <body ng-app="starter">
+    <div ng-controller="MainCtrl">
+      <ion-nav-view animation="slide-left-right"></ion-nav-view>
+    </div>
+  </body>
+</html>
+"""
+      }
+      val semanticType:Type = 'indexHtml
+    }
+
     @combinator object MainPage {
       def apply(): String = {
         return """
@@ -79,29 +179,6 @@ object BlankApp extends App {
       val semanticType:Type = 'levelSelect
     }
 
-    @combinator object DummyHTML {
-      def apply(): String = {
-        return """
-<ion-view view-title="Level {{levelNum}}">
-  <ion-header-bar class="bar bar-header bar-dark">
-    <h1 class="title">Level {{levelNum}}</h1>
-  </ion-header-bar>
-  <ion-content class="has-header" padding="true">
-    <div class="col" style="text-align:center">
-      <button class="button button-assertive levelBtn" ng-click="completeLevel()">Click Me!</button>
-    </div>
-
-  </ion-content>
-  <ion-footer-bar class="bar bar-footer bar-stable" align-title="left">
-    <a class="button ion-home" href="#/level_select">&nbsp; BACK</a>
-    <button class="button button-calm" ng-click="restart()">&nbsp; RESTART</button>
-  </ion-footer-bar>
-</ion-view>
-"""
-      }
-      val semanticType:Type = 'gameHtml
-    }
-
     @combinator object Settings {
       def apply(): String = {
         return """
@@ -136,83 +213,6 @@ object BlankApp extends App {
 """
       }
       val semanticType:Type = 'settings
-    }
-
-    @combinator object DummyJs {
-      def apply(): String = {
-        return """
-angular.module("dummy", ["ionic", "sql"])
-
-.controller("LevelCtrl", function ($scope, $rootScope, $state, $stateParams, sqlfactory) {
-  // Check for invalid state
-  if ($rootScope.levels === undefined) {
-    console.log("Level loaded but level list undefined, going to main")
-    $state.go("main");
-  } else if (!$rootScope.levels.includes($stateParams.levelNum)) {
-    console.log("Went to level " + $stateParams.levelNum + " redirecting to level select.");
-    $state.go("level_select");
-  } else {
-    console.log("Now in level: " + $stateParams.levelNum);
-  }
-
-  // Redefined so that it can be used in the HTML.
-  $scope.levelNum = $stateParams.levelNum;
-
-  // Begin: The entirety of our "game". Shows a button, which when clicked
-  // beats the level. It also shows "back" and "next" options.
-  $scope.completeLevel = function () {
-    $rootScope.completeLevel($state, $stateParams.levelNum);
-  }
-  // End: The entirety of our "game".
-
-  $scope.restart = function () {
-    console.log("Restarting level...");
-    $state.reload();
-  }
-});
-"""
-      }
-      val semanticType:Type = 'gameJs
-    }
-
-    @combinator object IndexHTML {
-      def apply(): String = {
-        return """
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title></title>
-
-    <link rel="manifest" href="manifest.json">
-
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-
-    <!-- ionic/angularjs js -->
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
-    <script src="lib/ngCordova/dist/ng-cordova.min.js"></script>
-
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
-
-    <!-- your app's js -->
-		<script src="js/sql.js"></script> <!-- Must load before controllers, they use sql. -->
-    <script src="js/states.js"></script>
-    <script src="js/controllers.js"></script>
-    <script src="games/dummy.js"></script>
-    <script src="js/app.js"></script>
-  </head>
-  <body ng-app="starter">
-    <div ng-controller="MainCtrl">
-      <ion-nav-view animation="slide-left-right"></ion-nav-view>
-    </div>
-  </body>
-</html>
-"""
-      }
-      val semanticType:Type = 'indexHtml
     }
 
     @combinator object AppJs {
