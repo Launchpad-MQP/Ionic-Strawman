@@ -6,8 +6,8 @@ import de.tu_dortmund.cs.ls14.cls.interpreter.combinator
 import scala.collection.JavaConverters._
 import ionicmqp2016._;
 
-object DivideExample extends App {
-	trait DivideExampleTrait {
+object DivideExample2 extends App {
+	trait DivideExample2Trait {
 
 		@combinator object Red {
 			def apply() : String = {
@@ -52,7 +52,7 @@ object DivideExample extends App {
 
 	}
 
-	val reflectedRepository = ReflectedRepository(new DivideExampleTrait {})
+	val reflectedRepository = ReflectedRepository(new DivideExample2Trait {})
 
 	val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'car)
 
