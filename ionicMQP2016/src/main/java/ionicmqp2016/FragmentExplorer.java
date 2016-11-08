@@ -25,7 +25,7 @@ public class FragmentExplorer {
 				trialNum++;
 				Tuple fragment = it.next();
 
-				System.out.println ("Fragment-" + trialNum + ":\n" + fragment._1() + "::" + fragment._2());
+				//System.out.println ("Fragment-" + trialNum + ":\n" + fragment._1() + "::" + fragment._2());
 			}
 		}
 
