@@ -80,6 +80,99 @@ angular.module(\""""+subPage+"""\", ["ionic"])
       val semanticType:Type = 'stateList =>: 'controllers
     }
 
+    @combinator object MainSubPage {
+      def apply(): String = {
+        return """
+<ion-view view-title="Main Page">
+  <ion-header-bar class="bar bar-header bar-dark">
+    <h1 class="title">Heineman's MQP Strawman App</h1>
+  </ion-header-bar>
+  <ion-content class="padding has-header has-footer">
+
+    <div class="row">
+      <div class="col" style="text-align: center">
+        <p>The puzzle app built with combinators</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col" style="text-align: center">
+        <a class="button icon-right ion-chevron-right" href="#/level_select">PLAY &nbsp;</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col" style="text-align: center">
+        <a class="button icon-right ion-gear-b" href="#/settings">SETTINGS &nbsp;</a>
+      </div>
+    </div>
+  </ion-content>
+
+  <ion-footer-bar class="bar bar-footer bar-stable" align-title"left">
+    <div class="buttons" ng-click="exitApp()">
+      <button class="button button-assertive icon-left ion-close">&nbsp; EXIT</button>
+    </div>
+  </ion-footer-bar>
+</ion-view>
+"""
+      }
+      val semanticType:Type = 'mainFile
+    }
+
+    @combinator object LevelSelectSubPage {
+      def apply(): String = {
+        return """
+<ion-view view-title="Level Select">
+  <ion-header-bar class="bar bar-header bar-dark">
+    <h1 class="title">Level Select</h1>
+  </ion-header-bar>
+  <ion-content class="has-header" padding="true">
+    <div class="container">
+      <!-- Here's where a bit of magic happens: Ionic will pupulate this table
+        with all the levels in the "$scope.levels" variable, and it fills them
+        according to the pattern we specified with {{level}}.
+      -->
+      <div class="row unlimited-items">
+        <div class="col" ng-repeat="level in levels">
+          <a class="button button-stable" ng-click="loadLevel({{level}})" id="level_{{level}}">{{level}}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </ion-content>
+  <ion-footer-bar class="bar bar-footer bar-stable" align-title="left">
+    <a class="button ion-home" href="#/main">&nbsp; BACK</a>
+  </ion-footer-bar>
+</ion-view>
+"""
+      }
+      val semanticType:Type = 'levelSelectFile
+    }
+
+    Array("level", "settings")
+    @combinator object DummyLevelSubPage {
+      def apply(): String = {
+        return """
+<ion-view view-title="Level {{levelNum}}">
+  <ion-header-bar class="bar bar-header bar-dark">
+    <h1 class="title">Level {{levelNum}}</h1>
+  </ion-header-bar>
+  <ion-content class="has-header" padding="true">
+    <div class="col" style="text-align:center">
+      <button class="button button-assertive levelBtn" ng-click="completeLevel()">Click Me!</button>
+    </div>
+
+  </ion-content>
+  <ion-footer-bar class="bar bar-footer bar-stable" align-title="left">
+    <a class="button ion-home" href="#/level_select">&nbsp; BACK</a>
+    <button class="button button-calm" ng-click="restart()">&nbsp; RESTART</button>
+  </ion-footer-bar>
+</ion-view>
+"""
+      }
+      val semanticType:Type = 'dummyLevelFile
+    }
+
     @combinator object App {
       def apply(subPages:Array[String]) : String = {
         var modules = "\"ionic\""
@@ -228,7 +321,7 @@ angular.module("starter", ["""+modules+"""])
       val semanticType:Type = 'stateList :&: 'blank =>: 'app :&: 'blank
     }
 
-    class StringConcatenator(typeA:Type, typeB:Type, typeC:Type) {
+    /*class StringConcatenator(typeA:Type, typeB:Type, typeC:Type) {
       def apply(a:String, b:String) : String = {
         return a + '\n' + b;
       }
@@ -236,18 +329,37 @@ angular.module("starter", ["""+modules+"""])
     }
 
     @combinator object Comb1 extends StringConcatenator('app, 'controllers, 'dummy)
+    */
+    class Bind(sym:Symbol, filePath:String) {
+      def apply(expr:String) : Tuple = {
+			  return new Tuple(expr, filePath)
+      }
+      val semanticType:Type = sym =>: 'BoundFile :&: sym
+    }
 
+    //@combinator object BindIndex extends Bind('indexFile, "www/index.html")
+    //@combinator object BinApp extends Bind('basicJavascript, "www/js/app.js")
+    //@combinator object BindController extends Bind('controllersFile, "www/js/controllers.js")
+    //@combinator object BindStates extends Bind('statesFile, "www/js/states.js")
+    //@combinator object BindSubPage extends Bind('statesFile, "www/js/states.js")
+    @combinator object BindDummyLevelPage extends Bind('dummyLevelFile, "www/games/dummy.html")
+    @combinator object BindLevelSelectPage extends Bind('levelSelectFile, "www/templates/level_select.html")
+    @combinator object BindMainPage extends Bind('mainFile, "www/templates/main.html")
   }
 
   // Initializes the CLS system
-  val reflectedRepository = ReflectedRepository (new BlankAppTrait {})
+  val repository = new BlankAppTrait {}
+  val reflectedRepository = ReflectedRepository (repository)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[String] ('app :&: 'blank)
+  //val reply = reflectedRepository.inhabit[String] ('app :&: 'blank)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile)
 
+  
   // Pass the response into our defined output, currently just a printer
   val it = reply.interpretedTerms.values.flatMap(_._2).iterator
   //PrintFragments.processResults(it.asJava)
   DirectoryMaker.parseResults(it.asJava)
+  //FragmentExplorer.processResultsTuple(it.asJava)
 
 }
