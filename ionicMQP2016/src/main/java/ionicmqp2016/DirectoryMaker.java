@@ -8,7 +8,13 @@ public class DirectoryMaker {
 
   final static String BASEPATH = "../";
 
-  //called by scala program to parse results (should only be one result, ideally)
+  /**
+   * Iterate through the results from scala as (file, fileType) where fileType
+   * is one of a few preset files that we know the path of.
+   *
+   * @param iter The iterator returned from Scala.
+   * @throws IOException Never.
+  **/
   public static void parseResults(Iterator<Tuple> iter) throws IOException {
     //make sure relevant directories exist
     makeDirectory("");  //BASEPATH directory is created
@@ -29,7 +35,12 @@ public class DirectoryMaker {
     }
   }
 
-  //makes the given directory
+  /**
+   * Makes the directory relative to BASEPATH. This function does not throw
+   * errors, if directory already exists it will exit without doing anything.
+   *
+   * @param filepath The path to create, relative to BASEPATH
+  **/
   public static void makeDirectory(String filepath) {
     File dir = new File(BASEPATH + filepath);
     if(dir.mkdir()) {
@@ -39,7 +50,13 @@ public class DirectoryMaker {
     }
   }
 
-  //removes the given directory
+  /**
+   * Removes the directory relative to BASEPATH. To do so, it must iterate
+   * through all files in the directory and remove them first. If the directory
+   * doesn't exist, it will return.
+   *
+   * @param filepath The path to remove, relative to BASEPATH
+  **/
   public static void removeDirectory(String filepath) {
     File dir = new File(BASEPATH + filepath);
     String[] files = dir.list();
