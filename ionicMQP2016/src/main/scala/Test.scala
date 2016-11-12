@@ -65,11 +65,11 @@ object TestExample extends App {
 
     @combinator object Bind1 extends Bind('shirt, "www/js/Shirt.txt")
     @combinator object Bind2 extends Bind('car, "www/js/Car.txt")
-
   }
 
   // Initializes the CLS system
-  val reflectedRepository = ReflectedRepository (new TestTrait {}, kinding=repository.kinding)
+  val repository = new TestTrait {}
+  val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
   val reply = reflectedRepository.inhabit[Tuple] ('BoundFile)
