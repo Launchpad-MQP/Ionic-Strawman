@@ -86,7 +86,8 @@ object BlankApp extends App {
 
     @combinator object HangmanHTML {
       def apply(): String = {
-        return """		<div class="card">
+        return """
+		<div class="card">
 			<div class= "item row">
 				<div class= "col" ng-repeat="letter in myLetters track by $index">
 					<div class= "guessable {{levelNum}} {{letter}}">{{letter}}</div>
@@ -111,7 +112,7 @@ object BlankApp extends App {
 
     @combinator object HangmanJs {
       def apply(): String = {
-        """
+        return """
   $scope.myLetters = [
     'hello', 'wolf', 'rat', 'xylophone', 'attention',
     'school', 'ruling', 'poison', 'tree', 'prison',
@@ -182,7 +183,7 @@ object BlankApp extends App {
     }
 
     @combinator object LightsOutHTML {
-      def applly(): String = {
+      def apply(): String = {
         return """
     <div class="row" ng-repeat="row in buttons">
       <div class="col col-25"> </div>
@@ -196,7 +197,7 @@ object BlankApp extends App {
     }
 
     @combinator object LightsOutJS {
-      def applly(): String = {
+      def apply(): String = {
         return """
   // Redefined so that it can be used in the HTML.
   $scope.levelNum = $stateParams.levelNum;
@@ -889,7 +890,7 @@ angular.module("controllers", ["ionic", "sql"])
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'hangman)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'lightsout)
 
   // Pass the response into our defined output, currently just a printer
   val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
