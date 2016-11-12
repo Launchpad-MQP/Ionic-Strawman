@@ -10,6 +10,16 @@ import _root_.java.nio.file._
 object BlankApp extends App {
   trait BlankAppTrait {
 
+    // variable to be used within semanticType
+    val gameVar = Variable("gameName")
+    lazy val kinding =
+        Kinding.empty
+        .merge(
+            Kinding(gameVar)
+            .addOption('mastermind)
+            .addOption('dummy)
+            )
+
     @combinator object MastermindHTML {
       def apply(): String = {
         return """
@@ -35,7 +45,7 @@ object BlankApp extends App {
       val semanticType:Type = 'dummy :&: 'html
     }
 
-    class GameHTML(name:Symbol) {
+    @combinator object GameHTML {
       def apply(contents: String): String = {
         return """
 <ion-view view-title="Level {{levelNum}}">
@@ -52,11 +62,8 @@ object BlankApp extends App {
 </ion-view>
 """
       }
-      val semanticType:Type = name :&: 'html =>: name :&: 'gameHtml
+      val semanticType:Type = gameVar :&: 'html =>: gameVar :&: 'gameHtml
     }
-
-    @combinator object DummyHTMLBuilder extends GameHTML('dummy)
-    @combinator object MastermindHTMLBuilder extends GameHTML('mastermind)
 
     @combinator object GameJs {
       def apply(): String = {
@@ -519,7 +526,7 @@ angular.module("controllers", ["ionic", "sql"])
       def apply(expr:String) : Tuple = {
 			  return new Tuple(expr, filePath)
       }
-      val semanticType:Type = sym =>: 'BoundFile :&: sym
+      val semanticType:Type = sym =>: 'BoundFile :&: sym :&: gameVar
     }
 
     @combinator object Bind0 extends Bind('indexHtml, "www/index.html")
@@ -529,19 +536,30 @@ angular.module("controllers", ["ionic", "sql"])
     @combinator object Bind3 extends Bind('controllers, "www/js/controllers.js")
     @combinator object Bind4 extends Bind('sql, "www/js/sql.js")
 
-    @combinator object Bind5 extends Bind('gameHtml, "www/games/dummy.html")
-    @combinator object Bind6 extends Bind('gameJs, "www/games/dummy.js")
+    //@combinator object Bind5 extends Bind('gameHtml, "www/games/dummy.html")
+    //@combinator object Bind6 extends Bind('gameJs, "www/games/dummy.js")
 
     @combinator object Bind7 extends Bind('levelSelect, "www/templates/level_select.html")
     @combinator object Bind8 extends Bind('mainPage, "www/templates/main.html")
     @combinator object Bind9 extends Bind('settings, "www/templates/settings.html")
+
+    class GameBind(sym:Symbol, filePath:String) {
+      def apply(expr:String) : Tuple = {
+			  return new Tuple(expr, filePath)
+      }
+      val semanticType:Type = sym :&: 'mastermind =>: 'BoundFile :&: sym :&: 'mastermind
+    }
+
+    @combinator object Bind5 extends GameBind('gameHtml, "www/games/dummy.html")
+    @combinator object Bind6 extends GameBind('gameJs, "www/games/dummy.js")
   }
 
   // Initializes the CLS system
-  val reflectedRepository = ReflectedRepository (new BlankAppTrait {})
+  val repository = new BlankAppTrait {}
+  val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[String] ('mastermind :&: 'gameHtml)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'mastermind)
   // val reply = reflectedRepository.inhabit[Tuple] ('BoundFile)
 
   // Pass the response into our defined output, currently just a printer
