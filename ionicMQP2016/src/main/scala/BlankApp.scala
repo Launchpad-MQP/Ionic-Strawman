@@ -547,7 +547,7 @@ angular.module("controllers", ["ionic", "sql"])
       def apply(expr:String) : Tuple = {
 			  return new Tuple(expr, filePath)
       }
-      val semanticType:Type = sym :&: 'mastermind =>: 'BoundFile :&: sym :&: 'mastermind
+      val semanticType:Type = sym :&: gameVar =>: 'BoundFile :&: sym :&: gameVar
     }
 
     @combinator object Bind5 extends GameBind('gameHtml, "www/games/dummy.html")
