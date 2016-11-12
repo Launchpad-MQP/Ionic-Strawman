@@ -359,7 +359,7 @@ object BlankApp extends App {
     $rootScope.completeLevel($state, $stateParams.levelNum);
   }"""
       }
-      val semanticType:Type = 'lightsout :&: 'html
+      val semanticType:Type = 'lightsout :&: 'js
     }
 
     @combinator object DummyHTML {
