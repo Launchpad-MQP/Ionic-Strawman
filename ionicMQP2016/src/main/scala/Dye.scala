@@ -12,6 +12,16 @@ object DyeExample extends App {
 
     // Defines a list of types. Basically the function prototypes. Includes parameters.
 
+    // variable to be used within semanticType
+    val colorVar = Variable("colorName")
+    lazy val kinding =
+        Kinding.empty
+        .merge(
+            Kinding(colorVar)
+            .addOption('red)
+            .addOption('blue)
+            )
+
     @combinator object Red {
       def apply() : String = {
         return "red"
@@ -29,9 +39,9 @@ object DyeExample extends App {
     // Represents the action of dying a shirt
     class Dyer(a:Type, b:Type) {
       def apply(c:String) : String = {
-        return c + " shirt"
+        return c + " shirt\na lovely " + c + " shirt\ni love my " + c + " shirt so much\nwhat a lovely shirt"
       }
-      val semanticType:Type = a =>: b
+      val semanticType:Type = 'color :&: colorVar =>: colorVar :&: b
     }
 
     // Represents the action of painting a car
@@ -39,32 +49,32 @@ object DyeExample extends App {
       def apply(c:String) : String = {
         return c + " car"
       }
-      val semanticType:Type = a =>: b
+      val semanticType:Type = 'color :&: colorVar =>: colorVar :&: b
     }
 
-    // Represents the action of painting a house
-    class Painter2(a:Type, b:Type) {
-      def apply(c:String) : String = {
-        return c + " house"
-      }
-      val semanticType:Type = a =>: b
+    class Bind(thing:Symbol, fileName: String) {
+      def apply(expr:String) : Tuple = { return new Tuple(expr, fileName); }
+      val semanticType:Type = thing =>: 'BoundFile :&: thing
     }
 
     @combinator object Comb1 extends Dyer('color, 'shirt)
     @combinator object Comb2 extends Painter('color, 'car)
-    @combinator object Comb3 extends Painter2('color, 'house)
+
+    @combinator object Bind1 extends Bind('shirt, "TestDirectory/www/js/Shirt.txt")
+    @combinator object Bind2 extends Bind('car, "TestDirectory/www/js/Car.txt")
 
   }
 
   // Initializes the CLS system
-  val reflectedRepository = ReflectedRepository (new SimpleTrait {})
+  val repository = new SimpleTrait {}
+  val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[String] ('shirt)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile)
 
   // Pass the response into our defined output, currently just a printer
-  val it = reply.interpretedTerms.values.flatMap(_._2).iterator
-  //DirectoryMaker.makeDirectory()
-  PrintFragments.processResults(it.asJava)
+  val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
+  DirectoryMaker.parseResults(iter)
+  //FragmentExplorer.processResultsTuple(it.asJava)
 
 }
