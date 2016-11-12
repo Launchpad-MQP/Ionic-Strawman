@@ -10,18 +10,40 @@ import _root_.java.nio.file._
 object BlankApp extends App {
   trait BlankAppTrait {
 
+    @combinator object MastermindHTML {
+      def apply(): String = {
+        return """
+    <div class="row">
+      <input class="item item-input" id="guess_{{levelNum}}" placeholder="Guess a {{word.length}} letter word">
+      &nbsp;
+      <button class="button button-positive" ng-click="submit()">Submit</button>
+    </div>
+    <div class="row">
+      <h4>{{result}}</h4>
+    </div>"""
+      }
+      val semanticType:Type = 'mastermind :&: 'html
+    }
+
     @combinator object DummyHTML {
       def apply(): String = {
+        return """
+    <div class="col" style="text-align:center">
+      <button class="button button-assertive levelBtn" ng-click="completeLevel()">Click Me!</button>
+    </div>"""
+      }
+      val semanticType:Type = 'dummy :&: 'html
+    }
+
+    class GameHTML(name:Symbol) {
+      def apply(contents: String): String = {
         return """
 <ion-view view-title="Level {{levelNum}}">
   <ion-header-bar class="bar bar-header bar-dark">
     <h1 class="title">Level {{levelNum}}</h1>
   </ion-header-bar>
   <ion-content class="has-header" padding="true">
-    <div class="col" style="text-align:center">
-      <button class="button button-assertive levelBtn" ng-click="completeLevel()">Click Me!</button>
-    </div>
-
+""" + contents + """
   </ion-content>
   <ion-footer-bar class="bar bar-footer bar-stable" align-title="left">
     <a class="button ion-home" href="#/level_select">&nbsp; BACK</a>
@@ -30,10 +52,13 @@ object BlankApp extends App {
 </ion-view>
 """
       }
-      val semanticType:Type = 'gameHtml
+      val semanticType:Type = name :&: 'html =>: name :&: 'gameHtml
     }
 
-    @combinator object DummyJs {
+    @combinator object DummyHTMLBuilder extends GameHTML('dummy)
+    @combinator object MastermindHTMLBuilder extends GameHTML('mastermind)
+
+    @combinator object GameJs {
       def apply(): String = {
         return """
 angular.module("dummy", ["ionic", "sql"])
@@ -516,10 +541,11 @@ angular.module("controllers", ["ionic", "sql"])
   val reflectedRepository = ReflectedRepository (new BlankAppTrait {})
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile)
+  val reply = reflectedRepository.inhabit[String] ('mastermind :&: 'gameHtml)
+  // val reply = reflectedRepository.inhabit[Tuple] ('BoundFile)
 
   // Pass the response into our defined output, currently just a printer
   val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
-  DirectoryMaker.parseResults(iter)
+  DirectoryMaker.printResults(iter)
 
 }
