@@ -71,6 +71,13 @@ object BlankApp extends App {
       val semanticType:Type = 'dummy :&: 'html
     }
 
+    @combinator object DummyJS {
+      def apply(): String = {
+        return "AAAAAAAAAAAAA"
+      }
+      val semanticType:Type = 'dummy :&: 'js
+    }
+
     @combinator object GameHTML {
       def apply(contents: String): String = {
         return """
@@ -161,7 +168,7 @@ object BlankApp extends App {
     }
 
     @combinator object GameJs {
-      def apply(): String = {
+      def apply(contents:String): String = {
         return """
 angular.module("dummy", ["ionic", "sql"])
 
@@ -180,12 +187,11 @@ angular.module("dummy", ["ionic", "sql"])
   // Redefined so that it can be used in the HTML.
   $scope.levelNum = $stateParams.levelNum;
 
-  // Begin: The entirety of our "game". Shows a button, which when clicked
-  // beats the level. It also shows "back" and "next" options.
+""" + contents + """
+
   $scope.completeLevel = function () {
     $rootScope.completeLevel($state, $stateParams.levelNum);
   }
-  // End: The entirety of our "game".
 
   $scope.restart = function () {
     console.log("Restarting level...");
@@ -194,7 +200,7 @@ angular.module("dummy", ["ionic", "sql"])
 });
 """
       }
-      val semanticType:Type = 'gameJs
+      val semanticType:Type = gameVar :&: 'js =>: gameVar :&: 'gameJs
     }
 
     @combinator object IndexHTML {
@@ -645,7 +651,7 @@ angular.module("controllers", ["ionic", "sql"])
       val semanticType:Type = sym :&: gameVar =>: 'BoundFile :&: sym :&: gameVar
     }
 
-    @combinator object Bind5 extends GameBind('gameHtml, "www/games/dummy.html")
+//    @combinator object Bind5 extends GameBind('gameHtml, "www/games/dummy.html")
     @combinator object Bind6 extends GameBind('gameJs, "www/games/dummy.js")
   }
 
@@ -654,7 +660,7 @@ angular.module("controllers", ["ionic", "sql"])
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'mastermind)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'gameJs)
   // val reply = reflectedRepository.inhabit[Tuple] ('BoundFile)
 
   // Pass the response into our defined output, currently just a printer
