@@ -17,6 +17,7 @@ object BlankApp extends App {
         .merge(
             Kinding(gameVar)
             .addOption('mastermind)
+            .addOption('hangman)
             .addOption('dummy)
             )
 
@@ -33,6 +34,31 @@ object BlankApp extends App {
     </div>"""
       }
       val semanticType:Type = 'mastermind :&: 'html
+    }
+
+    @combinator object HangmanHTML {
+      def apply(): String = {
+        return """		<div class="card">
+			<div class= "item row">
+				<div class= "col" ng-repeat="letter in myLetters track by $index">
+					<div class= "guessable {{levelNum}} {{letter}}">{{letter}}</div>
+				</div>
+			</div>
+			<p>Guessed Letters:</p>
+			<div class = "row" id="guessed_{{levelNum}}"></div>
+			<p>Tries Left: {{guessesLeft}}</p>
+		</div>
+
+		<ion-input class="item item-input item-stacked-label">
+			<ion-label >Guess</ion-label>
+			<input type="text" maxLength="1" class= "letterguess" id="letterguess_{{levelNum}}" placeholder="Type a letter here">
+		</ion-input>
+
+		<div class="col" style="text-align:center">
+      <button class="button button-assertive levelBtn" ng-click="makeGuess()">Guess</button>
+</div>"""
+      }
+      val semanticType:Type = 'hangman :&: 'html
     }
 
     @combinator object DummyHTML {
@@ -63,6 +89,75 @@ object BlankApp extends App {
 """
       }
       val semanticType:Type = gameVar :&: 'html =>: gameVar :&: 'gameHtml
+    }
+
+    @combinator object HangmanJs {
+      def apply(): String = {
+        """	$scope.myLetters = ['hello', 'wolf', 'rat', 'xylophone', 'attention',
+																'school', 'ruling', 'poison', 'tree', 'prison',
+																'abacus', 'toothache', 'short', 'bacon', 'crossroads',
+																'darkness', 'candle', 'quadruple', 'extraordinary', 'declaration'][$scope.levelNum-1].split("");
+	$scope.guessesLeft = 7;
+	$scope.miss = true;
+
+	$scope.makeGuess = function () {
+		var guess = document.getElementById("letterguess_" + $scope.levelNum).value;
+		var card = document.getElementById("guessed_" + $scope.levelNum);
+
+		console.log("Guess", guess);
+		// Fields are the elements which match the letter guessed.
+		var fields = document.getElementsByClassName(guess);
+		console.log("Fields", fields);
+		for(var i = 0; i<fields.length; i++) {
+				if(!fields[i].className.includes("discovered")) {
+					fields[i].className = "discovered " + $scope.levelNum + " " + guess;
+				}
+				$scope.miss = false;
+		}
+		if($scope.miss) {
+			if(!card.innerHTML.includes(guess))
+				$scope.guessesLeft--;
+			if($scope.guessesLeft===0)
+				$scope.loseLevel();
+		}
+
+		$scope.miss = true;
+		if(!card.innerHTML.includes(guess))
+			card.append(guess + " ");
+		$scope.checkComplete();
+	}
+
+	$scope.loseLevel = function() {
+		$ionicPopup.show({
+      title: "You lose!",
+      buttons: [
+      {
+        text: "Level Select",
+        onTap: function () {
+          console.log("Back to level select.");
+          $state.go("level_select");
+        }
+      },
+      {
+        text: "Retry",
+        type: "button-positive",
+        onTap: function () {
+          console.log("Reloading...");
+          $scope.restart();
+        }
+      }]
+    });
+	}
+
+	$scope.checkComplete = function () {
+		var correct = document.getElementsByClassName("discovered " + $scope.levelNum);
+		console.log(correct.length);
+		if(correct.length === $scope.myLetters.length)
+			$scope.completeLevel();
+	}
+"""
+      }
+      val semanticType:Type = 'hangman :&: 'js
     }
 
     @combinator object GameJs {
@@ -189,7 +284,7 @@ angular.module("dummy", ["ionic", "sql"])
   </ion-header-bar>
   <ion-content class="has-header" padding="true">
     <div class="container">
-      <!-- Here's where a bit of magic happens: Ionic will pupulate this table
+      <!-- Here's where a bit of magic happens: Ionic will populate this table
         with all the levels in the "$scope.levels" variable, and it fills them
         according to the pattern we specified with {{level}}.
       -->
