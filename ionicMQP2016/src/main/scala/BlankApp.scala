@@ -73,7 +73,7 @@ object BlankApp extends App {
 
     @combinator object DummyJS {
       def apply(): String = {
-        return "AAAAAAAAAAAAA"
+        return ""
       }
       val semanticType:Type = 'dummy :&: 'js
     }
@@ -170,7 +170,7 @@ object BlankApp extends App {
     @combinator object GameJs {
       def apply(contents:String): String = {
         return """
-angular.module("dummy", ["ionic", "sql"])
+angular.module("game", ["ionic", "sql"])
 
 .controller("LevelCtrl", function ($scope, $rootScope, $state, $stateParams, sqlfactory) {
   // Check for invalid state
@@ -229,7 +229,7 @@ angular.module("dummy", ["ionic", "sql"])
     <script src="js/sql.js"></script> <!-- Must load before controllers, they use sql. -->
     <script src="js/states.js"></script>
     <script src="js/controllers.js"></script>
-    <script src="games/dummy.js"></script>
+    <script src="js/game.js"></script>
     <script src="js/app.js"></script>
   </head>
   <body ng-app="starter">
@@ -367,7 +367,7 @@ angular.module("starter", [
   "states", /* State transitions between pages */
   "controllers", /* Individual page js */
   "ngCordova", /* Used for Cordova-SQLite */
-  "dummy" /* Our game */
+  "game" /* Our game */
 ])
 
 // Runs when the app is fully loaded.
@@ -515,7 +515,7 @@ angular.module("states", ["ionic"])
 
   .state("level", {
     url: "/level/{levelNum:int}",
-    templateUrl: "games/dummy.html",
+    templateUrl: "templates/game.html",
     controller: "LevelCtrl"
   })
 
@@ -637,9 +637,6 @@ angular.module("controllers", ["ionic", "sql"])
     @combinator object Bind3 extends Bind('controllers, "www/js/controllers.js")
     @combinator object Bind4 extends Bind('sql, "www/js/sql.js")
 
-    //@combinator object Bind5 extends Bind('gameHtml, "www/games/dummy.html")
-    //@combinator object Bind6 extends Bind('gameJs, "www/games/dummy.js")
-
     @combinator object Bind7 extends Bind('levelSelect, "www/templates/level_select.html")
     @combinator object Bind8 extends Bind('mainPage, "www/templates/main.html")
     @combinator object Bind9 extends Bind('settings, "www/templates/settings.html")
@@ -651,8 +648,8 @@ angular.module("controllers", ["ionic", "sql"])
       val semanticType:Type = sym :&: gameVar =>: 'BoundFile :&: sym :&: gameVar
     }
 
-//    @combinator object Bind5 extends GameBind('gameHtml, "www/games/dummy.html")
-    @combinator object Bind6 extends GameBind('gameJs, "www/games/dummy.js")
+    @combinator object Bind5 extends GameBind('gameHtml, "www/templates/game.html")
+    @combinator object Bind6 extends GameBind('gameJs, "www/js/game.js")
   }
 
   // Initializes the CLS system
@@ -660,11 +657,10 @@ angular.module("controllers", ["ionic", "sql"])
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'gameJs)
-  // val reply = reflectedRepository.inhabit[Tuple] ('BoundFile)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'hangman)
 
   // Pass the response into our defined output, currently just a printer
   val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
-  DirectoryMaker.printResults(iter)
+  DirectoryMaker.parseResults(iter)
 
 }
