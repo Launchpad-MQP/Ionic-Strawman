@@ -10,7 +10,7 @@ public class DirectoryMaker {
 
   /**
    * Iterate through the results from scala as (file, fileType) where fileType
-   * is one of a few preset files that we know the path of.
+   * is a path to a valid directory. Also cleans the workspace before writing.
    *
    * @param iter The iterator returned from Scala.
    * @throws IOException Never.
@@ -32,6 +32,18 @@ public class DirectoryMaker {
     while (iter.hasNext()) {
       Tuple boundFile = iter.next();
       boundFile.createFile();
+    }
+  }
+
+  /**
+   * Iterate through the results from scala as (file, fileType) where fileType
+   * is a path to a valid directory. This function is for printing only.
+   *
+   * @param iter The iterator returned from Scala.
+  **/
+  public static void printResults(Iterator iter) {
+    while (iter.hasNext()) {
+      System.out.println("Found fragment:\n\t"+iter.next());
     }
   }
 

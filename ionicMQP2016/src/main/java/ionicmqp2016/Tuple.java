@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.PrintWriter;
 
 public class Tuple {
+	final static int PREVIEW_SIZE = 50;
 	final String a;
 	final String b;
 	final static String BASEPATH = "../";
@@ -13,7 +14,12 @@ public class Tuple {
 	}
 
 	public String toString() {
-		return b + ": " + a.split("\n", 1)[0];
+		String sections[] = this.a.split("\n");
+		String filePreview = "";
+		for (int i=0; i<PREVIEW_SIZE && i<sections.length; i++) {
+			filePreview += sections[i] + "\n";
+		}
+		return this.b + ": " + filePreview;
 	}
 
 	//creates a file with the given contents at the given path
