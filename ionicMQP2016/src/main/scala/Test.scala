@@ -7,8 +7,8 @@ import scala.collection.JavaConverters._
 import ionicmqp2016._;
 import _root_.java.nio.file._
 
-object DyeExample extends App {
-  trait SimpleTrait {
+object TestExample extends App {
+  trait TestTrait {
 
     // Defines a list of types. Basically the function prototypes. Includes parameters.
 
@@ -66,7 +66,7 @@ object DyeExample extends App {
   }
 
   // Initializes the CLS system
-  val repository = new SimpleTrait {}
+  val repository = new TestTrait {}
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
