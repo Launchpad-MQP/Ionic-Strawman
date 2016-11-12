@@ -13,13 +13,11 @@ object BlankApp extends App {
     // variable to be used within semanticType
     val gameVar = Variable("gameName")
     lazy val kinding =
-        Kinding.empty
-        .merge(
-            Kinding(gameVar)
-            .addOption('mastermind)
-            .addOption('hangman)
-            .addOption('dummy)
-            )
+      Kinding(gameVar)
+      .addOption('mastermind)
+      .addOption('hangman)
+      .addOption('lightsout)
+      .addOption('dummy)
 
     @combinator object MastermindHTML {
       def apply(): String = {
