@@ -7,8 +7,8 @@ import scala.collection.JavaConverters._
 import ionicmqp2016._;
 import _root_.java.nio.file._
 
-object BlankApp extends App {
-  trait BlankAppTrait {
+object AppCreator extends App {
+  trait AppTrait {
 
     // variable to be used within semanticType
     val gameVar = Variable("gameName")
@@ -923,7 +923,7 @@ angular.module("controllers", ["ionic", "sql"])
   }
 
   // Initializes the CLS system
-  val repository = new BlankAppTrait {}
+  val repository = new AppTrait {}
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
