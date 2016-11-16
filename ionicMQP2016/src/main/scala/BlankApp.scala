@@ -511,7 +511,7 @@ angular.module("game", ["ionic", "sql"])
 </ion-view>
 """
       }
-      val semanticType:Type = gameVar :&: 'gameTitle =>: 'mainPage
+      val semanticType:Type = gameVar :&: 'gameTitle =>: 'mainPage :&: gameVar
     }
 
     @combinator object LightsOutTitle {
@@ -519,6 +519,27 @@ angular.module("game", ["ionic", "sql"])
         return "Lights Out"
       }
       val semanticType:Type = 'lightsout :&: 'gameTitle
+    }
+
+    @combinator object HangmanTitle {
+      def apply(): String = {
+        return "Hangman"
+      }
+      val semanticType:Type = 'hangman :&: 'gameTitle
+    }
+
+    @combinator object MastermindTitle {
+      def apply(): String = {
+        return "Word Mastermind"
+      }
+      val semanticType:Type = 'mastermind :&: 'gameTitle
+    }
+
+    @combinator object DummyTitle {
+      def apply(): String = {
+        return "Dummy App"
+      }
+      val semanticType:Type = 'dummy :&: 'gameTitle
     }
 
     @combinator object LevelSelect {
@@ -887,7 +908,6 @@ angular.module("controllers", ["ionic", "sql"])
     @combinator object Bind4 extends Bind('sql, "www/js/sql.js")
 
     @combinator object Bind7 extends Bind('levelSelect, "www/templates/level_select.html")
-    @combinator object Bind8 extends Bind('mainPage, "www/templates/main.html")
     @combinator object Bind9 extends Bind('settings, "www/templates/settings.html")
 
     class GameBind(sym:Symbol, filePath:String) {
@@ -899,6 +919,7 @@ angular.module("controllers", ["ionic", "sql"])
 
     @combinator object Bind5 extends GameBind('gameHtml, "www/templates/game.html")
     @combinator object Bind6 extends GameBind('gameJs, "www/js/game.js")
+    @combinator object Bind8 extends GameBind('mainPage, "www/templates/main.html")
   }
 
   // Initializes the CLS system
@@ -910,5 +931,5 @@ angular.module("controllers", ["ionic", "sql"])
 
   // Pass the response into our defined output, currently just a printer
   val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
-  DirectoryMaker.parseResults(iter)
+  DirectoryMaker.printResults(iter)
 }
