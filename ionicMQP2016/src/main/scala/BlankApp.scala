@@ -477,11 +477,11 @@ angular.module("game", ["ionic", "sql"])
     }
 
     @combinator object MainPage {
-      def apply(): String = {
+      def apply(gameTitle:String): String = {
         return """
 <ion-view view-title="Main Page">
   <ion-header-bar class="bar bar-header bar-dark">
-    <h1 class="title">Heineman's MQP Strawman App</h1>
+    <h1 class="title">""" + gameTitle + """</h1>
   </ion-header-bar>
   <ion-content class="padding has-header has-footer">
 
@@ -511,7 +511,14 @@ angular.module("game", ["ionic", "sql"])
 </ion-view>
 """
       }
-      val semanticType:Type = 'mainPage
+      val semanticType:Type = gameVar :&: 'gameTitle =>: 'mainPage
+    }
+
+    @combinator object LightsOutTitle {
+      def apply(): String = {
+        return "Lights Out"
+      }
+      val semanticType:Type = 'lightsout :&: 'gameTitle
     }
 
     @combinator object LevelSelect {
@@ -765,8 +772,19 @@ angular.module("states", ["ionic"])
       val semanticType:Type = 'states
     }
 
-    @combinator object Controllers {
+
+    @combinator object LevelList {
       def apply(): String = {
+        return """
+        $rootScope.levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+            11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+            """
+      }
+      val semanticType:Type = 'levelList
+    }
+
+    @combinator object Controllers {
+      def apply(levelList:String): String = {
         return """
 /**
  * This file holds all the per "page" javascript functions.
@@ -794,15 +812,13 @@ angular.module("controllers", ["ionic", "sql"])
 /* Controller for the level select, aka list of levels */
 .controller("LevelSelectCtrl", function ($scope, $rootScope, $state, $ionicPopup, sqlfactory) {
   console.log("Now in the Level Select");
-
   $scope.loadLevel = function (num) {
-    console.log("Entering level " + num);
-    $state.go("level", {"levelNum": num});
-  }
-
+      console.log("Entering level " + num);
+      $state.go("level", {"levelNum": num});
+    }
   // Globally defined list of levels.
-  $rootScope.levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-    11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+  """ + levelList + """
 
   // Creates the database if it doesn't exist.
   sqlfactory.setupSQL();
@@ -853,7 +869,7 @@ angular.module("controllers", ["ionic", "sql"])
 });
 """
       }
-      val semanticType:Type = 'controllers
+      val semanticType:Type = 'levelList =>: 'controllers
     }
 
     class Bind(sym:Symbol, filePath:String) {
