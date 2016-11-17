@@ -777,11 +777,11 @@ angular.module("sql", ["ionic"])
       val semanticType:Type = 'otherStates
     }*/
 
-    @combinator object BlankStates {
+    class BlankStates(gameType:Type) {
       def apply(): Array[String] = {
         return Array()
       }
-      val semanticType:Type = 'otherStates
+      val semanticType:Type = 'otherStates :&: gameType
     }
 
     @combinator object States {
@@ -836,16 +836,16 @@ angular.module("states", ["ionic"])
 """
 return ret
       }
-      val semanticType:Type = 'otherStates =>: 'states
+      val semanticType:Type = gameVar :&: 'otherStates =>: 'states :&: gameVar
     }
 
 
-    @combinator object LevelList {
+    class LevelList(gameType:Type) {
       def apply(): String = {
         return """[1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
             11, 12, 13, 14, 15, 16, 17, 18, 19, 20]"""
       }
-      val semanticType:Type = 'levelList
+      val semanticType:Type = 'levelList :&: gameType
     }
 
     @combinator object Controllers {
@@ -934,7 +934,7 @@ angular.module("controllers", ["ionic", "sql"])
 });
 """
       }
-      val semanticType:Type = 'levelList =>: 'controllers
+      val semanticType:Type = gameVar :&: 'levelList =>: 'controllers :&: gameVar
     }
 
     class Bind(sym:Symbol, filePath:String) {
@@ -946,9 +946,7 @@ angular.module("controllers", ["ionic", "sql"])
 
     @combinator object Bind0 extends Bind('indexHtml, "www/index.html")
 
-    @combinator object Bind1 extends Bind('states, "www/js/states.js")
     @combinator object Bind2 extends Bind('appJs, "www/js/app.js")
-    @combinator object Bind3 extends Bind('controllers, "www/js/controllers.js")
     @combinator object Bind4 extends Bind('sql, "www/js/sql.js")
 
     @combinator object Bind7 extends Bind('levelSelect, "www/templates/level_select.html")
@@ -964,6 +962,11 @@ angular.module("controllers", ["ionic", "sql"])
     @combinator object Bind5 extends GameBind('gameHtml, "www/templates/game.html")
     @combinator object Bind6 extends GameBind('gameJs, "www/js/game.js")
     @combinator object Bind8 extends GameBind('mainPage, "www/templates/main.html")
+    
+    @combinator object Bind3 extends GameBind('controllers, "www/js/controllers.js")
+    @combinator object General1 extends LevelList('lightsout)
+    @combinator object Bind1 extends GameBind('states, "www/js/states.js")
+    @combinator object General2 extends BlankStates('lightsout)
   }
 
   // Initializes the CLS system
