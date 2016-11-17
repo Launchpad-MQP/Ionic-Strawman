@@ -683,89 +683,7 @@ angular.module("starter", [
 
     @combinator object SQL {
       def apply(): String = {
-        return """
-/**
- * This file holds all of the SQL interaction. In order to share functions
- * across other files, we use an Ionic factory.
- * This returns a dictionary of {name:function} for each function we want to
- * define.
-**/
-
-angular.module("sql", ["ionic"])
-
-.factory("sqlfactory", function () {
-  return {
-    // Setup function. Should be called early, once the window loads.
-    setupSQL: function () {
-      console.log("Creating blank table if nonexistent");
-      apidb.execute(db, "CREATE TABLE IF NOT EXISTS levels (number, state VARCHAR(50))");
-    },
-
-    // Reset function. Warning: You need to call setup again!
-    resetSQL: function () {
-      console.log("Dropping tables...");
-      apidb.execute(db, "DROP TABLE IF EXISTS levels");
-    },
-
-    // Adds a level to the database. Won't overwrite if the level
-    // already exists, use setLevelState for that.
-    addLevel: function (num, state) {
-    console.log ("Setting level "+num+" to "+state);
-    apidb.execute(db, "INSERT INTO levels (number, state) VALUES (?, ?)", [num, state])
-    .then(function (ret) {
-      console.log("Set level "+num+" to "+state);
-      for (var i in ret) {
-        console.log("\t"+i+": ", ret[i]);
-      }
-      }, function (err) {console.log(err);});
-    },
-
-    // Removes a level from the database. Currently unused.
-    deleteLevel: function (num) {
-      console.log("Deleting level: "+num);
-      apidb.execute(db, "DELETE FROM levels WHERE number=?", [num])
-      .then(function (ret) {
-        console.log("Deleted level: "+num);
-        for (var i in ret) {
-          try {
-            console.log("\t"+i+": ", ret[i]);
-          } catch (exc) {}
-        }
-      }, function (err) {console.log(err);});
-    },
-
-    // Gets a level state. Warning: To get a return from this function, you'll
-    // need to use a callback, which means passing in an anonymous function
-    // that will be called when SQL returns.
-    getLevelState: function (num, callback) {
-      console.log("Getting state for level: "+num);
-      apidb.execute(db, "SELECT * FROM levels WHERE number=?", [num])
-      .then(function (ret) {
-        if (ret.rows.length == 0) {
-          console.log("Could not find level: "+num);
-          return;
-        }
-        callback(ret.rows.item(0));
-      }, function (err) {console.log(err);});
-    },
-
-    // Sets a level state. Again, the return from this is asynchronous, but at
-    // present we don't need to do anything with it.
-    setLevelState: function (num, state) {
-      console.log("Setting state for level "+num+" to: "+state);
-      apidb.execute(db, "UPDATE levels SET state=? WHERE number=?", [state, num])
-      .then(function (ret) {
-        console.log("Set state for level "+num+ " to: "+state);
-        for (var i in ret) {
-          try {
-            console.log("\t"+i+": ", ret[i]);
-          } catch (exc) {}
-        }
-      }, function (err) {console.log(err);});
-    }
-  }
-});
-"""
+        return js.sql.render().toString()
       }
       val semanticType:Type = 'sql
     }
@@ -850,89 +768,7 @@ return ret
 
     @combinator object Controllers {
       def apply(levelList:String): String = {
-        return """
-/**
- * This file holds all the per "page" javascript functions.
- * Each of these should be (mostly) scoped to the page they operate on.
-**/
-
-angular.module("controllers", ["ionic", "sql"])
-
-/* Controller for the main page */
-.controller("MainCtrl", function ($scope) {
-  console.log("Now in the Main Page");
-})
-
-/* Controller for the settings page. */
-.controller("SettingsCtrl", function ($scope, $rootScope, sqlfactory) {
-  console.log("Now in the Settings page");
-  // Defining a local function so it can be used by ng-click
-  $scope.resetSQL = function () {
-    sqlfactory.resetSQL();
-    sqlfactory.setupSQL();
-    location.reload();
-  }
-})
-
-/* Controller for the level select, aka list of levels */
-.controller("LevelSelectCtrl", function ($scope, $rootScope, $state, $ionicPopup, sqlfactory) {
-  console.log("Now in the Level Select");
-  $scope.loadLevel = function (num) {
-      console.log("Entering level " + num);
-      $state.go("level", {"levelNum": num});
-    }
-  // Globally defined list of levels.
-
-  $rootScope.levels = """ + levelList + """;
-
-  // Creates the database if it doesn't exist.
-  sqlfactory.setupSQL();
-
-  for (var i in $rootScope.levels) {
-    // Adds a level if it doesn't exist, e.g. the database was just created.
-    // Otherwise, this line has no effect, i.e. the level retains its state.
-    sqlfactory.addLevel($rootScope.levels[i], "Unsolved");
-  }
-
-  // For each level, if it is completed we need to recolor the button.
-  // This uses a callback function, since talking to SQL is an async operation.
-  for (var i in $rootScope.levels) {
-    sqlfactory.getLevelState($rootScope.levels[i], function (level) {
-      console.log("Callback from getLevelState: ", level);
-      if (level.state == "Solved") {
-        button = document.getElementById("level_"+level.number);
-        button.setAttribute("class", "button button-dark ng-binding");
-      }
-    });
-  }
-
-  $rootScope.completeLevel = function($state, levelNum) {
-    button = document.getElementById("level_"+levelNum);
-    button.setAttribute("class", "button button-dark ng-binding");
-    sqlfactory.setLevelState(levelNum, "Solved");
-
-    $ionicPopup.show({
-      title: "Level Complete!",
-      buttons: [
-      {
-        text: "Level Select",
-        onTap: function () {
-          console.log("Back to level select.");
-          $state.go("level_select");
-        }
-      },
-      {
-        text: "Next",
-        type: "button-positive",
-        onTap: function () {
-          console.log("On to the next level.");
-          $state.go("level", {"levelNum": levelNum+1});
-        }
-      }]
-    });
-  }
-});
-"""
+        return js.controllers.render(levelList).toString()
       }
       val semanticType:Type = gameVar :&: 'levelList =>: 'controllers :&: gameVar
     }
@@ -962,7 +798,7 @@ angular.module("controllers", ["ionic", "sql"])
     @combinator object Bind5 extends GameBind('gameHtml, "www/templates/game.html")
     @combinator object Bind6 extends GameBind('gameJs, "www/js/game.js")
     @combinator object Bind8 extends GameBind('mainPage, "www/templates/main.html")
-    
+
     @combinator object Bind3 extends GameBind('controllers, "www/js/controllers.js")
     @combinator object General1 extends LevelList('lightsout)
     @combinator object Bind1 extends GameBind('states, "www/js/states.js")
