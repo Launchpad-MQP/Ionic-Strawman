@@ -436,9 +436,23 @@ angular.module("game", ["ionic", "sql"])
       val semanticType:Type = gameVar :&: 'js =>: gameVar :&: 'gameJs
     }
 
+    /*@combinator object SomeScripts {
+      def apply(): Array[String] = {
+        return Array("example.js", "othersource.js")
+      }
+      val semanticType:Type = 'scripts
+    }*/
+
+    @combinator object BlankScripts {
+      def apply(): Array[String] = {
+        return Array()
+      }
+      val semanticType:Type = 'scripts
+    }
+
     @combinator object IndexHTML {
-      def apply(): String = {
-        return """
+      def apply(otherScripts:Array[String]): String = {
+        var ret = """
 <!DOCTYPE html>
 <html>
   <head>
@@ -460,6 +474,13 @@ angular.module("game", ["ionic", "sql"])
 
     <!-- your app's js -->
     <script src="js/sql.js"></script> <!-- Must load before controllers, they use sql. -->
+    """
+
+    for(script <- otherScripts) {
+      ret += """<script src="js/""" + script + """"></script>""" + "\n"
+    }
+
+    ret += """
     <script src="js/states.js"></script>
     <script src="js/controllers.js"></script>
     <script src="js/game.js"></script>
@@ -472,8 +493,9 @@ angular.module("game", ["ionic", "sql"])
   </body>
 </html>
 """
+return ret;
       }
-      val semanticType:Type = 'indexHtml
+      val semanticType:Type = 'scripts =>: 'indexHtml
     }
 
     @combinator object MainPage {
@@ -796,10 +818,8 @@ angular.module("states", ["ionic"])
 
     @combinator object LevelList {
       def apply(): String = {
-        return """
-        $rootScope.levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-            11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-            """
+        return """[1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+            11, 12, 13, 14, 15, 16, 17, 18, 19, 20]"""
       }
       val semanticType:Type = 'levelList
     }
@@ -839,7 +859,7 @@ angular.module("controllers", ["ionic", "sql"])
     }
   // Globally defined list of levels.
 
-  """ + levelList + """
+  $rootScope.levels = """ + levelList + """;
 
   // Creates the database if it doesn't exist.
   sqlfactory.setupSQL();
