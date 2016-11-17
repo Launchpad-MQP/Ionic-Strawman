@@ -770,9 +770,23 @@ angular.module("sql", ["ionic"])
       val semanticType:Type = 'sql
     }
 
+    /*@combinator object SomeStates {
+      def apply(): Array[String] = {
+        return Array("youlose", "hellstate")
+      }
+      val semanticType:Type = 'otherStates
+    }*/
+
+    @combinator object BlankStates {
+      def apply(): Array[String] = {
+        return Array()
+      }
+      val semanticType:Type = 'otherStates
+    }
+
     @combinator object States {
-      def apply(): String = {
-        return """
+      def apply(otherStates:Array[String]): String = {
+        var ret = """
 /**
  * A list of all the levels and states. This is what allows us to switch
  * between the different "pages". Each html page should have an associated
@@ -783,8 +797,17 @@ angular.module("states", ["ionic"])
 
 .config(function ($stateProvider, $urlRouterProvider){
   $stateProvider
+"""
 
-  .state("main", {
+  for(state <- otherStates) {
+    ret += """.state(""""+ state +"""", {
+      url: "/"""+ state +"""",
+      templateUrl: "templates/"""+ state +""".html",
+      controller: """"+ state +"""Ctrl"
+    })""" + "\n"
+  }
+
+  ret += """.state("main", {
     url: "/main",
     templateUrl: "templates/main.html",
     controller: "MainCtrl"
@@ -811,8 +834,9 @@ angular.module("states", ["ionic"])
   $urlRouterProvider.otherwise("/main");
 });
 """
+return ret
       }
-      val semanticType:Type = 'states
+      val semanticType:Type = 'otherStates =>: 'states
     }
 
 
