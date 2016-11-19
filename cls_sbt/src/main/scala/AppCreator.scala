@@ -166,7 +166,7 @@ object AppCreator extends App {
     <script src="js/sql.js"></script> <!-- Must load before controllers, they use sql. -->
     """
 
-    if(!otherScripts.isEmpty){    
+    if(!otherScripts.isEmpty){
       ret += otherScripts.mkString("<script src=\"js/", "\"></script>\n    <script src=\"js/", "\"></script>\n");
     }
 
@@ -320,7 +320,6 @@ return ret
       val semanticType:Type = gameVar :&: 'otherStates =>: 'states :&: gameVar
     }
 
-
     class LevelList(gameType:Type) {
       def apply(): String = {
         return """[1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
@@ -343,14 +342,6 @@ return ret
       val semanticType:Type = sym =>: 'BoundFile :&: sym :&: gameVar
     }
 
-    @combinator object Bind0 extends Bind('indexHtml, "www/index.html")
-
-    @combinator object Bind2 extends Bind('appJs, "www/js/app.js")
-    @combinator object Bind4 extends Bind('sql, "www/js/sql.js")
-
-    @combinator object Bind7 extends Bind('levelSelect, "www/templates/level_select.html")
-    @combinator object Bind9 extends Bind('settings, "www/templates/settings.html")
-
     class GameBind(sym:Symbol, filePath:String) {
       def apply(expr:String) : Tuple = {
 			  return new Tuple(expr, filePath)
@@ -358,13 +349,21 @@ return ret
       val semanticType:Type = sym :&: gameVar =>: 'BoundFile :&: sym :&: gameVar
     }
 
-    @combinator object Bind5 extends GameBind('gameHtml, "www/templates/game.html")
-    @combinator object Bind6 extends GameBind('gameJs, "www/js/game.js")
-    @combinator object Bind8 extends GameBind('mainPage, "www/templates/main.html")
-
-    @combinator object Bind3 extends GameBind('controllers, "www/js/controllers.js")
-    @combinator object General1 extends LevelList('lightsout)
+    @combinator object Bind0 extends Bind('indexHtml, "www/index.html")
     @combinator object Bind1 extends GameBind('states, "www/js/states.js")
+
+    @combinator object Bind2 extends Bind('appJs, "www/js/app.js")
+    @combinator object Bind3 extends GameBind('controllers, "www/js/controllers.js")
+    @combinator object Bind4 extends Bind('sql, "www/js/sql.js")
+    @combinator object Bind5 extends GameBind('gameHtml, "www/templates/game.html")
+
+    @combinator object Bind6 extends GameBind('gameJs, "www/js/game.js")
+    @combinator object Bind7 extends Bind('levelSelect, "www/templates/level_select.html")
+    @combinator object Bind8 extends GameBind('mainPage, "www/templates/main.html")
+    @combinator object Bind9 extends Bind('settings, "www/templates/settings.html")
+
+
+    @combinator object General1 extends LevelList('lightsout)
     @combinator object General2 extends BlankStates('lightsout)
   }
 
