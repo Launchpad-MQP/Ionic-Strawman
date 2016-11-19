@@ -1,11 +1,14 @@
+# Ignore everything
 *
+# Except these extensions
 !.gitignore
 !*.html
 !*.js
 !*.scala
 !*.java
 !*/
-# These contain .html and .js files which are generic to the system
+# Except these folders
+cls_sbt/target/
 www/lib/
 node_modules/
 hooks/
