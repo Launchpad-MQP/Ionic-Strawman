@@ -17,7 +17,7 @@ angular.module("game", ["ionic", "sql"])
   // Redefined so that it can be used in the HTML.
   $scope.levelNum = $stateParams.levelNum;
 
-  @contents
+  @Html(contents)
 
   $scope.completeLevel = function () {
     $rootScope.completeLevel($state, $stateParams.levelNum);

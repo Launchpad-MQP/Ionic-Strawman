@@ -32,7 +32,7 @@ angular.module("controllers", ["ionic", "sql"])
   }
   // Globally defined list of levels.
 
-  $rootScope.levels = @levelList;
+  $rootScope.levels = @Html(levelList);
 
   // Creates the database if it doesn't exist.
   sqlfactory.setupSQL();

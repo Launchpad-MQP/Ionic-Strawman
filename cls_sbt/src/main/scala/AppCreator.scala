@@ -121,7 +121,34 @@ object AppCreator extends App {
 
     @combinator object GameJs {
       def apply(contents:String): String = {
-        return js.game.render(contents).toString()
+        return """angular.module("game", ["ionic", "sql"])
+
+        .controller("LevelCtrl", function ($scope, $rootScope, $state, $stateParams, sqlfactory) {
+          // Check for invalid state
+          if ($rootScope.levels === undefined) {
+            console.log("Level loaded but level list undefined, going to main")
+            $state.go("main");
+          } else if (!$rootScope.levels.includes($stateParams.levelNum)) {
+            console.log("Went to level " + $stateParams.levelNum + " redirecting to level select.");
+            $state.go("level_select");
+          } else {
+            console.log("Now in level: " + $stateParams.levelNum);
+          }
+
+          // Redefined so that it can be used in the HTML.
+          $scope.levelNum = $stateParams.levelNum;
+
+          """+ contents +"""
+
+          $scope.completeLevel = function () {
+            $rootScope.completeLevel($state, $stateParams.levelNum);
+          }
+
+          $scope.restart = function () {
+            console.log("Restarting level...");
+            $state.reload();
+          }
+        });"""
       }
       val semanticType:Type = gameVar :&: 'js =>: gameVar :&: 'gameJs
     }
@@ -322,8 +349,7 @@ return ret
 
     class LevelList(gameType:Type) {
       def apply(): String = {
-        return """[1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-            11, 12, 13, 14, 15, 16, 17, 18, 19, 20]"""
+        return """[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]"""
       }
       val semanticType:Type = 'levelList :&: gameType
     }
