@@ -126,19 +126,19 @@ object AppCreator extends App {
       val semanticType:Type = gameVar :&: 'js =>: gameVar :&: 'gameJs
     }
 
-    /*@combinator object SomeScripts {
+    @combinator object SomeScripts {
       def apply(): Array[String] = {
         return Array("example.js", "othersource.js")
       }
       val semanticType:Type = 'scripts
-    }*/
+    }
 
-    @combinator object BlankScripts {
+    /*@combinator object BlankScripts {
       def apply(): Array[String] = {
         return Array()
       }
       val semanticType:Type = 'scripts
-    }
+    }*/
 
     @combinator object IndexHTML {
       def apply(otherScripts:Array[String]): String = {
@@ -166,8 +166,8 @@ object AppCreator extends App {
     <script src="js/sql.js"></script> <!-- Must load before controllers, they use sql. -->
     """
 
-    for(script <- otherScripts) {
-      ret += """<script src="js/""" + script + """"></script>""" + "\n"
+    if(!otherScripts.isEmpty){    
+      ret += otherScripts.mkString("<script src=\"js/", "\"></script>\n    <script src=\"js/", "\"></script>\n");
     }
 
     ret += """
