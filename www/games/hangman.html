@@ -3,14 +3,16 @@
 				color : rgba(0, 0, 0, 0);
 				width : 30px;
 				border : thin solid black;
-				backgroundColor : powderblue;
+				text-align: center;
+				font-size: 20px;
 				}
 				
 	.discovered {
 				color : rgba(0, 0, 0, 1);
 				width : 30px;
 				border : thin solid black;
-				backgroundColor : powderblue;
+				text-align: center;
+				font-size: 20px;
 				}
 </style>
 
@@ -20,29 +22,26 @@
   </ion-header-bar>
   <ion-content class="has-header" padding="true">
 		
-		<div class="card">
-			<div class= "item row">
-				<div class= "col" ng-repeat="letter in myLetters track by $index">
-					<div class= "guessable {{levelNum}} {{letter}}">{{letter}}</div>
-				</div>
+		<div class= "item row">
+			<div ng-repeat="letter in myLetters track by $index">
+				<div class= "guessable {{levelNum}} {{letter}}">{{letter}}</div>
 			</div>
-			<p>Guessed Letters:</p>
-			<div class = "row" id="guessed_{{levelNum}}"></div>
-			<p>Tries Left: {{guessesLeft}}</p>
+		</div>
+		<br>
+		<div class="row">
+			<ion-input class="item item-input item-stacked-label">
+				<input type="text" maxLength="1" class= "letterguess" id="letterguess_{{levelNum}}" placeholder="Type a letter here">
+			</ion-input>
+			&nbsp; <button class="button button-positive levelBtn" ng-click="makeGuess()">Guess</button>
 		</div>
 		
-		<ion-input class="item item-input item-stacked-label">
-			<ion-label >Guess</ion-label>
-			<input type="text" maxLength="1" class= "letterguess" id="letterguess_{{levelNum}}" placeholder="Type a letter here">
-		</ion-input>
-		
-		<div class="col" style="text-align:center">
-      <button class="button button-assertive levelBtn" ng-click="makeGuess()">Guess</button>
-    </div>
+		<h4>Guessed Letters:</h4>
+		<div class = "row" id="guessed_{{levelNum}}"></div>
+		<h4>Tries Left: {{guessesLeft}}</h4>
 
   </ion-content>
   <ion-footer-bar class="bar bar-footer bar-stable" align-title="left">
     <a class="button ion-home" href="#/level_select">&nbsp; BACK</a>
-    <button class="button button-calm" ng-click="restart()">&nbsp; RESTART</button>
+    <button class="button button-calm" ng-click="restart()">RESTART</button>
   </ion-footer-bar>
 </ion-view>
