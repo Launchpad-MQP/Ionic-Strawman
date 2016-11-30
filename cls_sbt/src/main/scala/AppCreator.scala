@@ -153,68 +153,6 @@ object AppCreator extends App {
       val semanticType:Type = gameVar :&: 'js =>: gameVar :&: 'gameJs
     }
 
-    @combinator object SomeScripts {
-      def apply(): Array[String] = {
-        return Array("example.js", "othersource.js")
-      }
-      val semanticType:Type = 'scripts
-    }
-
-    /*@combinator object BlankScripts {
-      def apply(): Array[String] = {
-        return Array()
-      }
-      val semanticType:Type = 'scripts
-    }*/
-
-    @combinator object IndexHTML {
-      def apply(otherScripts:Array[String]): String = {
-        var ret = """
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title></title>
-
-    <link rel="manifest" href="manifest.json">
-
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-
-    <!-- ionic/angularjs js -->
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
-    <script src="lib/ngCordova/dist/ng-cordova.min.js"></script>
-
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
-
-    <!-- your app's js -->
-    <script src="js/sql.js"></script> <!-- Must load before controllers, they use sql. -->
-    """
-
-    if(!otherScripts.isEmpty){
-      ret += otherScripts.mkString("<script src=\"js/", "\"></script>\n    <script src=\"js/", "\"></script>\n");
-    }
-
-    ret += """
-    <script src="js/states.js"></script>
-    <script src="js/controllers.js"></script>
-    <script src="js/game.js"></script>
-    <script src="js/app.js"></script>
-  </head>
-  <body ng-app="starter">
-    <div ng-controller="MainCtrl">
-      <ion-nav-view animation="slide-left-right"></ion-nav-view>
-    </div>
-  </body>
-</html>
-"""
-return ret;
-      }
-      val semanticType:Type = 'scripts =>: 'indexHtml
-    }
-
     @combinator object MainPage {
       def apply(gameTitle:String): String = {
         return html.mainpage.render(gameTitle).toString()
@@ -250,6 +188,37 @@ return ret;
       val semanticType:Type = 'dummy :&: 'gameTitle
     }
 
+    @combinator object LevelList {
+      def apply(): Array[Int] = {
+        return (1 to 20).toArray
+      }
+      val semanticType:Type = 'levelList
+    }
+
+    // JS files
+    @combinator object ScriptList {
+      def apply(): Array[String] = {
+        // sql is a library, so it must be listed before controllers
+        return Array("sql", "states", "controllers", "game")
+      }
+      val semanticType:Type = 'scriptList
+    }
+
+    // HTML files
+    @combinator object StateList {
+      def apply(): Array[String] = {
+        return Array("main", "level_select", "settings")
+      }
+      val semanticType:Type = 'stateList
+    }
+
+    @combinator object IndexHTML {
+      def apply(scriptList:Array[String]): String = {
+        return html.index.render(scriptList).toString()
+      }
+      val semanticType:Type = 'scriptList =>: 'indexHtml
+    }
+
     @combinator object LevelSelect {
       def apply(): String = {
         return html.levelselect.render().toString()
@@ -265,10 +234,10 @@ return ret;
     }
 
     @combinator object AppJs {
-      def apply(): String = {
-        return js.app.render().toString()
+      def apply(scriptList:Array[String]): String = {
+        return js.app.render(scriptList).toString()
       }
-      val semanticType:Type = 'appJs
+      val semanticType:Type = 'scriptList =>: 'appJs
     }
 
     @combinator object SQL {
@@ -278,87 +247,19 @@ return ret;
       val semanticType:Type = 'sql
     }
 
-    /*@combinator object SomeStates {
-      def apply(): Array[String] = {
-        return Array("youlose", "hellstate")
-      }
-      val semanticType:Type = 'otherStates
-    }*/
-
-    class BlankStates(gameType:Type) {
-      def apply(): Array[String] = {
-        return Array()
-      }
-      val semanticType:Type = 'otherStates :&: gameType
-    }
-
     @combinator object States {
-      def apply(otherStates:Array[String]): String = {
-        var ret = """
-/**
- * A list of all the levels and states. This is what allows us to switch
- * between the different "pages". Each html page should have an associated
- * javascript controller, even if that controller is unused.
-**/
-
-angular.module("states", ["ionic"])
-
-.config(function ($stateProvider, $urlRouterProvider){
-  $stateProvider
-"""
-
-  for(state <- otherStates) {
-    ret += """.state(""""+ state +"""", {
-      url: "/"""+ state +"""",
-      templateUrl: "templates/"""+ state +""".html",
-      controller: """"+ state +"""Ctrl"
-    })""" + "\n"
-  }
-
-  ret += """.state("main", {
-    url: "/main",
-    templateUrl: "templates/main.html",
-    controller: "MainCtrl"
-  })
-
-  .state("level_select", {
-    url: "/level_select",
-    templateUrl: "templates/level_select.html",
-    controller: "LevelSelectCtrl"
-  })
-
-  .state("level", {
-    url: "/level/{levelNum:int}",
-    templateUrl: "templates/game.html",
-    controller: "LevelCtrl"
-  })
-
-  .state("settings", {
-    url: "/settings",
-    templateUrl: "templates/settings.html",
-    controller: "SettingsCtrl"
-  });
-
-  $urlRouterProvider.otherwise("/main");
-});
-"""
-return ret
+      def apply(stateList:Array[String]): String = {
+        return js.states.render(stateList).toString()
       }
-      val semanticType:Type = gameVar :&: 'otherStates =>: 'states :&: gameVar
-    }
-
-    class LevelList(gameType:Type) {
-      def apply(): Array[Int] = {
-        return (1 to 20).toArray
-      }
-      val semanticType:Type = 'levelList :&: gameType
+      // List of states is also list of scripts
+      val semanticType:Type = 'stateList =>: 'states
     }
 
     @combinator object Controllers {
       def apply(levelList:Array[Int]): String = {
         return js.controllers.render(levelList).toString()
       }
-      val semanticType:Type = gameVar :&: 'levelList =>: 'controllers :&: gameVar
+      val semanticType:Type = 'levelList =>: 'controllers
     }
 
     class Bind(sym:Symbol, filePath:String) {
@@ -376,21 +277,18 @@ return ret
     }
 
     @combinator object Bind0 extends Bind('indexHtml, "www/index.html")
-    @combinator object Bind1 extends GameBind('states, "www/js/states.js")
+    @combinator object Bind1 extends Bind('states, "www/js/states.js")
 
     @combinator object Bind2 extends Bind('appJs, "www/js/app.js")
-    @combinator object Bind3 extends GameBind('controllers, "www/js/controllers.js")
+    @combinator object Bind3 extends Bind('controllers, "www/js/controllers.js")
     @combinator object Bind4 extends Bind('sql, "www/js/sql.js")
     @combinator object Bind5 extends GameBind('gameHtml, "www/templates/game.html")
-
     @combinator object Bind6 extends GameBind('gameJs, "www/js/game.js")
+
     @combinator object Bind7 extends Bind('levelSelect, "www/templates/level_select.html")
     @combinator object Bind8 extends GameBind('mainPage, "www/templates/main.html")
     @combinator object Bind9 extends Bind('settings, "www/templates/settings.html")
 
-
-    @combinator object General1 extends LevelList('lightsout)
-    @combinator object General2 extends BlankStates('lightsout)
   }
 
   // Initializes the CLS system

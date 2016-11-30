@@ -1,3 +1,4 @@
+@(stateList:Array[String])
 /**
  * The main javascript file. Contains global variable definitions, and loads
  * other javascript templates.
@@ -9,13 +10,7 @@ var db = undefined;
 var apidb = undefined;
 
 // A list of other javascript files to include
-angular.module("starter", [
-  "ionic", /* Base include for ionic */
-  "states", /* State transitions between pages */
-  "controllers", /* Individual page js */
-  "ngCordova", /* Used for Cordova-SQLite */
-  "game" /* Our game */
-])
+angular.module("starter", [@for(state <- stateList) {"@state", }"ngCordova"])
 
 // Runs when the app is fully loaded.
 .run(function ($ionicPlatform, $cordovaSQLite) {
