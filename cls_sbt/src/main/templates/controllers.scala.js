@@ -1,5 +1,4 @@
-@(levelList:String)
-
+@(levelList:Array[Int])
 /**
 * This file holds all the per "page" javascript functions.
 * Each of these should be (mostly) scoped to the page they operate on.
@@ -31,8 +30,7 @@ angular.module("controllers", ["ionic", "sql"])
     $state.go("level", {"levelNum": num});
   }
   // Globally defined list of levels.
-
-  $rootScope.levels = @Html(levelList);
+  $rootScope.levels = [@for(level <- levelList) {@level, }];
 
   // Creates the database if it doesn't exist.
   sqlfactory.setupSQL();

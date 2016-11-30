@@ -348,14 +348,14 @@ return ret
     }
 
     class LevelList(gameType:Type) {
-      def apply(): String = {
-        return """[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]"""
+      def apply(): Array[Int] = {
+        return (1 to 20).toArray
       }
       val semanticType:Type = 'levelList :&: gameType
     }
 
     @combinator object Controllers {
-      def apply(levelList:String): String = {
+      def apply(levelList:Array[Int]): String = {
         return js.controllers.render(levelList).toString()
       }
       val semanticType:Type = gameVar :&: 'levelList =>: 'controllers :&: gameVar
