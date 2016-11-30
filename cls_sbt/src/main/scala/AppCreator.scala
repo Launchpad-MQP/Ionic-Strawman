@@ -20,18 +20,19 @@ object AppCreator extends App {
       .addOption('dummy)
 
     @combinator object MastermindHTML {
-      def apply(): String = {
+      def apply(guessButton:String): String = {
         return """
-    <div class="row">
-      <input class="item item-input" id="guess_{{levelNum}}" placeholder="Guess a {{word.length}} letter word">
-      &nbsp;
-      <button class="button button-positive" ng-click="submit()">Submit</button>
-    </div>
-    <div class="row">
-      <h4>{{result}}</h4>
-    </div>"""
+        <ion-content class="has-header" padding="true">
+          <div class="row">
+            <input class="item item-input" maxLength="{{word.length}}" id="guess_{{levelNum}}" placeholder="Guess a {{word.length}} letter word">
+            &nbsp; """ + guessButton + """
+          </div>
+          <div class="row">
+            <h4>{{result}}</h4>
+          </div>
+      </ion-content>"""
       }
-      val semanticType:Type = 'mastermind :&: 'html
+      val semanticType:Type = 'guessButton =>: 'mastermind :&: 'html
     }
 
     @combinator object MastermindJS {
@@ -41,30 +42,33 @@ object AppCreator extends App {
       val semanticType:Type = 'mastermind :&: 'js
     }
 
-    @combinator object HangmanHTML {
+    @combinator object GuessButton {
       def apply(): String = {
-        return """
-		<div class="card">
-			<div class= "item row">
-				<div class= "col" ng-repeat="letter in myLetters track by $index">
-					<div class= "guessable {{levelNum}} {{letter}}">{{letter}}</div>
-				</div>
-			</div>
-			<p>Guessed Letters:</p>
-			<div class = "row" id="guessed_{{levelNum}}"></div>
-			<p>Tries Left: {{guessesLeft}}</p>
-		</div>
-
-		<ion-input class="item item-input item-stacked-label">
-			<ion-label >Guess</ion-label>
-			<input type="text" maxLength="1" class= "letterguess" id="letterguess_{{levelNum}}" placeholder="Type a letter here">
-		</ion-input>
-
-		<div class="col" style="text-align:center">
-      <button class="button button-assertive levelBtn" ng-click="makeGuess()">Guess</button>
-</div>"""
+        return """<button class="button button-positive levelBtn" ng-click="makeGuess()">Guess</button>"""
       }
-      val semanticType:Type = 'hangman :&: 'html
+      val semanticType:Type = 'guessButton
+    }
+
+    @combinator object HangmanHTML {
+      def apply(guessButton:String): String = {
+        """<div class= "item row">
+    			<div ng-repeat="letter in myLetters track by $index">
+    				<div class= "guessable {{levelNum}} {{letter}}">{{letter}}</div>
+    			</div>
+    		</div>
+    		<br>
+    		<div class="row">
+    			<ion-input class="item item-input item-stacked-label">
+    				<input type="text" maxLength="1" class= "letterguess" id="letterguess_{{levelNum}}" placeholder="Guess a letter here">
+    			</ion-input>
+    			&nbsp; """ + guessButton + """
+    		</div>
+
+    		<h4>Guessed Letters:</h4>
+    		<div class = "row" id="guessed_{{levelNum}}"></div>
+    <h4>Tries Left: {{guessesLeft}}</h4>"""
+      }
+      val semanticType:Type = 'guessButton =>: 'hangman :&: 'html
     }
 
     @combinator object HangmanJs {
@@ -247,6 +251,37 @@ object AppCreator extends App {
       val semanticType:Type = 'sql
     }
 
+    @combinator object CSS {
+      def apply(): String = {
+        return """.row.unlimited-items {
+          flex-wrap: wrap;
+        }
+
+        .row.unlimited-items .col{
+          flex: none;
+          width: 20%;
+        }
+
+        .guessable {
+        	color : rgba(0, 0, 0, 0);
+        	width : 30px;
+        	border : thin solid black;
+        	text-align: center;
+        	font-size: 20px;
+        }
+
+        .discovered {
+        	color : rgba(0, 0, 0, 1);
+        	width : 30px;
+        	border : thin solid black;
+        	text-align: center;
+        	font-size: 20px;
+        }
+"""
+      }
+      val semanticType:Type = 'css
+    }
+
     @combinator object States {
       def apply(stateList:Array[String]): String = {
         return js.states.render(stateList).toString()
@@ -289,6 +324,8 @@ object AppCreator extends App {
     @combinator object Bind8 extends GameBind('mainPage, "www/templates/main.html")
     @combinator object Bind9 extends Bind('settings, "www/templates/settings.html")
 
+    @combinator object BindA extends Bind('css, "www/css/style.css")
+
   }
 
   // Initializes the CLS system
@@ -296,7 +333,7 @@ object AppCreator extends App {
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'lightsout)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'mastermind)
 
   // Pass the response into our defined output, currently just a printer
   val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
