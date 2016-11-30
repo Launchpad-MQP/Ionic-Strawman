@@ -25,7 +25,7 @@ angular.module("mastermind", ["ionic", "sql"])
   $scope.levelNum = $stateParams.levelNum;
 
   $scope.result = "";
-  $scope.submit = function() {
+  $scope.makeGuess = function() {
     guess = document.getElementById("guess_"+$stateParams.levelNum).value;
     console.log("Guess: "+guess);
     if (guess.length != $scope.word.length) {
