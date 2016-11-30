@@ -25,6 +25,8 @@ public class DirectoryMaker {
     makeDirectory("www/js");
     removeDirectory("www/templates");
     makeDirectory("www/templates");
+    //removeDirectory("www/css");
+    //makeDirectory("www/css");
 
     //parse
     while (iter.hasNext()) {
