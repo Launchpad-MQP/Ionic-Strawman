@@ -35,13 +35,6 @@ object AppCreator extends App {
       val semanticType:Type = 'guessButton =>: 'mastermind :&: 'html
     }
 
-    @combinator object MastermindJS {
-      def apply(): String = {
-        return js.mastermind.render().toString()
-      }
-      val semanticType:Type = 'mastermind :&: 'js
-    }
-
     @combinator object GuessButton {
       def apply(): String = {
         return """<button class="button button-positive levelBtn" ng-click="makeGuess()">Guess</button>"""
@@ -71,13 +64,6 @@ object AppCreator extends App {
       val semanticType:Type = 'guessButton =>: 'hangman :&: 'html
     }
 
-    @combinator object HangmanJs {
-      def apply(): String = {
-        return js.hangman.render().toString()
-      }
-      val semanticType:Type = 'hangman :&: 'js
-    }
-
     @combinator object LightsOutHTML {
       def apply(): String = {
         return """
@@ -92,13 +78,6 @@ object AppCreator extends App {
       val semanticType:Type = 'lightsout :&: 'html
     }
 
-    @combinator object LightsOutJS {
-      def apply(): String = {
-        return js.lightsout.render().toString()
-      }
-      val semanticType:Type = 'lightsout :&: 'js
-    }
-
     @combinator object DummyHTML {
       def apply(): String = {
         return """
@@ -107,13 +86,6 @@ object AppCreator extends App {
     </div>"""
       }
       val semanticType:Type = 'dummy :&: 'html
-    }
-
-    @combinator object DummyJS {
-      def apply(): String = {
-        return ""
-      }
-      val semanticType:Type = 'dummy :&: 'js
     }
 
     @combinator object GameHTML {
@@ -171,10 +143,26 @@ object AppCreator extends App {
       val semanticType:Type = game :&: sym
     }
 
+    class TextifyGeneral(sym:Symbol, output:String) {
+      def apply(): String = {
+        return output
+      }
+      val semanticType:Type = sym
+    }
+
+    @combinator object SQL extends TextifyGeneral('sql, js.sql.render().toString())
+    @combinator object LevelSelect extends TextifyGeneral('levelSelect, html.levelselect.render().toString())
+    @combinator object Settings extends TextifyGeneral('settings, html.settings.render().toString())
+
     @combinator object HangmanTitle extends Textify('hangman, 'gameTitle, "Hangman")
     @combinator object MastermindTitle extends Textify('mastermind, 'gameTitle, "Mastermind")
     @combinator object LightsOutTitle extends Textify('lightsout, 'gameTitle, "Lights Out")
     @combinator object DummyTitle extends Textify('dummy, 'gameTitle, "Dummy")
+
+    @combinator object HangmanJS extends Textify('hangman, 'js, js.hangman.render().toString())
+    @combinator object MastermindJS extends Textify('mastermind, 'js, js.mastermind.render().toString())
+    @combinator object LightsOutJS extends Textify('lightsout, 'js, js.lightsout.render().toString())
+    @combinator object DummyJS extends Textify('dummy, 'js, "")
 
     @combinator object LevelList {
       def apply(): Array[Int] = {
@@ -207,32 +195,11 @@ object AppCreator extends App {
       val semanticType:Type = 'scriptList =>: 'indexHtml
     }
 
-    @combinator object LevelSelect {
-      def apply(): String = {
-        return html.levelselect.render().toString()
-      }
-      val semanticType:Type = 'levelSelect
-    }
-
-    @combinator object Settings {
-      def apply(): String = {
-        return html.settings.render().toString()
-      }
-      val semanticType:Type = 'settings
-    }
-
     @combinator object AppJs {
       def apply(scriptList:Array[String]): String = {
         return js.app.render(scriptList).toString()
       }
       val semanticType:Type = 'scriptList =>: 'appJs
-    }
-
-    @combinator object SQL {
-      def apply(): String = {
-        return js.sql.render().toString()
-      }
-      val semanticType:Type = 'sql
     }
 
     @combinator object CSS {
