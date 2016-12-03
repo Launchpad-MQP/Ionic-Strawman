@@ -35,12 +35,15 @@ object AppCreator extends App {
       val semanticType:Type = 'guessButton =>: 'mastermind :&: 'html
     }
 
-    @combinator object GuessButton {
+    class Button(sym:Symbol, buttonColor:String, buttonFunction:String, text:String) {
       def apply(): String = {
-        return """<button class="button button-positive levelBtn" ng-click="makeGuess()">Guess</button>"""
+        return """<button class="button """ + buttonColor +
+        """ levelBtn" ng-click="""" + buttonFunction + """">""" + text + """</button>"""
       }
-      val semanticType:Type = 'guessButton
+      val semanticType:Type = sym
     }
+
+    @combinator object GuessButton extends Button('guessButton, "button-positive", "makeGuess()", "Guess")
 
     @combinator object HangmanHTML {
       def apply(guessButton:String): String = {
