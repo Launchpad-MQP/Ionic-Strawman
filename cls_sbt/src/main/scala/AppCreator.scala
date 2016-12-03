@@ -164,33 +164,17 @@ object AppCreator extends App {
       val semanticType:Type = gameVar :&: 'gameTitle =>: 'mainPage :&: gameVar
     }
 
-    @combinator object LightsOutTitle {
-      def apply(): String = {
-        return "Lights Out"
+    class Textify(game:Symbol, sym:Symbol, output:String) {
+      def apply() : String = {
+			  return output
       }
-      val semanticType:Type = 'lightsout :&: 'gameTitle
+      val semanticType:Type = game :&: sym
     }
 
-    @combinator object HangmanTitle {
-      def apply(): String = {
-        return "Hangman"
-      }
-      val semanticType:Type = 'hangman :&: 'gameTitle
-    }
-
-    @combinator object MastermindTitle {
-      def apply(): String = {
-        return "Word Mastermind"
-      }
-      val semanticType:Type = 'mastermind :&: 'gameTitle
-    }
-
-    @combinator object DummyTitle {
-      def apply(): String = {
-        return "Dummy App"
-      }
-      val semanticType:Type = 'dummy :&: 'gameTitle
-    }
+    @combinator object HangmanTitle extends Textify('hangman, 'gameTitle, "Hangman")
+    @combinator object MastermindTitle extends Textify('mastermind, 'gameTitle, "Mastermind")
+    @combinator object LightsOutTitle extends Textify('lightsout, 'gameTitle, "Lights Out")
+    @combinator object DummyTitle extends Textify('dummy, 'gameTitle, "Dummy")
 
     @combinator object LevelList {
       def apply(): Array[Int] = {
@@ -333,7 +317,7 @@ object AppCreator extends App {
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'mastermind)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'lightsout)
 
   // Pass the response into our defined output, currently just a printer
   val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
