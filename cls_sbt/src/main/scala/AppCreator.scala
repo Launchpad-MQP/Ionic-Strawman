@@ -137,33 +137,17 @@ object AppCreator extends App {
       val semanticType:Type = gameVar :&: 'gameTitle =>: 'mainPage :&: gameVar
     }
 
-    class Textify(game:Symbol, sym:Symbol, output:String) {
+    class Title(game:Symbol, title:String) {
       def apply() : String = {
-			  return output
+			  return title
       }
-      val semanticType:Type = game :&: sym
+      val semanticType:Type = game :&: 'gameTitle
     }
 
-    class TextifyGeneral(sym:Symbol, output:String) {
-      def apply(): String = {
-        return output
-      }
-      val semanticType:Type = sym
-    }
-
-    @combinator object SQL extends TextifyGeneral('sql, js.sql.render().toString())
-    @combinator object LevelSelect extends TextifyGeneral('levelSelect, html.levelselect.render().toString())
-    @combinator object Settings extends TextifyGeneral('settings, html.settings.render().toString())
-
-    @combinator object HangmanTitle extends Textify('hangman, 'gameTitle, "Hangman")
-    @combinator object MastermindTitle extends Textify('mastermind, 'gameTitle, "Mastermind")
-    @combinator object LightsOutTitle extends Textify('lightsout, 'gameTitle, "Lights Out")
-    @combinator object DummyTitle extends Textify('dummy, 'gameTitle, "Dummy")
-
-    @combinator object HangmanJS extends Textify('hangman, 'js, js.hangman.render().toString())
-    @combinator object MastermindJS extends Textify('mastermind, 'js, js.mastermind.render().toString())
-    @combinator object LightsOutJS extends Textify('lightsout, 'js, js.lightsout.render().toString())
-    @combinator object DummyJS extends Textify('dummy, 'js, "")
+    @combinator object HangmanTitle extends Title('hangman, "Hangman")
+    @combinator object MastermindTitle extends Title('mastermind, "Mastermind")
+    @combinator object LightsOutTitle extends Title('lightsout, "Lights Out")
+    @combinator object DummyTitle extends Title('dummy, "Dummy")
 
     @combinator object LevelList {
       def apply(): Array[Int] = {
@@ -248,6 +232,29 @@ object AppCreator extends App {
       }
       val semanticType:Type = 'levelList =>: 'controllers
     }
+
+    class Render(sym:Symbol, output:String) {
+      def apply(): String = {
+        return output
+      }
+      val semanticType:Type = sym
+    }
+
+    class GameRender(game:Symbol, sym:Symbol, output:String) {
+      def apply() : String = {
+        return output
+      }
+      val semanticType:Type = game :&: sym
+    }
+
+    @combinator object SQL extends Render('sql, js.sql.render().toString())
+    @combinator object LevelSelect extends Render('levelSelect, html.levelselect.render().toString())
+    @combinator object Settings extends Render('settings, html.settings.render().toString())
+
+    @combinator object HangmanJS extends GameRender('hangman, 'js, js.hangman.render().toString())
+    @combinator object MastermindJS extends GameRender('mastermind, 'js, js.mastermind.render().toString())
+    @combinator object LightsOutJS extends GameRender('lightsout, 'js, js.lightsout.render().toString())
+    @combinator object DummyJS extends GameRender('dummy, 'js, "")
 
     class Bind(sym:Symbol, filePath:String) {
       def apply(expr:String) : Tuple = {
