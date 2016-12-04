@@ -20,19 +20,19 @@ object AppCreator extends App {
       .addOption('dummy)
 
     @combinator object MastermindHTML {
-      def apply(guessButton:String): String = {
+      def apply(button:(String, String, String) => String): String = {
         return """
         <ion-content class="has-header" padding="true">
           <div class="row">
             <input class="item item-input" maxLength="{{word.length}}" id="guess_{{levelNum}}" placeholder="Guess a {{word.length}} letter word">
-            &nbsp; """ + guessButton + """
+            &nbsp; """ + button("makeGuess", "Guess", "positive") + """
           </div>
           <div class="row">
             <h4>{{result}}</h4>
           </div>
       </ion-content>"""
       }
-      val semanticType:Type = 'guessButton =>: 'mastermind :&: 'html
+      val semanticType:Type = 'button =>: 'mastermind :&: 'html
     }
 
     @combinator object Button {
