@@ -3,7 +3,7 @@ angular.module("lightsout", ["ionic", "sql"])
 .controller("LevelCtrl", function ($scope, $rootScope, $state, $stateParams, $ionicPopup, sqlfactory) {
   // Check for invalid level number
   if ($rootScope.levels === undefined) {
-    console.log("Level loaded but level list undefined, going to main")
+    console.log("Level loaded but level list undefined, going to main");
     $state.go("main");
   } else if (!$rootScope.levels.includes($stateParams.levelNum)) {
     console.log("Went to level " + $stateParams.levelNum + " redirecting to level select.");
@@ -16,87 +16,24 @@ angular.module("lightsout", ["ionic", "sql"])
   $scope.levelNum = $stateParams.levelNum;
 
   // Define buttons for use in HTML
-  $scope.buttonsList = [
-    [
-      [0, 1, 0, 0, 0, 0],
-      [1, 1, 1, 0, 0, 0],
-      [0, 1, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-    ],
-    [
-      [0, 1, 0, 0, 0, 0],
-      [1, 1, 1, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [1, 1, 1, 0, 0, 0],
-      [0, 1, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-    ],
-    [
-      [0, 0, 0, 0, 0, 0],
-      [0, 1, 1, 1, 0, 0],
-      [1, 0, 1, 0, 1, 0],
-      [0, 1, 1, 1, 0, 0],
-      [0, 0, 1, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-    ],
-    [
-      [0, 0, 1, 0, 0, 0],
-      [0, 0, 1, 0, 0, 0],
-      [1, 1, 0, 1, 1, 0],
-      [0, 0, 1, 0, 0, 0],
-      [0, 0, 1, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-    ],
-    [
-      [0, 0, 0, 0, 0, 0],
-      [0, 1, 0, 0, 1, 0],
-      [1, 1, 0, 0, 1, 1],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 1, 1, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-    ],
-    [
-      [0, 0, 0, 0, 1, 0],
-      [1, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [1, 0, 0, 0, 0, 0],
-      [1, 0, 0, 0, 1, 1],
-    ],
-    [
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 1, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-    ],
-    [
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 1, 0],
-      [0, 0, 0, 1, 0, 1],
-      [0, 0, 0, 0, 1, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-    ],
-    [
-      [0, 0, 0, 0, 0, 0],
-      [1, 1, 0, 0, 0, 0],
-      [0, 0, 1, 0, 0, 0],
-      [1, 1, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-    ],
-    [
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 1, 0, 0, 0],
-      [0, 0, 1, 1, 0, 0],
-      [1, 1, 0, 0, 0, 0],
-      [0, 1, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-    ]
+  // This needs to be mirrored between SQL and local
+  // Init when loading level list
+  //  Defaults
+  //  Load from memory
+  // Push after exiting level
+  // Only pull from SQL once, on initial load
+  // Reset just pulls from the hard-coded list
+  $scope.longList = [
+    18123587584, 
+    18119623680, 
+    480887296, 
+    8738341376, 
+    315360000, 
+    2684356643, 
+    524288, 
+    34873344, 
+    807600128, 
+    137561088
   ][$stateParams.levelNum-1];
 
   // Used by the HTML to name the buttons
@@ -109,6 +46,37 @@ angular.module("lightsout", ["ionic", "sql"])
     ["5_0", "5_1", "5_2", "5_3", "5_4", "5_5"]
   ];
 
+  function convertTo(longState) {
+    arr = [];
+    for (var i = 0; i < 6; i++) {
+      row = [];
+      for (var j = 0; j < 6; j++) {
+        row.unshift(longState%2);
+        longState = Math.floor(longState/2);
+      } 
+      arr.unshift(row);
+    }
+    return arr;
+  }
+
+  function convertFrom(arr) {
+    longState = 0;
+    for (var i = 0; i < 6; i++) {
+      for (var j = 0; j < 6; j++) {
+        longState *= 2;
+        longState += arr[i][j];
+      }
+    }
+    return longState;
+  }
+
+  // test = 23587584;
+  // console.log(test);
+  // test = convertTo(test);
+  // console.log(""+test);
+  // test = convertFrom(test);
+  // console.log(test);
+
   // This runs whenever a level is entered
   $scope.$on("$ionicView.afterEnter", function(scopes, states){
     console.log("Entered "+states.stateName+" "+$stateParams.levelNum);
@@ -116,6 +84,9 @@ angular.module("lightsout", ["ionic", "sql"])
   });
 
   $scope.initializeLevel = function () {
+    // sql
+    $scope.buttonsList = convertTo($scope.longList);
+    console.log(""+$scope.buttonsList)
     for (var row=0; row < $scope.buttonsList.length; row++) {
       for (var col=0; col < $scope.buttonsList[0].length; col++) {
         var name = $stateParams.levelNum + "_" + row + "_" + col;
