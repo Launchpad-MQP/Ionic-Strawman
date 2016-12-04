@@ -35,18 +35,16 @@ object AppCreator extends App {
       val semanticType:Type = 'guessButton =>: 'mastermind :&: 'html
     }
 
-    class Button(sym:Symbol, buttonColor:String, buttonFunction:String, text:String) {
-      def apply(): String = {
-        return """<button class="button """ + buttonColor +
-        """ levelBtn" ng-click="""" + buttonFunction + """">""" + text + """</button>"""
+    @combinator object Button {
+      def apply(): (String, String, String) => String = {
+        return (function:String, text:String, color:String) =>
+          s"""<button class="button button-$color levelBtn" ng-click="$function()">$text</button>"""
       }
-      val semanticType:Type = sym
+      val semanticType:Type = 'button
     }
 
-    @combinator object GuessButton extends Button('guessButton, "button-positive", "makeGuess()", "Guess")
-
     @combinator object HangmanHTML {
-      def apply(guessButton:String): String = {
+      def apply(button:(String, String, String) => String): String = {
         """<div class= "item row">
     			<div ng-repeat="letter in myLetters track by $index">
     				<div class= "guessable {{levelNum}} {{letter}}">{{letter}}</div>
@@ -57,14 +55,14 @@ object AppCreator extends App {
     			<ion-input class="item item-input item-stacked-label">
     				<input type="text" maxLength="1" class= "letterguess" id="letterguess_{{levelNum}}" placeholder="Guess a letter here">
     			</ion-input>
-    			&nbsp; """ + guessButton + """
+    			&nbsp; """ + button("makeGuess", "Guess", "positive") + """
     		</div>
 
     		<h4>Guessed Letters:</h4>
     		<div class = "row" id="guessed_{{levelNum}}"></div>
     <h4>Tries Left: {{guessesLeft}}</h4>"""
       }
-      val semanticType:Type = 'guessButton =>: 'hangman :&: 'html
+      val semanticType:Type = 'button =>: 'hangman :&: 'html
     }
 
     @combinator object LightsOutHTML {
