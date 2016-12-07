@@ -31,8 +31,28 @@ angular.module("controllers", ["ionic", "sql"])
   }
 
   // Globally defined list of levels.
-  $rootScope.levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-    11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+  $rootScope.levels = [
+     1,  2,  3,  4, 5,
+     6,  7,  8,  9, 10,
+    11, 12, 13, 14, 15,
+    16, 17, 18, 19, 20
+  ];
+
+  // Global list of default states. Used for initialization and resets.
+  $rootScope.defaultStates = [
+    18123587584, 18119623680, 480887296, 8738341376, 315360000,
+     2684356643,      524288,  34873344,  807600128, 137561088,
+              0,           0,         0,          0,         0,
+              0,           0,         0,          0,         0
+  ];
+
+  // Global list of current states. Used for the current session to reduce SQL
+  $rootScope.states = [
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0
+  ];
 
   // Creates the database if it doesn't exist.
   sqlfactory.setupSQL(
@@ -41,7 +61,8 @@ angular.module("controllers", ["ionic", "sql"])
       for (var i in $rootScope.levels) {
         // Adds a level if it doesn't exist, e.g. the database was just created.
         // Otherwise, this line has no effect, i.e. the level retains its state.
-        sqlfactory.addLevel($rootScope.levels[i], "Unsolved");
+        sqlfactory.addLevel($rootScope.levels[i], $rootScope.defaultStates[i]);
+        $rootScope.states[i] = $rootScope.defaultStates[i];
       }
     },
     load = function() {
@@ -50,8 +71,11 @@ angular.module("controllers", ["ionic", "sql"])
       // This uses a callback function, since talking to SQL is asynchronous
       for (var i in $rootScope.levels) {
         sqlfactory.getLevelState($rootScope.levels[i], function (level) {
+          // Saved as a float for some reason
+          level.state = Math.floor(level.state);
           console.log("Got state for level " + level.number + ":", level.state);
-          if (level.state == "Solved") {
+          $rootScope.states[level.number-1] = level.state;
+          if (level.state == 0) {
             button = document.getElementById("level_"+level.number);
             button.setAttribute("class", "button button-dark ng-binding");
           }
@@ -62,7 +86,7 @@ angular.module("controllers", ["ionic", "sql"])
   $rootScope.completeLevel = function($state, levelNum) {
     button = document.getElementById("level_"+levelNum);
     button.setAttribute("class", "button button-dark ng-binding");
-    sqlfactory.setLevelState(levelNum, "Solved");
+    // sqlfactory.setLevelState(levelNum, "Solved");
 
     $ionicPopup.show({
       title: "Level Complete!",
