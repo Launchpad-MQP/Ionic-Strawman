@@ -35,25 +35,29 @@ angular.module("controllers", ["ionic", "sql"])
     11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
   // Creates the database if it doesn't exist.
-  sqlfactory.setupSQL();
-
-  for (var i in $rootScope.levels) {
-    // Adds a level if it doesn't exist, e.g. the database was just created.
-    // Otherwise, this line has no effect, i.e. the level retains its state.
-    sqlfactory.addLevel($rootScope.levels[i], "Unsolved");
-  }
-
-  // For each level, if it is completed we need to recolor the button.
-  // This uses a callback function, since talking to SQL is an async operation.
-  for (var i in $rootScope.levels) {
-    sqlfactory.getLevelState($rootScope.levels[i], function (level) {
-      console.log("Callback from getLevelState: ", level);
-      if (level.state == "Solved") {
-        button = document.getElementById("level_"+level.number);
-        button.setAttribute("class", "button button-dark ng-binding");
+  sqlfactory.setupSQL(
+    init = function() {
+      console.log("Initialize callback called");
+      for (var i in $rootScope.levels) {
+        // Adds a level if it doesn't exist, e.g. the database was just created.
+        // Otherwise, this line has no effect, i.e. the level retains its state.
+        sqlfactory.addLevel($rootScope.levels[i], "Unsolved");
+      }
+    },
+    load = function() {
+      console.log("Load callback called");
+      // For each level, if it is completed we need to recolor the button.
+      // This uses a callback function, since talking to SQL is asynchronous
+      for (var i in $rootScope.levels) {
+        sqlfactory.getLevelState($rootScope.levels[i], function (level) {
+          console.log("Got state for level " + level.number + ":", level.state);
+          if (level.state == "Solved") {
+            button = document.getElementById("level_"+level.number);
+            button.setAttribute("class", "button button-dark ng-binding");
+          }
+        });
       }
     });
-  }
 
   $rootScope.completeLevel = function($state, levelNum) {
     button = document.getElementById("level_"+levelNum);
