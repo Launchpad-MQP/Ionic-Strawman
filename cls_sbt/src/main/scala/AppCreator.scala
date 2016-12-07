@@ -233,41 +233,27 @@ object AppCreator extends App {
       val semanticType:Type = 'levelList =>: 'controllers
     }
 
-    class Render(sym:Symbol, output:String) {
+    class Render(inputType:Type, output:String) {
       def apply(): String = {
         return output
       }
-      val semanticType:Type = sym
-    }
-
-    class GameRender(game:Symbol, sym:Symbol, output:String) {
-      def apply() : String = {
-        return output
-      }
-      val semanticType:Type = game :&: sym
+      val semanticType:Type = inputType
     }
 
     @combinator object SQL extends Render('sql, js.sql.render().toString())
     @combinator object LevelSelect extends Render('levelSelect, html.levelselect.render().toString())
     @combinator object Settings extends Render('settings, html.settings.render().toString())
 
-    @combinator object HangmanJS extends GameRender('hangman, 'js, js.hangman.render().toString())
-    @combinator object MastermindJS extends GameRender('mastermind, 'js, js.mastermind.render().toString())
-    @combinator object LightsOutJS extends GameRender('lightsout, 'js, js.lightsout.render().toString())
-    @combinator object DummyJS extends GameRender('dummy, 'js, "")
+    @combinator object HangmanJS extends Render('hangman :&: 'js, js.hangman.render().toString())
+    @combinator object MastermindJS extends Render('mastermind :&: 'js, js.mastermind.render().toString())
+    @combinator object LightsOutJS extends Render('lightsout :&: 'js, js.lightsout.render().toString())
+    @combinator object DummyJS extends Render('dummy :&: 'js, "")
 
-    class Bind(sym:Symbol, filePath:String) {
+    class Bind(inputType:Type, filePath:String){
       def apply(expr:String) : Tuple = {
-			  return new Tuple(expr, filePath)
+        return new Tuple(expr, filePath)
       }
-      val semanticType:Type = sym =>: 'BoundFile :&: sym :&: gameVar
-    }
-
-    class GameBind(sym:Symbol, filePath:String) {
-      def apply(expr:String) : Tuple = {
-			  return new Tuple(expr, filePath)
-      }
-      val semanticType:Type = sym :&: gameVar =>: 'BoundFile :&: sym :&: gameVar
+      val semanticType:Type = inputType =>: 'BoundFile :&: inputType :&: gameVar
     }
 
     @combinator object Bind0 extends Bind('indexHtml, "www/index.html")
@@ -276,11 +262,11 @@ object AppCreator extends App {
     @combinator object Bind2 extends Bind('appJs, "www/js/app.js")
     @combinator object Bind3 extends Bind('controllers, "www/js/controllers.js")
     @combinator object Bind4 extends Bind('sql, "www/js/sql.js")
-    @combinator object Bind5 extends GameBind('gameHtml, "www/templates/game.html")
-    @combinator object Bind6 extends GameBind('gameJs, "www/js/game.js")
+    @combinator object Bind5 extends Bind('gameHtml :&: gameVar, "www/templates/game.html")
+    @combinator object Bind6 extends Bind('gameJs :&: gameVar, "www/js/game.js")
 
     @combinator object Bind7 extends Bind('levelSelect, "www/templates/level_select.html")
-    @combinator object Bind8 extends GameBind('mainPage, "www/templates/main.html")
+    @combinator object Bind8 extends Bind('mainPage :&: gameVar, "www/templates/main.html")
     @combinator object Bind9 extends Bind('settings, "www/templates/settings.html")
 
     @combinator object BindA extends Bind('css, "www/css/style.css")
