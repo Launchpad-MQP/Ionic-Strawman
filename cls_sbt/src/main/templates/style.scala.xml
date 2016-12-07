@@ -1,0 +1,24 @@
+.row.unlimited-items {
+  flex-wrap: wrap;
+}
+
+.row.unlimited-items .col{
+  flex: none;
+  width: 20%;
+}
+
+.guessable {
+	color : rgba(0, 0, 0, 0);
+	width : 30px;
+	border : thin solid black;
+	text-align: center;
+	font-size: 20px;
+}
+
+.discovered {
+	color : rgba(0, 0, 0, 1);
+	width : 30px;
+	border : thin solid black;
+	text-align: center;
+	font-size: 20px;
+}
