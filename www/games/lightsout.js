@@ -15,27 +15,6 @@ angular.module("lightsout", ["ionic", "sql"])
   // Redefined so that it can be used in the HTML.
   $scope.levelNum = $stateParams.levelNum;
 
-  // Define buttons for use in HTML
-  // This needs to be mirrored between SQL and local
-  // Init when loading level list
-  //  Defaults
-  //  Load from memory
-  // Push after exiting level
-  // Only pull from SQL once, on initial load
-  // Reset just pulls from the hard-coded list
-  $scope.longList = [
-    18123587584, 
-    18119623680, 
-    480887296, 
-    8738341376, 
-    315360000, 
-    2684356643, 
-    524288, 
-    34873344, 
-    807600128, 
-    137561088
-  ][$stateParams.levelNum-1];
-
   // Used by the HTML to name the buttons
   $scope.buttons = [
     ["0_0", "0_1", "0_2", "0_3", "0_4", "0_5"],
@@ -53,7 +32,7 @@ angular.module("lightsout", ["ionic", "sql"])
       for (var j = 0; j < 6; j++) {
         row.unshift(longState%2);
         longState = Math.floor(longState/2);
-      } 
+      }
       arr.unshift(row);
     }
     return arr;
@@ -80,15 +59,10 @@ angular.module("lightsout", ["ionic", "sql"])
   // This runs whenever a level is entered
   $scope.$on("$ionicView.afterEnter", function(scopes, states){
     console.log("Entered "+states.stateName+" "+$stateParams.levelNum);
-    $scope.initializeLevel();
-  });
-
-  $scope.initializeLevel = function () {
-    // sql
-    $scope.buttonsList = convertTo($scope.longList);
-    console.log(""+$scope.buttonsList)
-    for (var row=0; row < $scope.buttonsList.length; row++) {
-      for (var col=0; col < $scope.buttonsList[0].length; col++) {
+    $scope.buttonsList = convertTo($rootScope.states[$stateParams.levelNum-1]);
+    console.log("State for level "+$stateParams.levelNum + ":"+$scope.buttonsList);
+    for (var row=0; row<6; row++) {
+      for (var col=0; col<6; col++) {
         var name = $stateParams.levelNum + "_" + row + "_" + col;
         var button = document.getElementById(name);
         if (button === null) {
@@ -100,7 +74,14 @@ angular.module("lightsout", ["ionic", "sql"])
         }
       }
     }
-  }
+  });
+
+  $scope.$on("$ionicView.beforeLeave", function(scope, state){
+    console.log("Exiting "+state.stateName+" "+$stateParams.levelNum);
+    state = convertFrom($scope.buttonsList);
+    $rootScope.states[$stateParams.levelNum-1] = state;
+    sqlfactory.setLevelState($stateParams.levelNum, state);
+  });
 
   $scope.toggleButton = function (row, col) {
     var name = $stateParams.levelNum + "_" + row + "_" + col;
@@ -109,14 +90,16 @@ angular.module("lightsout", ["ionic", "sql"])
       return;
     }
     //console.log(button.className);
-    if (button.className.includes("button-energized")) {
+    if ($scope.buttonsList[row][col] == 1) {
       button.className = "button button-dark";
-    } else if (button.className.includes("button-dark")) {
+      $scope.buttonsList[row][col] = 0;
+    } else {
+      $scope.buttonsList[row][col] = 1;
       button.className = "button button-energized";
     }
   }
 
-  // Logic for toggling lights.
+  // Logic for toggling lights. This can be simplified if toggling uses the number, not the array: completion is just compare to 0.
   $scope.toggle = function (button_name) {
     // All of our buttons are named "#_#", so if the table was 10 rows or 10
     // columns, this logic would need to change.
@@ -132,9 +115,7 @@ angular.module("lightsout", ["ionic", "sql"])
     // Check for game completion
     for (var row=0; row < $scope.buttonsList.length; row++) {
       for (var col=0; col < $scope.buttonsList[0].length; col++) {
-        var name = $stateParams.levelNum + "_" + row + "_" + col;
-        var button = document.getElementById(name);
-        if (button.className.includes("button-energized")) {
+        if ($scope.buttonsList[row][col] != 0) {
           // Found a button which wasn't off, level not complete
           return;
         }
@@ -146,6 +127,7 @@ angular.module("lightsout", ["ionic", "sql"])
 
   $scope.restart = function () {
     console.log("Restarting level...");
+    $rootScope.states[$stateParams.levelNum-1] = $rootScope.defaultStates[$stateParams.levelNum-1];
     $state.reload();
   }
 });
