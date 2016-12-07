@@ -3,6 +3,7 @@ import de.tu_dortmund.cs.ls14.cls.types.syntax._
 import de.tu_dortmund.cs.ls14.cls.types._
 import de.tu_dortmund.cs.ls14.cls.interpreter.combinator
 
+import play.twirl.api.JavaScript
 import scala.collection.JavaConverters._
 import ionicmqp2016._;
 import _root_.java.nio.file._
@@ -97,35 +98,8 @@ object AppCreator extends App {
     }
 
     @combinator object GameJs {
-      def apply(contents:String): String = {
-        return """angular.module("game", ["ionic", "sql"])
-
-        .controller("LevelCtrl", function ($scope, $rootScope, $state, $stateParams, sqlfactory) {
-          // Check for invalid state
-          if ($rootScope.levels === undefined) {
-            console.log("Level loaded but level list undefined, going to main")
-            $state.go("main");
-          } else if (!$rootScope.levels.includes($stateParams.levelNum)) {
-            console.log("Went to level " + $stateParams.levelNum + " redirecting to level select.");
-            $state.go("level_select");
-          } else {
-            console.log("Now in level: " + $stateParams.levelNum);
-          }
-
-          // Redefined so that it can be used in the HTML.
-          $scope.levelNum = $stateParams.levelNum;
-
-          """+ contents +"""
-
-          $scope.completeLevel = function () {
-            $rootScope.completeLevel($state, $stateParams.levelNum);
-          }
-
-          $scope.restart = function () {
-            console.log("Restarting level...");
-            $state.reload();
-          }
-        });"""
+      def apply(contents:JavaScript): String = {
+        return js.game.render(contents).toString()
       }
       val semanticType:Type = gameVar :&: 'js =>: gameVar :&: 'gameJs
     }
@@ -189,31 +163,7 @@ object AppCreator extends App {
 
     @combinator object CSS {
       def apply(): String = {
-        return """.row.unlimited-items {
-          flex-wrap: wrap;
-        }
-
-        .row.unlimited-items .col{
-          flex: none;
-          width: 20%;
-        }
-
-        .guessable {
-        	color : rgba(0, 0, 0, 0);
-        	width : 30px;
-        	border : thin solid black;
-        	text-align: center;
-        	font-size: 20px;
-        }
-
-        .discovered {
-        	color : rgba(0, 0, 0, 1);
-        	width : 30px;
-        	border : thin solid black;
-        	text-align: center;
-        	font-size: 20px;
-        }
-"""
+        return xml.style.render().toString()
       }
       val semanticType:Type = 'css
     }
@@ -240,13 +190,20 @@ object AppCreator extends App {
       val semanticType:Type = inputType
     }
 
+    class Render2(inputType:Type, output:JavaScript) {
+      def apply(): JavaScript = {
+        return output
+      }
+      val semanticType:Type = inputType
+    }
+
     @combinator object SQL extends Render('sql, js.sql.render().toString())
     @combinator object LevelSelect extends Render('levelSelect, html.levelselect.render().toString())
     @combinator object Settings extends Render('settings, html.settings.render().toString())
 
-    @combinator object HangmanJS extends Render('hangman :&: 'js, js.hangman.render().toString())
-    @combinator object MastermindJS extends Render('mastermind :&: 'js, js.mastermind.render().toString())
-    @combinator object LightsOutJS extends Render('lightsout :&: 'js, js.lightsout.render().toString())
+    @combinator object HangmanJS extends Render2('hangman :&: 'js, js.hangman.render())
+    @combinator object MastermindJS extends Render2('mastermind :&: 'js, js.mastermind.render())
+    @combinator object LightsOutJS extends Render2('lightsout :&: 'js, js.lightsout.render())
     @combinator object DummyJS extends Render('dummy :&: 'js, "")
 
     class Bind(inputType:Type, filePath:String){

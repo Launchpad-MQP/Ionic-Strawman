@@ -1,7 +1,3 @@
-// Redefined so that it can be used in the HTML.
-$scope.levelNum = $stateParams.levelNum;
-
-// Define buttons for use in HTML
 $scope.buttonsList = [
   [
     [0, 1, 0, 0, 0, 0],
