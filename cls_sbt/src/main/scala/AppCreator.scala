@@ -21,7 +21,7 @@ object AppCreator extends App {
       .addOption('dummy)
 
     @combinator object MastermindHTML {
-      def apply(button:(String, String, String) => String): String = {
+      def apply(button:buttonType): String = {
         return """
         <ion-content class="has-header" padding="true">
           <div class="row">
@@ -36,8 +36,9 @@ object AppCreator extends App {
       val semanticType:Type = 'button =>: 'mastermind :&: 'html
     }
 
+    type buttonType = (String, String, String) => String
     @combinator object Button {
-      def apply(): (String, String, String) => String = {
+      def apply(): buttonType = {
         return (function:String, text:String, color:String) =>
           s"""<button class="button button-$color levelBtn" ng-click="$function()">$text</button>"""
       }
@@ -45,7 +46,7 @@ object AppCreator extends App {
     }
 
     @combinator object HangmanHTML {
-      def apply(button:(String, String, String) => String): String = {
+      def apply(button:buttonType): String = {
         """<div class= "item row">
     			<div ng-repeat="letter in myLetters track by $index">
     				<div class= "guessable {{levelNum}} {{letter}}">{{letter}}</div>
