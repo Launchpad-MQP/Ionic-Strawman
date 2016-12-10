@@ -15,3 +15,4 @@ hooks/
 platforms/
 plugins/
 gulpfile.js
+www/css/style.css
