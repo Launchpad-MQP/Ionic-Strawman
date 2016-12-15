@@ -23,15 +23,13 @@ object AppCreator extends App {
     @combinator object MastermindHTML {
       def apply(button:buttonType): String = {
         return """
-        <ion-content class="has-header" padding="true">
-          <div class="row">
-            <input class="item item-input" maxLength="{{word.length}}" id="guess_{{levelNum}}" placeholder="Guess a {{word.length}} letter word">
-            &nbsp; """ + button("makeGuess", "Guess", "positive") + """
-          </div>
-          <div class="row">
-            <h4>{{result}}</h4>
-          </div>
-      </ion-content>"""
+      <div class="row">
+        <input class="item item-input" maxLength="{{word.length}}" id="guess_{{levelNum}}" placeholder="Guess a {{word.length}} letter word">
+        &nbsp; """ + button("makeGuess", "Guess", "positive") + """
+      </div>
+      <div class="row">
+        <h4>{{result}}</h4>
+      </div>"""
       }
       val semanticType:Type = 'button =>: 'mastermind :&: 'html
     }
@@ -47,22 +45,23 @@ object AppCreator extends App {
 
     @combinator object HangmanHTML {
       def apply(button:buttonType): String = {
-        """<div class= "item row">
-    			<div ng-repeat="letter in myLetters track by $index">
-    				<div class= "guessable {{levelNum}} {{letter}}">{{letter}}</div>
-    			</div>
+        return """
+      <div class= "item row">
+    		<div ng-repeat="letter in myLetters track by $index">
+    			<div class= "guessable {{levelNum}} {{letter}}">{{letter}}</div>
     		</div>
-    		<br>
-    		<div class="row">
-    			<ion-input class="item item-input item-stacked-label">
-    				<input type="text" maxLength="1" class= "letterguess" id="letterguess_{{levelNum}}" placeholder="Guess a letter here">
-    			</ion-input>
-    			&nbsp; """ + button("makeGuess", "Guess", "positive") + """
-    		</div>
+    	</div>
+    	<br>
+    	<div class="row">
+    		<ion-input class="item item-input item-stacked-label">
+    			<input type="text" maxLength="1" class= "letterguess" id="letterguess_{{levelNum}}" placeholder="Guess a letter here">
+    		</ion-input>
+    		&nbsp; """ + button("makeGuess", "Guess", "positive") + """
+    	</div>
 
-    		<h4>Guessed Letters:</h4>
-    		<div class = "row" id="guessed_{{levelNum}}"></div>
-    <h4>Tries Left: {{guessesLeft}}</h4>"""
+    	<h4>Guessed Letters:</h4>
+        <div class = "row" id="guessed_{{levelNum}}"></div>
+      <h4>Tries Left: {{guessesLeft}}</h4>"""
       }
       val semanticType:Type = 'button =>: 'hangman :&: 'html
     }
@@ -70,13 +69,13 @@ object AppCreator extends App {
     @combinator object LightsOutHTML {
       def apply(): String = {
         return """
-    <div class="row" ng-repeat="row in buttons">
-      <div class="col col-25"> </div>
-      <div class="col" ng-repeat="button in row">
-        <a class="button button-dark" ng-click="toggle('{{button}}')" id="{{levelNum}}_{{button}}">&nbsp</a>
-      </div>
-      <div class="col col-25"> </div>
-    </div>"""
+      <div class="row" ng-repeat="row in buttons">
+        <div class="col col-25"></div>
+        <div class="col" ng-repeat="button in row">
+          <a class="button button-dark" ng-click="toggle('{{button}}')" id="{{levelNum}}_{{button}}">&nbsp</a>
+        </div>
+        <div class="col col-25"></div>
+      </div>"""
       }
       val semanticType:Type = 'lightsout :&: 'html
     }
@@ -84,9 +83,9 @@ object AppCreator extends App {
     @combinator object DummyHTML {
       def apply(): String = {
         return """
-    <div class="col" style="text-align:center">
-      <button class="button button-assertive levelBtn" ng-click="completeLevel()">Click Me!</button>
-    </div>"""
+      <div class="col" style="text-align:center">
+        <button class="button button-assertive levelBtn" ng-click="completeLevel()">Click Me!</button>
+      </div>"""
       }
       val semanticType:Type = 'dummy :&: 'html
     }
@@ -236,7 +235,7 @@ object AppCreator extends App {
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'lightsout)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'mastermind)
 
   // Pass the response into our defined output, currently just a printer
   val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
