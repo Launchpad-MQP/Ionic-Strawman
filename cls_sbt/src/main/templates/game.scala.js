@@ -1,5 +1,4 @@
 @(contents:JavaScript)
-
 angular.module("game", ["ionic", "sql"])
 
 .controller("LevelCtrl", function ($scope, $rootScope, $state, $stateParams, sqlfactory) {
