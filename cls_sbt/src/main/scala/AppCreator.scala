@@ -19,6 +19,7 @@ object AppCreator extends App {
       .addOption('hangman)
       .addOption('lightsout)
       .addOption('dummy)
+      .addOption('monster)
 
     @combinator object MastermindHTML {
       def apply(button:buttonType): String = {
@@ -90,6 +91,16 @@ object AppCreator extends App {
       val semanticType:Type = 'dummy :&: 'html
     }
 
+    @combinator object FrankensteinGame {
+      def apply(): String = {
+        return """
+      <div class="col" style="text-align:center">
+        <button class="button button-assertive levelBtn" ng-click="completeLevel()">Click Me!</button>
+      </div>"""
+      }
+      val semanticType:Type = 'monster :&: 'html
+    }
+
     @combinator object GameHTML {
       def apply(contents:String): String = {
         return html.game.render(contents).toString()
@@ -122,6 +133,7 @@ object AppCreator extends App {
     @combinator object MastermindTitle extends Title('mastermind, "Mastermind")
     @combinator object LightsOutTitle extends Title('lightsout, "Lights Out")
     @combinator object DummyTitle extends Title('dummy, "Dummy")
+    @combinator object FrankensteinTitle extends Title('monster, "Beelzebub")
 
     @combinator object LevelList {
       def apply(): Array[Int] = {
@@ -205,6 +217,7 @@ object AppCreator extends App {
     @combinator object MastermindJS extends Render2('mastermind :&: 'js, js.mastermind.render())
     @combinator object LightsOutJS extends Render2('lightsout :&: 'js, js.lightsout.render())
     @combinator object DummyJS extends Render('dummy :&: 'js, "")
+    @combinator object FrankensteinJS extends Render2('monster :&: 'js, js.frankenstein.render())
 
     class Bind(inputType:Type, filePath:String){
       def apply(expr:String) : Tuple = {
