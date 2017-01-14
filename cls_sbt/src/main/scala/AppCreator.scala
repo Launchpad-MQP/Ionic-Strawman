@@ -44,6 +44,32 @@ object AppCreator extends App {
       val semanticType:Type = 'button
     }
 
+    //don't think this one actually works
+    type checkboxType = (Array[String]) => String
+    @combinator object Checkboxes {
+      def apply(): checkboxType = {
+        return (names:Array[String]) =>
+          val ret = "<ion-list>"
+          for(name <- names) {
+            ret += s"""<ion-checkbox>$name</ion-checkbox>"""
+          }
+          ret += "</ion-list>"
+      }
+      val semanticType:Type = 'checkboxes
+    }
+
+    type rangeType = (String, String, String) => String
+    @combinator object Range {
+      def apply(): rangeType = {
+        return (icon1:String, icon2:String, name:String) =>
+          s"""<div class="item range">
+          <i class="icon $icon1"></i>
+          <input type="range" name="$name">
+          <i class="icon $icon2"></i></div>"""
+      }
+      val semanticType:Type = 'range
+    }
+
     @combinator object HangmanHTML {
       def apply(button:buttonType): String = {
         return """
