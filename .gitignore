@@ -9,10 +9,9 @@
 !*/
 # Except these folders
 cls_sbt/target/
-www/lib/
 node_modules/
 hooks/
 platforms/
 plugins/
 gulpfile.js
-www/css/style.css
+www/
