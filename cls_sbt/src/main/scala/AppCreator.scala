@@ -64,39 +64,43 @@ object AppCreator extends App {
         return (iconLeft:String, iconRight:String, name:String, callback:String) =>
           s"""<div class="item range">
           <i class="icon $iconLeft"></i>
-          <input type="range" name="$name" min="0" max="100" ng-model="value" ng-change="$callback(value)">
+          <input type="range" name="$name" min="0" max="100" ng-model="rangeValue" ng-change="$callback(rangeValue)">
           <i class="icon $iconRight"></i></div>"""
       }
       val semanticType:Type = 'range
     }
 
-    // //don't think this one actually works
-    // type checkboxType = (Array[String]) => String
-    // @combinator object Checkboxes {
-    //   def apply(): checkboxType = {
-    //     return (choices:Array[String]) =>
-    //       val ret = "<ion-list>"
-    //       for(choice <- choices) {
-    //         ret += s"""<ion-radio ng-model="choice" ng-value="'A'">$choice</ion-radio>"""
-    //       }
-    //       ret += "</ion-list>"
-    //   }
-    //   val semanticType:Type = 'radiobuttons
-    // }
+    type checkboxType = (Array[String], Array[String]) => String
+    @combinator object Checkboxes {
+      def apply(): checkboxType = {
+        def buildChoices(models:Array[String], choices:Array[String]): String = {
+          var a = "";
+          var i = 0;
+          for(i <- 0 until choices.length) {
+            a += s"""\n\t<ion-checkbox ng-model="${models(i)}" ng-value="$(models(i))">$(choices($i))</ion-checkbox>"""
+          }
+          return a;
+        }
+        return (models:Array[String], choices:Array[String]) => "<ion-list>" + buildChoices(models, choices) + "</ion-list>"
+      }
+      val semanticType:Type = 'checkboxes
+    }
 
-    // //don't think this one actually works
-    // type radioType = (Array[String]) => String
-    // @combinator object RadioButtons {
-    //   def apply(): radioType = {
-    //     return (names:Array[String]) =>
-    //       val ret = "<ion-list>"
-    //       for(name <- names) {
-    //         ret += s"""<ion-checkbox>$name</ion-checkbox>"""
-    //       }
-    //       ret += "</ion-list>"
-    //   }
-    //   val semanticType:Type = 'checkboxes
-    // }
+    type radioType = (Array[String], Array[String]) => String
+    @combinator object RadioButtons {
+      def apply(): radioType = {
+        def buildChoices(models:Array[String], choices:Array[String]): String = {
+          var a = "";
+          var i = 0;
+          for(i <- 0 until choices.length) {
+            a += s"""\n\t<ion-radio ng-model="${models(i)}" ng-value="${models(i)}">${choices(i)}</ion-radio>"""
+          }
+          return a;
+        }
+        return (models:Array[String], choices:Array[String]) => "<ion-list>" + buildChoices(models, choices) + "</ion-list>"
+      }
+      val semanticType:Type = 'radiobuttons
+    }
 
     @combinator object HangmanHTML {
       def apply(button:buttonType): String = {
@@ -146,53 +150,35 @@ object AppCreator extends App {
     }
 
     @combinator object FrankensteinGame {
-      def apply(): String = {
+      def apply(radiobuttons:radioType, checkboxes:checkboxType, button:buttonType, toggle:toggleType, range:rangeType): String = {
         return """
       <div class="row">
         <div class="col" style="text-align:center">
-          Alive?
-          <label class="toggle">
-            <input type="checkbox">
-            <div class="track">
-              <div class="handle"></div>
-            </div>
-          </label>
+        """+toggle("Alive?")+"""
         </div>
       </div>
       <div class="row">
         <div class="col" style="text-align:center">
-          <ion-list>
-            <ion-checkbox ng-model="frankenVars.cBox1">Cool</ion-checkbox>
-            <ion-checkbox ng-model="frankenVars.cBox2">Scary</ion-checkbox>
-            <ion-checkbox ng-model="frankenVars.cBox3">Handsome</ion-checkbox>
-          </ion-list>
+        """+radiobuttons(Array("frankenVars.rBox1", "frankenVars.rBox2", "frankenVars.rBox3"), Array("Cool", "Scary", "Handsome"))+"""
         </div>
       </div>
       <div class="row">
         <div class="col" style="text-align:center">
-          <ion-list>
-            <ion-radio>Red</ion-radio>
-            <ion-radio>Blue</ion-radio>
-            <ion-radio>Green</ion-radio>
-          </ion-list>
+        """+checkboxes(Array("frankenVars.cBox1", "frankenVars.cBox2", "frankenVars.cBox3"), Array("Red", "Green", "Blue"))+"""
         </div>
       </div>
       <div class="row">
         <div class="col" style="text-align:center">
-          <div class="item range">
-            <i class="icon ion-flash-off"></i>
-            <input type="range" name="power">
-            <i class="icon ion-flash"></i>
-          </div>
+        """+range("ion-flash-off", "ion-flash", "power", "rangeCallbackFcn")+"""
         </div>
       </div>
       <div class="row">
         <div class="col" style="text-align:center">
-          <button class="button button-assertive levelBtn" ng-click="checkComplete()">Click Me!</button>
+        """+button("checkComplete", "Click Me!", "assertive")+"""
         </div>
       </div>"""
       }
-      val semanticType:Type = 'monster :&: 'html
+      val semanticType:Type = 'radiobuttons =>: 'checkboxes =>: 'button =>: 'toggle =>: 'range =>: 'monster :&: 'html
     }
 
     @combinator object GameHTML {
