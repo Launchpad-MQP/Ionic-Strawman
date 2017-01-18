@@ -77,7 +77,7 @@ object AppCreator extends App {
           var a = "";
           var i = 0;
           for(i <- 0 until choices.length) {
-            a += s"""\n\t<ion-checkbox ng-model="${models(i)}" ng-value="$(models(i))">$(choices($i))</ion-checkbox>"""
+            a += s"""\n\t<ion-checkbox ng-model="${models(i)}" ng-value="${models(i)}">${choices(i)}</ion-checkbox>"""
           }
           return a;
         }
@@ -159,12 +159,12 @@ object AppCreator extends App {
       </div>
       <div class="row">
         <div class="col" style="text-align:center">
-        """+radiobuttons(Array("frankenVars.rBox1", "frankenVars.rBox2", "frankenVars.rBox3"), Array("Cool", "Scary", "Handsome"))+"""
+        """+checkboxes(Array("frankenVars.rBox1", "frankenVars.rBox2", "frankenVars.rBox3"), Array("Cool", "Scary", "Handsome"))+"""
         </div>
       </div>
       <div class="row">
         <div class="col" style="text-align:center">
-        """+checkboxes(Array("frankenVars.cBox1", "frankenVars.cBox2", "frankenVars.cBox3"), Array("Red", "Green", "Blue"))+"""
+        """+radiobuttons(Array("frankenVars.cBox1", "frankenVars.cBox2", "frankenVars.cBox3"), Array("Red", "Green", "Blue"))+"""
         </div>
       </div>
       <div class="row">
