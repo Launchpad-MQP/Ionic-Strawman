@@ -38,37 +38,65 @@ object AppCreator extends App {
     type buttonType = (String, String, String) => String
     @combinator object Button {
       def apply(): buttonType = {
-        return (function:String, text:String, color:String) =>
-          s"""<button class="button button-$color levelBtn" ng-click="$function()">$text</button>"""
+        return (callback:String, text:String, color:String) =>
+          s"""<button class="button button-$color levelBtn" ng-click="$callback()">$text</button>"""
       }
       val semanticType:Type = 'button
     }
 
-    //don't think this one actually works
-    type checkboxType = (Array[String]) => String
-    @combinator object Checkboxes {
-      def apply(): checkboxType = {
-        return (names:Array[String]) =>
-          val ret = "<ion-list>"
-          for(name <- names) {
-            ret += s"""<ion-checkbox>$name</ion-checkbox>"""
-          }
-          ret += "</ion-list>"
+    type toggleType = (String) => String
+    @combinator object Toggle {
+      def apply(): toggleType = {
+        return (name:String) =>
+          s"""$name<label class="toggle">
+           <input type="checkbox">
+           <div class="track">
+             <div class="handle"></div>
+           </div>
+        </label>"""
       }
-      val semanticType:Type = 'checkboxes
+      val semanticType:Type = 'toggle
     }
 
-    type rangeType = (String, String, String) => String
+    type rangeType = (String, String, String, String) => String
     @combinator object Range {
       def apply(): rangeType = {
-        return (icon1:String, icon2:String, name:String) =>
+        return (iconLeft:String, iconRight:String, name:String, callback:String) =>
           s"""<div class="item range">
-          <i class="icon $icon1"></i>
-          <input type="range" name="$name">
-          <i class="icon $icon2"></i></div>"""
+          <i class="icon $iconLeft"></i>
+          <input type="range" name="$name" min="0" max="100" ng-model="value" ng-change="$callback(value)">
+          <i class="icon $iconRight"></i></div>"""
       }
       val semanticType:Type = 'range
     }
+
+    // //don't think this one actually works
+    // type checkboxType = (Array[String]) => String
+    // @combinator object Checkboxes {
+    //   def apply(): checkboxType = {
+    //     return (choices:Array[String]) =>
+    //       val ret = "<ion-list>"
+    //       for(choice <- choices) {
+    //         ret += s"""<ion-radio ng-model="choice" ng-value="'A'">$choice</ion-radio>"""
+    //       }
+    //       ret += "</ion-list>"
+    //   }
+    //   val semanticType:Type = 'radiobuttons
+    // }
+
+    // //don't think this one actually works
+    // type radioType = (Array[String]) => String
+    // @combinator object RadioButtons {
+    //   def apply(): radioType = {
+    //     return (names:Array[String]) =>
+    //       val ret = "<ion-list>"
+    //       for(name <- names) {
+    //         ret += s"""<ion-checkbox>$name</ion-checkbox>"""
+    //       }
+    //       ret += "</ion-list>"
+    //   }
+    //   val semanticType:Type = 'checkboxes
+    // }
 
     @combinator object HangmanHTML {
       def apply(button:buttonType): String = {
