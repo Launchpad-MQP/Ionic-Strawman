@@ -7,6 +7,10 @@ $scope.winStates = [
 $scope.guessesLeft = 7;
 $scope.miss = true;
 
+$scope.cBox1 = false;
+$scope.cBox2 = false;
+$scope.cBox3 = false;
+
 $scope.makeGuess = function () {
   //var guess = document.getElementById("letterguess_" + $scope.levelNum).value;
   //var card = document.getElementById("guessed_" + $scope.levelNum);
@@ -60,5 +64,8 @@ $scope.checkComplete = function () {
   //var correct = document.getElementsByClassName("discovered " + $scope.levelNum);
   //console.log(correct.length);
   //if(correct.length === $scope.myLetters.length)
+  console.log($scope.cBox1);
+  console.log($scope.cBox2);
+  console.log($scope.cBox3);
   $scope.completeLevel();
 }

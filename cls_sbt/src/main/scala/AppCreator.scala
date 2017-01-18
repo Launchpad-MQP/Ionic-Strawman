@@ -44,19 +44,19 @@ object AppCreator extends App {
       val semanticType:Type = 'button
     }
 
-    //don't think this one actually works
-    type checkboxType = (Array[String]) => String
-    @combinator object Checkboxes {
-      def apply(): checkboxType = {
-        return (names:Array[String]) =>
-          val ret = "<ion-list>"
-          for(name <- names) {
-            ret += s"""<ion-checkbox>$name</ion-checkbox>"""
-          }
-          ret += "</ion-list>"
-      }
-      val semanticType:Type = 'checkboxes
-    }
+    // //don't think this one actually works
+    // type checkboxType = (Array[String]) => String
+    // @combinator object Checkboxes {
+    //   def apply(): checkboxType = {
+    //     return (names:Array[String]) =>
+    //       val ret = "<ion-list>"
+    //       for(name <- names) {
+    //         ret += s"""<ion-checkbox>$name</ion-checkbox>"""
+    //       }
+    //       ret += "</ion-list>"
+    //   }
+    //   val semanticType:Type = 'checkboxes
+    // }
 
     type rangeType = (String, String, String) => String
     @combinator object Range {
@@ -120,8 +120,48 @@ object AppCreator extends App {
     @combinator object FrankensteinGame {
       def apply(): String = {
         return """
-      <div class="col" style="text-align:center">
-        <button class="button button-assertive levelBtn" ng-click="completeLevel()">Click Me!</button>
+      <div class="row">
+        <div class="col" style="text-align:center">
+          Alive?
+          <label class="toggle">
+            <input type="checkbox">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col" style="text-align:center">
+          <ion-list>
+            <ion-checkbox ng-model="cBox1">Cool</ion-checkbox>
+            <ion-checkbox ng-model="cBox2">Scary</ion-checkbox>
+            <ion-checkbox ng-model="cBox3">Handsome</ion-checkbox>
+          </ion-list>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col" style="text-align:center">
+          <ion-list>
+            <ion-radio>Red</ion-radio>
+            <ion-radio>Blue</ion-radio>
+            <ion-radio>Green</ion-radio>
+          </ion-list>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col" style="text-align:center">
+          <div class="item range">
+            <i class="icon ion-flash-off"></i>
+            <input type="range" name="power">
+            <i class="icon ion-flash"></i>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col" style="text-align:center">
+          <button class="button button-assertive levelBtn" ng-click="checkComplete()">Click Me!</button>
+        </div>
       </div>"""
       }
       val semanticType:Type = 'monster :&: 'html
