@@ -162,9 +162,9 @@ object AppCreator extends App {
       <div class="row">
         <div class="col" style="text-align:center">
           <ion-list>
-            <ion-checkbox ng-model="cBox1">Cool</ion-checkbox>
-            <ion-checkbox ng-model="cBox2">Scary</ion-checkbox>
-            <ion-checkbox ng-model="cBox3">Handsome</ion-checkbox>
+            <ion-checkbox ng-model="frankenVars.cBox1">Cool</ion-checkbox>
+            <ion-checkbox ng-model="frankenVars.cBox2">Scary</ion-checkbox>
+            <ion-checkbox ng-model="frankenVars.cBox3">Handsome</ion-checkbox>
           </ion-list>
         </div>
       </div>
@@ -342,7 +342,7 @@ object AppCreator extends App {
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'mastermind)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'monster)
 
   // Pass the response into our defined output, currently just a printer
   val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
