@@ -222,6 +222,13 @@ object AppCreator extends App {
       val semanticType:Type = 'levelList
     }
 
+    @combinator object SQLColumns {
+      def apply(): Map[String, String] = {
+        return Map("state" -> "VARCHAR(50)")
+      }
+      val semanticType:Type = 'sqlcolumns
+    }
+
     // JS files
     @combinator object ScriptList {
       def apply(): Array[String] = {
@@ -275,6 +282,13 @@ object AppCreator extends App {
       val semanticType:Type = 'levelList =>: 'controllers
     }
 
+    @combinator object SQL {
+      def apply(sqlcolumns:Map[String, String]): String = {
+        return js.sql.render(sqlcolumns).toString()
+      }
+      val semanticType:Type = 'sqlcolumns =>: 'sql
+    }
+
     class Render(inputType:Type, output:String) {
       def apply(): String = {
         return output
@@ -289,7 +303,6 @@ object AppCreator extends App {
       val semanticType:Type = inputType
     }
 
-    @combinator object SQL extends Render('sql, js.sql.render().toString())
     @combinator object LevelSelect extends Render('levelSelect, html.levelselect.render().toString())
     @combinator object Settings extends Render('settings, html.settings.render().toString())
 

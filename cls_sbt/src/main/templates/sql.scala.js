@@ -1,3 +1,4 @@
+@(columns:Map[String, String])
 /**
 * This file holds all of the SQL interaction. In order to share functions
 * across other files, we use an Ionic factory.
@@ -12,7 +13,8 @@ angular.module("sql", ["ionic"])
     // Setup function. Should be called early, once the window loads.
     setupSQL: function () {
       console.log("Creating blank table if nonexistent");
-      apidb.execute(db, "CREATE TABLE IF NOT EXISTS levels (number, state VARCHAR(50))");
+      // Using columns.keys instead of just columns to guarantee same order
+      apidb.execute(db, "CREATE TABLE IF NOT EXISTS levels (number@for(k <- columns.keys) {, @k @columns.get(k)})");
     },
 
     // Reset function. Warning: You need to call setup again!
@@ -23,11 +25,11 @@ angular.module("sql", ["ionic"])
 
     // Adds a level to the database. Won't overwrite if the level
     // already exists, use setLevelState for that.
-    addLevel: function (num, state) {
-      console.log ("Setting level "+num+" to "+state);
-      apidb.execute(db, "INSERT INTO levels (number, state) VALUES (?, ?)", [num, state])
+    addLevel: function (num, @columns.keys.mkString(", ")) {
+      console.log("Setting level "+num+" to:", @columns.keys.mkString(", "));
+      apidb.execute(db, "INSERT INTO levels (number, @columns.keys.mkString(", ")) VALUES (@(Array.fill(columns.size+1)("?").mkString(", ")))", [num, @columns.keys.mkString(", ")])
       .then(function (ret) {
-        console.log("Set level "+num+" to "+state);
+        console.log("Set level "+num+" to:", @columns.keys.mkString(", "));
         for (var i in ret) {
           console.log("\t"+i+": ", ret[i]);
         }
@@ -65,11 +67,11 @@ angular.module("sql", ["ionic"])
 
     // Sets a level state. Again, the return from this is asynchronous, but at
     // present we don't need to do anything with it.
-    setLevelState: function (num, state) {
-      console.log("Setting state for level "+num+" to: "+state);
-      apidb.execute(db, "UPDATE levels SET state=? WHERE number=?", [state, num])
+    setLevelState: function (num, @columns.keys.mkString(", ")) {
+      console.log("Setting state for level "+num+" to:"+state);
+      apidb.execute(db, "UPDATE levels SET @for((k, v) <- columns) {@k=? }WHERE number=?", [@columns.keys.mkString(", "), num])
       .then(function (ret) {
-        console.log("Set state for level "+num+ " to: "+state);
+        console.log("Set state for level "+num+ " to:", @columns.keys.mkString(", "));
         for (var i in ret) {
           try {
             console.log("\t"+i+": ", ret[i]);
