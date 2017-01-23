@@ -44,12 +44,12 @@ object AppCreator extends App {
       val semanticType:Type = 'button
     }
 
-    type toggleType = (String) => String
+    type toggleType = (String, String) => String
     @combinator object Toggle {
       def apply(): toggleType = {
-        return (name:String) =>
+        return (model:String, name:String) =>
           s"""$name<label class="toggle">
-           <input type="checkbox">
+           <input type="checkbox" ng-model="$model">
            <div class="track">
              <div class="handle"></div>
            </div>
@@ -154,7 +154,7 @@ object AppCreator extends App {
         return """
       <div class="row">
         <div class="col" style="text-align:center">
-        """+toggle("Alive?")+"""
+        """+toggle("frankenVars.toggle", "Alive?")+"""
         </div>
       </div>
       <div class="row">
