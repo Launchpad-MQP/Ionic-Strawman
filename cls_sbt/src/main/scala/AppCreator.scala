@@ -282,7 +282,7 @@ object AppCreator extends App {
       val semanticType:Type = inputType
     }
 
-    class Render2(inputType:Type, output:JavaScript) {
+    class RenderJS(inputType:Type, output:JavaScript) {
       def apply(): JavaScript = {
         return output
       }
@@ -293,11 +293,11 @@ object AppCreator extends App {
     @combinator object LevelSelect extends Render('levelSelect, html.levelselect.render().toString())
     @combinator object Settings extends Render('settings, html.settings.render().toString())
 
-    @combinator object HangmanJS extends Render2('hangman :&: 'js, js.hangman.render())
-    @combinator object MastermindJS extends Render2('mastermind :&: 'js, js.mastermind.render())
-    @combinator object LightsOutJS extends Render2('lightsout :&: 'js, js.lightsout.render())
+    @combinator object HangmanJS extends RenderJS('hangman :&: 'js, js.hangman.render())
+    @combinator object MastermindJS extends RenderJS('mastermind :&: 'js, js.mastermind.render())
+    @combinator object LightsOutJS extends RenderJS('lightsout :&: 'js, js.lightsout.render())
     @combinator object DummyJS extends Render('dummy :&: 'js, "")
-    @combinator object FrankensteinJS extends Render2('monster :&: 'js, js.frankenstein.render())
+    @combinator object FrankensteinJS extends RenderJS('monster :&: 'js, js.frankenstein.render())
 
     class Bind(inputType:Type, filePath:String){
       def apply(expr:String) : Tuple = {
