@@ -1,25 +1,15 @@
-$scope.winStates = [
-  'hello', 'wolf', 'rat', 'xylophone', 'attention',
-  'school', 'ruling', 'poison', 'tree', 'prison',
-  'abacus', 'toothache', 'short', 'bacon', 'crossroads',
-  'darkness', 'candle', 'quadruple', 'extraordinary', 'declaration'
-][$scope.levelNum-1].split("");
-$scope.guessesLeft = 7;
-$scope.miss = true;
-
 $scope.frankenVars = {
+  rBox: "false",
   cBox1: false,
   cBox2: false,
-  cBox3: false
-}
-
-$scope.makeGuess = function () {
-}
-
-$scope.loseLevel = function() {
+  cBox3: false,
+  range1: 50
 }
 
 $scope.checkComplete = function () {
   console.log($scope.frankenVars);
-  $scope.completeLevel();
+  if($scope.frankenVars.rBox == "Check Me" && $scope.frankenVars.cBox1 && $scope.frankenVars.cBox2
+    && !$scope.frankenVars.cBox3 && $scope.frankenVars.range1 > 60) {
+      $scope.completeLevel();
+  }
 }

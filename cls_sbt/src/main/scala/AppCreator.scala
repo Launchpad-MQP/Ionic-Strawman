@@ -58,13 +58,13 @@ object AppCreator extends App {
       val semanticType:Type = 'toggle
     }
 
-    type rangeType = (String, String, String, String) => String
+    type rangeType = (String, String, String, String, String) => String
     @combinator object Range {
       def apply(): rangeType = {
-        return (iconLeft:String, iconRight:String, name:String, callback:String) =>
+        return (iconLeft:String, iconRight:String, name:String, model:String, callback:String) =>
           s"""<div class="item range">
           <i class="icon $iconLeft"></i>
-          <input type="range" name="$name" min="0" max="100" ng-model="rangeValue" ng-change="$callback(rangeValue)">
+          <input type="range" name="$name" min="0" max="100" ng-model="$model" ng-change="$callback($model)">
           <i class="icon $iconRight"></i></div>"""
       }
       val semanticType:Type = 'range
@@ -86,18 +86,18 @@ object AppCreator extends App {
       val semanticType:Type = 'checkboxes
     }
 
-    type radioType = (Array[String], Array[String]) => String
+    type radioType = (String, Array[String], Array[String]) => String
     @combinator object RadioButtons {
       def apply(): radioType = {
-        def buildChoices(models:Array[String], choices:Array[String]): String = {
+        def buildChoices(model:String, values:Array[String], choices:Array[String]): String = {
           var a = "";
           var i = 0;
           for(i <- 0 until choices.length) {
-            a += s"""\n\t<ion-radio ng-model="${models(i)}" ng-value="${models(i)}">${choices(i)}</ion-radio>"""
+            a += s"""\n\t<ion-radio ng-model="$model" ng-value="${values(i)}">${choices(i)}</ion-radio>"""
           }
           return a;
         }
-        return (models:Array[String], choices:Array[String]) => "<ion-list>" + buildChoices(models, choices) + "</ion-list>"
+        return (model:String, values:Array[String], choices:Array[String]) => "<ion-list>" + buildChoices(model, values, choices) + "</ion-list>"
       }
       val semanticType:Type = 'radiobuttons
     }
@@ -159,17 +159,17 @@ object AppCreator extends App {
       </div>
       <div class="row">
         <div class="col" style="text-align:center">
-        """+checkboxes(Array("frankenVars.rBox1", "frankenVars.rBox2", "frankenVars.rBox3"), Array("Cool", "Scary", "Handsome"))+"""
+        """+radiobuttons("frankenVars.rBox", Array("'Check Me'", "'Do not'", "'Do not'"), Array("Check Me", "Do not", "Do not"))+"""
         </div>
       </div>
       <div class="row">
         <div class="col" style="text-align:center">
-        """+radiobuttons(Array("frankenVars.cBox1", "frankenVars.cBox2", "frankenVars.cBox3"), Array("Red", "Green", "Blue"))+"""
+        """+checkboxes(Array("frankenVars.cBox1", "frankenVars.cBox2", "frankenVars.cBox3"), Array("REEEED", "GREEEEEN", "Blue"))+"""
         </div>
       </div>
       <div class="row">
         <div class="col" style="text-align:center">
-        """+range("ion-flash-off", "ion-flash", "power", "rangeCallbackFcn")+"""
+        """+range("ion-flash-off", "ion-flash", "power", "frankenVars.range1", "rangeCallbackFcn")+"""
         </div>
       </div>
       <div class="row">
