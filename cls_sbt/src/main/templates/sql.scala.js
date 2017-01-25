@@ -69,7 +69,7 @@ angular.module("sql", ["ionic"])
     // present we don't need to do anything with it.
     setLevelState: function (num, @columns.keys.mkString(", ")) {
       console.log("Setting state for level "+num+" to:"+state);
-      apidb.execute(db, "UPDATE levels SET @for((k, v) <- columns) {@k=? }WHERE number=?", [@columns.keys.mkString(", "), num])
+      apidb.execute(db, "UPDATE levels SET @columns.keys.mkString("=?, ")=? WHERE number=?", [@columns.keys.mkString(", "), num])
       .then(function (ret) {
         console.log("Set state for level "+num+ " to:", @columns.keys.mkString(", "));
         for (var i in ret) {

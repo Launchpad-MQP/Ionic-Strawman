@@ -224,7 +224,7 @@ object AppCreator extends App {
 
     @combinator object SQLColumns {
       def apply(): Map[String, String] = {
-        return Map("state" -> "VARCHAR(50)")
+        return Map("state" -> "VARCHAR(50)", "time" -> "INTEGER")
       }
       val semanticType:Type = 'sqlcolumns
     }
@@ -341,7 +341,7 @@ object AppCreator extends App {
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'monster)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'lightsout)
 
   // Pass the response into our defined output, currently just a printer
   val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava

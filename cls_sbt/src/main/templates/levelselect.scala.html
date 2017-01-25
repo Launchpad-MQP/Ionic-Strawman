@@ -9,8 +9,8 @@
         according to the pattern we specified with {{level}}.
       -->
       <div class="row unlimited-items">
-        <div class="col" ng-repeat="level in levels">
-          <a class="button button-stable" ng-click="loadLevel({{level}})" id="level_{{level}}">{{level}}</a>
+        <div class="col" ng-repeat="(k, v) in levels">
+          <a class="button button-stable" ng-click="loadLevel({{k}})" id="level_{{k}}">{{k}}</a>
         </div>
       </div>
     </div>

@@ -30,36 +30,40 @@ angular.module("controllers", ["ionic", "sql"])
     $state.go("level", {"levelNum": num});
   }
   // Globally defined list of levels.
-  $rootScope.levels = [@for(level <- levelList) {@level, }];
+  $rootScope.levels = {@for(level <- levelList) {@level:null, }};
 
   // Creates the database if it doesn't exist.
   sqlfactory.setupSQL();
 
-  for (var i in $rootScope.levels) {
+  for (var i in Object.keys($rootScope.levels)) {
     // Adds a level if it doesn't exist, e.g. the database was just created.
     // Otherwise, this line has no effect, i.e. the level retains its state.
-    sqlfactory.addLevel($rootScope.levels[i], "Unsolved");
+    sqlfactory.addLevel(parseInt(i), "Unsolved", 0);
   }
 
   // For each level, if it is completed we need to recolor the button.
   // This uses a callback function, since talking to SQL is an async operation.
-  for (var i in $rootScope.levels) {
-    sqlfactory.getLevelState($rootScope.levels[i], function (level) {
+  for (var i in Object.keys($rootScope.levels)) {
+    sqlfactory.getLevelState(parseInt(i), function (level) {
       console.log("Callback from getLevelState: ", level);
       if (level.state == "Solved") {
         button = document.getElementById("level_"+level.number);
         button.setAttribute("class", "button button-dark ng-binding");
       }
+      $rootScope.levels[level.number+1] = level;
     });
   }
 
   $rootScope.completeLevel = function($state, levelNum) {
     button = document.getElementById("level_"+levelNum);
     button.setAttribute("class", "button button-dark ng-binding");
-    sqlfactory.setLevelState(levelNum, "Solved");
+    sqlfactory.setLevelState(levelNum, "Solved", 0);
+    console.log($rootScope.levels[levelNum]);
+    console.log($rootScope.levels);
+    $rootScope.levels[levelNum].time += Date.now() - $scope.startTime;
 
     $ionicPopup.show({
-      title: "Level Complete!",
+      title: "Level Complete!  Total time: " + $rootScope.levels[levelNum].time,
       buttons: [
       {
         text: "Level Select",
@@ -77,5 +81,7 @@ angular.module("controllers", ["ionic", "sql"])
         }
       }]
     });
+
+    $rootScope.levels[levelNum].time = 0;
   }
 });

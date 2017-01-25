@@ -6,7 +6,7 @@ angular.module("game", ["ionic", "sql"])
   if ($rootScope.levels === undefined) {
     console.log("Level loaded but level list undefined, going to main")
     $state.go("main");
-  } else if (!$rootScope.levels.includes($stateParams.levelNum)) {
+  } else if (!($stateParams.levelNum in $rootScope.levels)) {
     console.log("Went to level " + $stateParams.levelNum + " redirecting to level select.");
     $state.go("level_select");
   } else {

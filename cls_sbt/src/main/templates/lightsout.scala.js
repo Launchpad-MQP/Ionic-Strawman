@@ -93,8 +93,15 @@ $scope.buttons = [
 
 // This runs whenever a level is entered
 $scope.$on("$ionicView.afterEnter", function(scopes, states){
-  console.log("Entered "+states.stateName+" "+$stateParams.levelNum);
+  console.log("Entered "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum]);
   $scope.initializeLevel();
+  $scope.startTime = Date.now();
+});
+
+// This runs whenever a level is entered
+$scope.$on("$ionicView.beforeLeave", function(scopes, states){
+  $rootScope.levels[$stateParams.levelNum].time += Date.now() - $scope.startTime;
+  console.log("Exiting "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum]);
 });
 
 $scope.initializeLevel = function () {
