@@ -14,9 +14,14 @@ module.exports = function(config) {
 
 
     // list of files / patterns to load in the browser
-    files: [
-      'users.js'
-    ],
+		// MUST LOAD ANGULAR BEFORE TEST FILES
+  files: [
+		'../www/lib/ionic/js/angular/angular.js',
+		'../www/lib/ionic/js/angular-ui/angular-ui-router.js',
+		'../www/lib/angular-mocks/angular-mocks.js',
+    'users2.js',
+		'users.js'
+  ],
 
 
     // list of files to exclude
