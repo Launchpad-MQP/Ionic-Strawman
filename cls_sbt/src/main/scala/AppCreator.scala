@@ -154,15 +154,21 @@ object AppCreator extends App {
       def apply(range:rangeType): String = {
         return """
       <table width="100%">
-        <tr name="row0">
-          <td width="80%">""" + range("0", "1", "", "", "slider0", "temp.slider0", "callback") + """</td>
+        <tr>
+          <td width="20%"></td>
+          <td width="20%"></td>
+          <td width="20%"></td>
+          <td width="20%"></td>
+          <td width="20%"></td>
+        </tr><tr name="row0">
+          <td>""" + range("0", "1", "", "", "slider0", "sliders[0]", "callback") + """</td>
           <td style="vertical-align:center">1</td>
         </tr><tr name="row1">
-          <td>""" + range("0", "1", "", "", "slider1", "temp.slider1", "callback") +
+          <td>""" + range("0", "1", "", "", "slider1", "sliders[1]", "callback") +
 """</td>
           <td style="vertical-align:center">1</td>
         </tr><tr name="row2">
-          <td>""" + range("0", "1", "", "", "slider2", "temp.slider2", "callback") +
+          <td>""" + range("0", "1", "", "", "slider2", "sliders[2]", "callback") +
 """</td>
           <td style="vertical-align:center">1</td>
         </tr>
