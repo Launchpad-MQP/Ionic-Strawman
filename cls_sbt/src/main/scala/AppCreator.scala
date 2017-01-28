@@ -59,13 +59,13 @@ object AppCreator extends App {
       val semanticType:Type = 'toggle
     }
 
-    type rangeType = (Int, Int, String, String, String, String, String) => String
+    type rangeType = (String, String, String, String, String, String, String) => String
     @combinator object Range {
       def apply(): rangeType = {
-        return (min:Int, max:Int, iconLeft:String, iconRight:String, name:String, model:String, callback:String) =>
+        return (min:String, max:String, iconLeft:String, iconRight:String, name:String, model:String, callback:String) =>
           s"""<div class="item range">
           <i class="icon $iconLeft"></i>
-          <input type="range" name="$name" min="$min" max="$max" ng-model="$model" ng-change="$callback($model)">
+          <input type="range" name="$name" min="$min" max="$max" ng-model="$model" on-release="$callback('$name')">
           <i class="icon $iconRight"></i></div>"""
       }
       val semanticType:Type = 'range
@@ -154,17 +154,17 @@ object AppCreator extends App {
       def apply(range:rangeType): String = {
         return """
       <table width="100%">
-        <tr>
-          <td>""" + range(0, 4, "", "", "slider1", "slider1", "callback") + """</td>
-          <td>4</td>
-        </tr><tr>
-          <td>""" + range(0, 3, "", "", "slider2", "slider2", "callback") +
+        <tr name="row0">
+          <td width="80%">""" + range("0", "1", "", "", "slider0", "temp.slider0", "callback") + """</td>
+          <td style="vertical-align:center">1</td>
+        </tr><tr name="row1">
+          <td>""" + range("0", "1", "", "", "slider1", "temp.slider1", "callback") +
 """</td>
-          <td>3</td>
-        </tr><tr>
-          <td>""" + range(0, 2, "", "", "slider3", "slider3", "callback") +
+          <td style="vertical-align:center">1</td>
+        </tr><tr name="row2">
+          <td>""" + range("0", "1", "", "", "slider2", "temp.slider2", "callback") +
 """</td>
-          <td>2</td>
+          <td style="vertical-align:center">1</td>
         </tr>
       </table>"""
       }
@@ -191,7 +191,7 @@ object AppCreator extends App {
       </div>
       <div class="row">
         <div class="col" style="text-align:center">
-        """+range(0, 75, "ion-flash-off", "ion-flash", "power", "frankenVars.range1", "rangeCallbackFcn")+"""
+        """+range("0", "75", "ion-flash-off", "ion-flash", "power", "frankenVars.range1", "rangeCallbackFcn")+"""
         </div>
       </div>
       <div class="row">
