@@ -93,14 +93,17 @@ $scope.buttons = [
 
 // This runs whenever a level is entered
 $scope.$on("$ionicView.afterEnter", function(scopes, states){
+  $scope.completed = false;
   console.log("Entered "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum]);
   $scope.initializeLevel();
-  $scope.startTime = Date.now();
+  $rootScope.levelStartTime = Date.now();
 });
 
 // This runs whenever a level is entered
 $scope.$on("$ionicView.beforeLeave", function(scopes, states){
-  $rootScope.levels[$stateParams.levelNum].time += Date.now() - $scope.startTime;
+  if(!$scope.completed){
+    $rootScope.levels[$stateParams.levelNum].time += Date.now() - $rootScope.levelStartTime;
+  }
   console.log("Exiting "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum]);
 });
 
@@ -158,6 +161,7 @@ $scope.toggle = function (button_name) {
       }
     }
   }
-  console.log("All lights out, completing level.")
+  console.log("All lights out, completing level.");
+  $scope.completed = true;
   $rootScope.completeLevel($state, $stateParams.levelNum);
 }
