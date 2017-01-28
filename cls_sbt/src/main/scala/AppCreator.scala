@@ -20,6 +20,7 @@ object AppCreator extends App {
       .addOption('lightsout)
       .addOption('dummy)
       .addOption('monster)
+      .addOption('nim)
 
     @combinator object MastermindHTML {
       def apply(button:buttonType): String = {
@@ -149,6 +150,27 @@ object AppCreator extends App {
       val semanticType:Type = 'dummy :&: 'html
     }
 
+    @combinator object NimHTML {
+      def apply(range:rangeType): String = {
+        return """
+      <table width="100%">
+        <tr>
+          <td>""" + range(0, 4, "", "", "slider1", "slider1", "callback") + """</td>
+          <td>4</td>
+        </tr><tr>
+          <td>""" + range(0, 3, "", "", "slider2", "slider2", "callback") +
+"""</td>
+          <td>3</td>
+        </tr><tr>
+          <td>""" + range(0, 2, "", "", "slider3", "slider3", "callback") +
+"""</td>
+          <td>2</td>
+        </tr>
+      </table>"""
+      }
+      val semanticType:Type = 'range =>: 'nim :&: 'html
+    }
+
     @combinator object FrankensteinGame {
       def apply(radiobuttons:radioType, checkboxes:checkboxType, button:buttonType, toggle:toggleType, range:rangeType): String = {
         return """
@@ -214,6 +236,7 @@ object AppCreator extends App {
     @combinator object LightsOutTitle extends Title('lightsout, "Lights Out")
     @combinator object DummyTitle extends Title('dummy, "Dummy")
     @combinator object FrankensteinTitle extends Title('monster, "Beelzebub")
+    @combinator object NimTitle extends Title('nim, "Nim")
 
     @combinator object LevelList {
       def apply(): Array[Int] = {
@@ -311,6 +334,7 @@ object AppCreator extends App {
     @combinator object LightsOutJS extends RenderJS('lightsout :&: 'js, js.lightsout.render())
     @combinator object DummyJS extends Render('dummy :&: 'js, "")
     @combinator object FrankensteinJS extends RenderJS('monster :&: 'js, js.frankenstein.render())
+    @combinator object NimJS extends RenderJS('nim :&: 'js, js.nim.render())
 
     class Bind(inputType:Type, filePath:String){
       def apply(expr:String) : Tuple = {
@@ -341,7 +365,7 @@ object AppCreator extends App {
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'lightsout)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'nim)
 
   // Pass the response into our defined output, currently just a printer
   val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
