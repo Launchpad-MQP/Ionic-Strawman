@@ -58,13 +58,13 @@ object AppCreator extends App {
       val semanticType:Type = 'toggle
     }
 
-    type rangeType = (String, String, String, String, String) => String
+    type rangeType = (Int, Int, String, String, String, String, String) => String
     @combinator object Range {
       def apply(): rangeType = {
-        return (iconLeft:String, iconRight:String, name:String, model:String, callback:String) =>
+        return (min:Int, max:Int, iconLeft:String, iconRight:String, name:String, model:String, callback:String) =>
           s"""<div class="item range">
           <i class="icon $iconLeft"></i>
-          <input type="range" name="$name" min="0" max="100" ng-model="$model" ng-change="$callback($model)">
+          <input type="range" name="$name" min="$min" max="$max" ng-model="$model" ng-change="$callback($model)">
           <i class="icon $iconRight"></i></div>"""
       }
       val semanticType:Type = 'range
@@ -169,7 +169,7 @@ object AppCreator extends App {
       </div>
       <div class="row">
         <div class="col" style="text-align:center">
-        """+range("ion-flash-off", "ion-flash", "power", "frankenVars.range1", "rangeCallbackFcn")+"""
+        """+range(0, 75, "ion-flash-off", "ion-flash", "power", "frankenVars.range1", "rangeCallbackFcn")+"""
         </div>
       </div>
       <div class="row">
