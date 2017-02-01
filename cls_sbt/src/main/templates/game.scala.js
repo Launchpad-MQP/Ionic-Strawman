@@ -18,12 +18,12 @@ angular.module("game", ["ionic", "sql"])
 
   @(contents)
 
-  $scope.completeLevel = function($state, levelStartTime=0) {
+  $scope.completeLevel = function() {
     button = document.getElementById("level_"+$stateParams.levelNum)
     button.setAttribute("class", "button button-dark ng-binding")
     sqlfactory.setLevelState($stateParams.levelNum, "Solved", 0)
     console.log($rootScope.levels)
-    $rootScope.levels[$stateParams.levelNum].time += Date.now() - levelStartTime
+    $rootScope.levels[$stateParams.levelNum].time += Date.now() - $scope.levelStartTime
 
     $ionicPopup.show({
       title: "Level Complete!  Total time: " + $rootScope.levels[$stateParams.levelNum].time + " ms",

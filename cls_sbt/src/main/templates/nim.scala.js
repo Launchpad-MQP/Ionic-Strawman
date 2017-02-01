@@ -15,13 +15,9 @@ function doBestMove() {
   for (var i=0; i<$scope.sliders.length; i++) {
     bitwiseXor ^= $scope.sliders[i]
   }
-  console.log("bitwiseXor: ", bitwiseXor)
   for (var i=0; i<$scope.sliders.length; i++) {
     // If changing this slider is a valid move, take it.
-    console.log($scope.sliders[i] ^ bitwiseXor, $scope.sliders[i])
     if (($scope.sliders[i] ^ bitwiseXor) < $scope.sliders[i]) {
-      console.log("Valid for slider", i)
-      console.log(($scope.sliders[i] ^ bitwiseXor) < $scope.sliders[i])
       $scope.sliders[i] ^= bitwiseXor
       setSlider(i)
       return true
@@ -36,16 +32,36 @@ function doRandomMove() {
   var numMoves = 0
   for (var i=0; i<$scope.sliders.length; i++) {
     numMoves += $scope.sliders[i]
+    console.log($scope.sliders[i], numMoves)
   }
   var chosenMove = Math.floor(Math.random()*numMoves)
+  console.log(chosenMove)
   for (var i=0; i<$scope.sliders.length; i++) {
+    console.log(chosenMove, $scope.sliders[i])
     if (chosenMove >= $scope.sliders[i]) {
       chosenMove -= $scope.sliders[i]
+      console.log(chosenMove)
       continue
     } else {
       $scope.sliders[i] = chosenMove
       setSlider(i)
       break
+    }
+  }
+}
+
+// Asks the AI to make a move, with a given percentage chance of a mistake.
+$scope.ai = function(mistake) {
+  if (Math.random() <= mistake) {
+    doRandomMove()
+    console.log("AI makes a mistake")
+  } else {
+    var madeMove = doBestMove()
+    if (madeMove) {
+      console.log("AI made best move")
+    } else {
+      doRandomMove()
+      console.log("AI is in a losing state, made a random move")
     }
   }
 }
@@ -73,21 +89,21 @@ $scope.initializeLevel = function() {
 
 $scope.callback = function(slider) {
   var i = parseInt(slider.slice(-1));
-  $scope.sliders[i] = document.getElementsByName('slider'+i)[0].value;
+  $scope.sliders[i] = parseInt(document.getElementsByName('slider'+i)[0].value);
   setSlider(i);
 
   if ($scope.checkComplete()) {
     $scope.completeLevel()
+  } else {
+    // Artificial delay 0.5s to simulate thinking
+    setTimeout(function() {
+      $scope.ai(0.2)
+
+      if ($scope.checkComplete()) {
+        $scope.loseLevel();
+      }
+    }, 500)
   }
-
-  // Artificial delay 1s to simulate thinking
-  setTimeout(function() {
-    $scope.ai(0.1)
-
-    if ($scope.checkComplete()) {
-      $scope.loseLevel();
-    }
-  }, 500)
 }
 
 $scope.checkComplete = function() {
@@ -97,16 +113,4 @@ $scope.checkComplete = function() {
     }
   }
   return true
-}
-
-// Asks the AI to make a move, with a given percentage chance of a mistake.
-$scope.ai = function(mistake) {
-  if (Math.random() <= mistake) {
-    doRandomMove()
-  } else {
-    var madeMove = doBestMove()
-    if (!madeMove) {
-      doRandomMove()
-    }
-  }
 }
