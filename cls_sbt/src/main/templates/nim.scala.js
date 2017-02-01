@@ -1,5 +1,3 @@
-$scope.sliders = [4, 3, 2];
-
 function setSlider(i) {
   var value = $scope.sliders[i];
   var row = document.getElementsByName('row'+i)[0];
@@ -10,8 +8,67 @@ function setSlider(i) {
   icon.innerHTML = "" + value;
 }
 
-for (var i=0; i<$scope.sliders.length; i++) {
-  setSlider(i);
+// The zero-sum state is when the bitwise xor is 0, so we make the move which
+// reaches this state. Returns true if a move was made, false otherwise.
+function doBestMove() {
+  var bitwiseXor = 0
+  for (var i=0; i<$scope.sliders.length; i++) {
+    bitwiseXor ^= $scope.sliders[i]
+  }
+  console.log("bitwiseXor: ", bitwiseXor)
+  for (var i=0; i<$scope.sliders.length; i++) {
+    // If changing this slider is a valid move, take it.
+    console.log($scope.sliders[i] ^ bitwiseXor, $scope.sliders[i])
+    if (($scope.sliders[i] ^ bitwiseXor) < $scope.sliders[i]) {
+      console.log("Valid for slider", i)
+      console.log(($scope.sliders[i] ^ bitwiseXor) < $scope.sliders[i])
+      $scope.sliders[i] ^= bitwiseXor
+      setSlider(i)
+      return true
+    }
+  }
+  return false
+}
+
+// Picks an equally weighted random move, so it's more likely to pick
+// from a longer column.
+function doRandomMove() {
+  var numMoves = 0
+  for (var i=0; i<$scope.sliders.length; i++) {
+    numMoves += $scope.sliders[i]
+  }
+  var chosenMove = Math.floor(Math.random()*numMoves)
+  for (var i=0; i<$scope.sliders.length; i++) {
+    if (chosenMove >= $scope.sliders[i]) {
+      chosenMove -= $scope.sliders[i]
+      continue
+    } else {
+      $scope.sliders[i] = chosenMove
+      setSlider(i)
+      break
+    }
+  }
+}
+
+// This runs whenever a level is entered
+$scope.$on("$ionicView.afterEnter", function(scopes, states){
+  $scope.completed = false;
+  console.log("Entered "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum]);
+  $scope.initializeLevel();
+  $scope.levelStartTime = Date.now();
+});
+
+$scope.initializeLevel = function() {
+  $scope.sliders = [
+    [1, 2],
+    [4, 5],
+    [1, 2, 4],
+    [2, 3, 4],
+    [1, 6, 8],
+  ][$stateParams.levelNum];
+  for (var i=0; i<$scope.sliders.length; i++) {
+    setSlider(i);
+  }
 }
 
 $scope.callback = function(slider) {
@@ -19,10 +76,37 @@ $scope.callback = function(slider) {
   $scope.sliders[i] = document.getElementsByName('slider'+i)[0].value;
   setSlider(i);
 
+  if ($scope.checkComplete()) {
+    $scope.completeLevel()
+  }
+
+  // Artificial delay 1s to simulate thinking
+  setTimeout(function() {
+    $scope.ai(0.1)
+
+    if ($scope.checkComplete()) {
+      $scope.loseLevel();
+    }
+  }, 500)
+}
+
+$scope.checkComplete = function() {
   for (var i=0; i<$scope.sliders.length; i++) {
     if ($scope.sliders[i] != 0) {
-      return;
+      return false
     }
   }
-  $scope.completeLevel();
+  return true
+}
+
+// Asks the AI to make a move, with a given percentage chance of a mistake.
+$scope.ai = function(mistake) {
+  if (Math.random() <= mistake) {
+    doRandomMove()
+  } else {
+    var madeMove = doBestMove()
+    if (!madeMove) {
+      doRandomMove()
+    }
+  }
 }
