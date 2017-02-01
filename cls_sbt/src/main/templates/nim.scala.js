@@ -2,6 +2,9 @@ function setSlider(i) {
   var value = $scope.sliders[i];
   var row = document.getElementsByName('row'+i)[0];
   row.cells[0].colSpan = value;
+  if(value <= 0){
+    var div = row.getElementsByClassName('item')[0].style.backgroundColor="lightgray";
+  }
   var slider = document.getElementsByName('slider'+i)[0];
   slider.max = value;
   var icon = row.getElementsByClassName('icon')[1];
