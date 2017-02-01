@@ -162,15 +162,12 @@ object AppCreator extends App {
           <td width="20%"></td>
         </tr><tr name="row0">
           <td>""" + range("0", "1", "", "", "slider0", "sliders[0]", "callback") + """</td>
-          <td style="vertical-align:center">1</td>
         </tr><tr name="row1">
           <td>""" + range("0", "1", "", "", "slider1", "sliders[1]", "callback") +
 """</td>
-          <td style="vertical-align:center">1</td>
         </tr><tr name="row2">
           <td>""" + range("0", "1", "", "", "slider2", "sliders[2]", "callback") +
 """</td>
-          <td style="vertical-align:center">1</td>
         </tr>
       </table>"""
       }

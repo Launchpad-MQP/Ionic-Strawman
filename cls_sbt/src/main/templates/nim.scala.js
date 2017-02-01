@@ -4,9 +4,10 @@ function setSlider(i) {
   var value = $scope.sliders[i];
   var row = document.getElementsByName('row'+i)[0];
   row.cells[0].colSpan = value;
-  row.cells[1].innerHTML = value;
   var slider = document.getElementsByName('slider'+i)[0];
   slider.max = value;
+  var icon = row.getElementsByClassName('icon')[1];
+  icon.innerHTML = "" + value;
 }
 
 for (var i=0; i<$scope.sliders.length; i++) {
