@@ -1,14 +1,15 @@
 function setSlider(i) {
-  var value = $scope.sliders[i];
-  var row = document.getElementsByName('row'+i)[0];
-  row.cells[0].colSpan = value;
-  if(value <= 0){
-    var div = row.getElementsByClassName('item')[0].style.backgroundColor="lightgray";
+  var value = $scope.sliders[i]
+  var slider = document.getElementsByName('slider_'+$scope.levelNum+'_'+i)[0]
+  slider.max = value
+  var div = slider.parentElement
+  div.style.width = 100 * value / $scope.max + "%"
+  var rightIcon = div.getElementsByTagName('i')[1]
+  rightIcon.innerHTML = value
+  if (value <= 0) {
+    // Slider is maxed at 0, change color to signal disabled
+    div.style.backgroundColor = "lightgray"
   }
-  var slider = document.getElementsByName('slider'+i)[0];
-  slider.max = value;
-  var icon = row.getElementsByClassName('icon')[1];
-  icon.innerHTML = "" + value;
 }
 
 // The zero-sum state is when the bitwise xor is 0, so we make the move which
@@ -79,20 +80,22 @@ $scope.$on("$ionicView.afterEnter", function(scopes, states){
 
 $scope.initializeLevel = function() {
   $scope.sliders = [
-    [1, 2],
-    [4, 5],
-    [1, 2, 4],
-    [2, 3, 4],
-    [1, 6, 8],
+    [1, 2, 0, 0, 0],
+    [4, 5, 0, 0, 0],
+    [1, 2, 4, 0, 0],
+    [2, 3, 4, 0, 0],
+    [1, 6, 8, 0, 0],
   ][$stateParams.levelNum];
+  $scope.max = Math.max.apply(null, $scope.sliders)
+
   for (var i=0; i<$scope.sliders.length; i++) {
     setSlider(i);
   }
 }
 
 $scope.callback = function(slider) {
-  var i = parseInt(slider.slice(-1));
-  $scope.sliders[i] = parseInt(document.getElementsByName('slider'+i)[0].value);
+  var i = parseInt(slider.split('_')[2]);
+  $scope.sliders[i] = parseInt(document.getElementsByName('slider_'+$scope.levelNum+'_'+i)[0].value);
   setSlider(i);
 
   if ($scope.checkComplete()) {

@@ -153,23 +153,17 @@ object AppCreator extends App {
     @combinator object NimHTML {
       def apply(range:rangeType): String = {
         return """
-      <table width="100%">
-        <tr>
-          <td width="20%"></td>
-          <td width="20%"></td>
-          <td width="20%"></td>
-          <td width="20%"></td>
-          <td width="20%"></td>
-        </tr><tr name="row0">
-          <td>""" + range("0", "1", "", "", "slider0", "sliders[0]", "callback") + """</td>
-        </tr><tr name="row1">
-          <td>""" + range("0", "1", "", "", "slider1", "sliders[1]", "callback") +
-"""</td>
-        </tr><tr name="row2">
-          <td>""" + range("0", "1", "", "", "slider2", "sliders[2]", "callback") +
-"""</td>
-        </tr>
-      </table>"""
+        <div class="row">
+          """ + range("0", "1", "", "", "slider_{{levelNum}}_0", "sliders[0]", "callback") + """
+        </div><div class="row">
+          """ + range("0", "1", "", "", "slider_{{levelNum}}_1", "sliders[1]", "callback") + """
+        </div><div class="row">
+          """ + range("0", "1", "", "", "slider_{{levelNum}}_2", "sliders[2]", "callback") + """
+        </div><div class="row">
+          """ + range("0", "1", "", "", "slider_{{levelNum}}_3", "sliders[3]", "callback") + """
+        </div><div class="row">
+          """ + range("0", "1", "", "", "slider_{{levelNum}}_4", "sliders[4]", "callback") + """
+        </div>"""
       }
       val semanticType:Type = 'range =>: 'nim :&: 'html
     }
