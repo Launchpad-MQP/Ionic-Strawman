@@ -23,7 +23,9 @@ angular.module("game", ["ionic", "sql"])
     console.log("Entered "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum])
     $rootScope.levels[$stateParams.levelNum].time -= Date.now()
 
-    $scope.initializeLevel()
+    if ($scope.initializeLevel != undefined) {
+      $scope.initializeLevel()
+    }
   });
 
   // This runs when the level is exited
