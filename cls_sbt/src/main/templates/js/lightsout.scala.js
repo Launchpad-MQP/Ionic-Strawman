@@ -1,85 +1,3 @@
-$scope.buttonsList = [
-  [
-    [0, 1, 0, 0, 0, 0],
-    [1, 1, 1, 0, 0, 0],
-    [0, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-  ],
-  [
-    [0, 1, 0, 0, 0, 0],
-    [1, 1, 1, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 0, 0, 0],
-    [0, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-  ],
-  [
-    [0, 0, 0, 0, 0, 0],
-    [0, 1, 1, 1, 0, 0],
-    [1, 0, 1, 0, 1, 0],
-    [0, 1, 1, 1, 0, 0],
-    [0, 0, 1, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-  ],
-  [
-    [0, 0, 1, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0],
-    [1, 1, 0, 1, 1, 0],
-    [0, 0, 1, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-  ],
-  [
-    [0, 0, 0, 0, 0, 0],
-    [0, 1, 0, 0, 1, 0],
-    [1, 1, 0, 0, 1, 1],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 1, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-  ],
-  [
-    [0, 0, 0, 0, 1, 0],
-    [1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [1, 0, 0, 0, 0, 0],
-    [1, 0, 0, 0, 1, 1],
-  ],
-  [
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-  ],
-  [
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0],
-    [0, 0, 0, 1, 0, 1],
-    [0, 0, 0, 0, 1, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-  ],
-  [
-    [0, 0, 0, 0, 0, 0],
-    [1, 1, 0, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0],
-    [1, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-  ],
-  [
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0],
-    [0, 0, 1, 1, 0, 0],
-    [1, 1, 0, 0, 0, 0],
-    [0, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-  ]
-][$stateParams.levelNum-1];
 
 // Used by the HTML to name the buttons
 $scope.buttons = [
@@ -91,9 +9,61 @@ $scope.buttons = [
   ["5_0", "5_1", "5_2", "5_3", "5_4", "5_5"]
 ];
 
+function convertTo(longState) {
+  arr = [];
+  for (var i = 0; i < 6; i++) {
+    row = [];
+    for (var j = 0; j < 6; j++) {
+      row.unshift(longState%2);
+      longState = Math.floor(longState/2);
+    }
+    arr.unshift(row);
+  }
+  return arr;
+}
+
+function convertFrom(arr) {
+  longState = 0;
+  for (var i = 0; i < 6; i++) {
+    for (var j = 0; j < 6; j++) {
+      longState *= 2;
+      longState += arr[i][j];
+    }
+  }
+  return longState;
+}
+
+$scope.beforeLeave = function () {
+  var s = convertFrom($scope.buttonsList);
+  //console.log("State before leave: " + $scope.buttonsList);
+  $rootScope.states[$stateParams.levelNum-1] = s;
+  sqlfactory.setLevelState($stateParams.levelNum, s);
+}
+
 $scope.initializeLevel = function () {
-  for (var row=0; row < $scope.buttonsList.length; row++) {
-    for (var col=0; col < $scope.buttonsList[0].length; col++) {
+    if(typeof $rootScope.states === "undefined"){
+    $rootScope.states = [
+      0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0
+    ];
+    $rootScope.defaultStates = [
+      18123587584, 18119623680, 480887296, 8738341376, 315360000,
+       2684356643,      524288,  34873344,  807600128, 137561088,
+                0,           0,         0,          0,         0,
+                0,           0,         0,          0,         0
+    ];
+  }
+  if($rootScope.states[$stateParams.levelNum-1] != 0){
+    $scope.buttonsList = convertTo($rootScope.states[$stateParams.levelNum-1]);
+  }
+  else{
+    $scope.buttonsList = convertTo($rootScope.defaultStates[$stateParams.levelNum-1]);
+  }
+  console.log("State for level "+$stateParams.levelNum + ":"+$scope.buttonsList);
+  for (var row=0; row<6; row++) {
+    for (var col=0; col<6; col++) {
       var name = $stateParams.levelNum + "_" + row + "_" + col;
       var button = document.getElementById(name);
       if (button === null) {
@@ -107,6 +77,9 @@ $scope.initializeLevel = function () {
   }
 }
 
+$scope.restartLevel = function () {
+}
+
 $scope.toggleButton = function (row, col) {
   var name = $stateParams.levelNum + "_" + row + "_" + col;
   var button = document.getElementById(name);
@@ -114,10 +87,12 @@ $scope.toggleButton = function (row, col) {
     return;
   }
   //console.log(button.className);
-  if (button.className.includes("button-energized")) {
+  if ($scope.buttonsList[row][col] == 1) {
     button.className = "button button-dark";
-  } else if (button.className.includes("button-dark")) {
+    $scope.buttonsList[row][col] = 0;
+  } else if ($scope.buttonsList[row][col] == 0) {
     button.className = "button button-energized";
+      $scope.buttonsList[row][col] = 1;
   }
 }
 
@@ -147,5 +122,5 @@ $scope.toggle = function (button_name) {
   }
   console.log("All lights out, completing level.");
   $scope.completed = true;
-  $rootScope.completeLevel($state, $stateParams.levelNum, $scope.levelStartTime);
+  $scope.completeLevel($state, $stateParams.levelNum, $scope.levelStartTime);
 }
