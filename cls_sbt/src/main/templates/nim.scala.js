@@ -7,10 +7,6 @@ function setSlider(i) {
   div.style.width = 100 * value / $scope.max + "%"
   var rightIcon = div.getElementsByTagName('i')[1]
   rightIcon.innerHTML = value
-  if (value <= 0) {
-    // Slider is maxed at 0, change color to signal disabled
-    div.style.backgroundColor = "lightgray"
-  }
 }
 
 // The zero-sum state is when the bitwise xor is 0, so we make the move which

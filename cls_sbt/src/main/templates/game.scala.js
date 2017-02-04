@@ -32,37 +32,34 @@ angular.module("game", ["ionic", "sql"])
     $rootScope.levels[$stateParams.levelNum].time += Date.now()
   });
 
-  $scope.completeLevel = function() {
-    button = document.getElementById("level_"+$stateParams.levelNum)
-    button.setAttribute("class", "button button-dark ng-binding")
-    sqlfactory.setLevelState($stateParams.levelNum, "Solved", 0)
-    console.log($rootScope.levels)
+  $scope.completeLevel = function(won) {
     var time = $rootScope.levels[$stateParams.levelNum].time + Date.now()
-
-    $ionicPopup.show({
-      title: "Level Complete! Total time: " + time / 60 + " seconds",
-      buttons: [
-      {
-        text: "Level Select",
-        onTap: function () {
-          console.log("Back to level select.")
-          $state.go("level_select")
-        }
-      },
-      {
+    if (won) {
+      sqlfactory.setLevelState($stateParams.levelNum, "Solved", 0)
+      button = document.getElementById("level_"+$stateParams.levelNum)
+      button.setAttribute("class", "button button-dark ng-binding")
+      var title = "Level Complete! Total time: " + time / 60 + " seconds"
+      var levelOption = {
         text: "Next",
         type: "button-positive",
         onTap: function () {
           console.log("On to the next level.")
           $state.go("level", {"levelNum": $stateParams.levelNum+1})
         }
-      }]
-    })
-  }
+      }
+    } else {
+      var title = "You lose!"
+      var levelOption = {
+        text: "Retry",
+        type: "button-positive",
+        onTap: function() {
+          $scope.restart()
+        }
+      }
+    }
 
-  $scope.loseLevel = function() {
     $ionicPopup.show({
-      title: "You lose!",
+      title: title,
       buttons: [
       {
         text: "Level Select",
@@ -70,14 +67,7 @@ angular.module("game", ["ionic", "sql"])
           console.log("Back to level select.")
           $state.go("level_select")
         }
-      },
-      {
-        text: "Retry",
-        type: "button-positive",
-        onTap: function() {
-          $scope.restart()
-        }
-      }]
+      }, levelOption]
     })
   }
 
