@@ -154,15 +154,15 @@ object AppCreator extends App {
       def apply(range:rangeType): String = {
         return """
         <div class="row">
-          """ + range("0", "1", "", "", "slider_{{levelNum}}_0", "sliders[0]", "callback") + """
+          """ + range("0", "1", "", "", "slider_{{levelNum}}_0", "test.blah0", "callback") + """
         </div><div class="row">
-          """ + range("0", "1", "", "", "slider_{{levelNum}}_1", "sliders[1]", "callback") + """
+          """ + range("0", "1", "", "", "slider_{{levelNum}}_1", "test.blah1", "callback") + """
         </div><div class="row">
-          """ + range("0", "1", "", "", "slider_{{levelNum}}_2", "sliders[2]", "callback") + """
+          """ + range("0", "1", "", "", "slider_{{levelNum}}_2", "test.blah2", "callback") + """
         </div><div class="row">
-          """ + range("0", "1", "", "", "slider_{{levelNum}}_3", "sliders[3]", "callback") + """
+          """ + range("0", "1", "", "", "slider_{{levelNum}}_3", "test.blah3", "callback") + """
         </div><div class="row">
-          """ + range("0", "1", "", "", "slider_{{levelNum}}_4", "sliders[4]", "callback") + """
+          """ + range("0", "1", "", "", "slider_{{levelNum}}_4", "test.blah4", "callback") + """
         </div>"""
       }
       val semanticType:Type = 'range =>: 'nim :&: 'html

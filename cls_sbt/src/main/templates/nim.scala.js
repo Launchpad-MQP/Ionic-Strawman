@@ -2,6 +2,7 @@ function setSlider(i) {
   var value = $scope.sliders[i]
   var slider = document.getElementsByName('slider_'+$scope.levelNum+'_'+i)[0]
   slider.max = value
+  slider.value = value
   var div = slider.parentElement
   div.style.width = 100 * value / $scope.max + "%"
   var rightIcon = div.getElementsByTagName('i')[1]
@@ -87,7 +88,12 @@ $scope.initializeLevel = function() {
 
 $scope.callback = function(slider) {
   var i = parseInt(slider.split('_')[2]);
-  $scope.sliders[i] = parseInt(document.getElementsByName('slider_'+$scope.levelNum+'_'+i)[0].value)
+  var value = parseInt(document.getElementsByName('slider_'+$scope.levelNum+'_'+i)[0].value)
+  if ($scope.sliders[i] == value) {
+    return // User didn't change the slider
+  } else {
+    $scope.sliders[i] = value
+  }
   setSlider(i);
 
   if ($scope.checkComplete()) {
