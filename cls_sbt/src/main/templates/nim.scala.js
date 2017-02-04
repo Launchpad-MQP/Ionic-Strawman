@@ -93,14 +93,14 @@ $scope.callback = function(slider) {
   setSlider(i);
 
   if ($scope.checkComplete()) {
-    $scope.completeLevel()
+    $scope.completeLevel(true)
   } else {
     // Artificial delay 0.5s to simulate thinking
     setTimeout(function() {
       $scope.ai(0.2)
 
       if ($scope.checkComplete()) {
-        $scope.loseLevel()
+        $scope.completeLevel(false)
       }
     }, 500)
   }
