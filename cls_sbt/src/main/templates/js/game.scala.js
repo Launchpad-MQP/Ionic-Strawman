@@ -26,16 +26,16 @@ angular.module("game", ["ionic", "sql"])
     if ($scope.initializeLevel != undefined) {
       $scope.initializeLevel()
     }
-  });
+  })
 
   // This runs when the level is exited
   $scope.$on("$ionicView.beforeLeave", function(scopes, states){
-    console.log("Exited "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum]);
+    console.log("Exited "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum])
     $rootScope.levels[$stateParams.levelNum].time += Date.now()
     if(typeof $scope.beforeLeave === "function"){
       $scope.beforeLeave()
     }
-  });
+  })
 
   $scope.completeLevel = function(won) {
     var time = $rootScope.levels[$stateParams.levelNum].time + Date.now()

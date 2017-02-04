@@ -4,7 +4,7 @@ import de.tu_dortmund.cs.ls14.cls.types._
 import de.tu_dortmund.cs.ls14.cls.interpreter.combinator
 
 import scala.collection.JavaConverters._
-import ionicmqp2016._;
+import ionicmqp2016._
 import _root_.java.nio.file._
 
 object TestExample extends App {
@@ -55,7 +55,7 @@ object TestExample extends App {
     // Binds a symbol to a file, so it can be written out by Java
     class Bind(sym:Symbol, fileName:String) {
       def apply(expr:String): Tuple = {
-        return new Tuple(expr, fileName);
+        return new Tuple(expr, fileName)
       }
       val semanticType:Type = sym =>: 'BoundFile :&: sym
     }

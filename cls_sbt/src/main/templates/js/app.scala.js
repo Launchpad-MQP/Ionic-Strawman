@@ -6,8 +6,8 @@
 
 // Initialize SQL database and database access so that they
 // are available at global scope
-var db = undefined;
-var apidb = undefined;
+var db = undefined
+var apidb = undefined
 
 // A list of other javascript files to include
 angular.module("starter", [@for(state <- stateList) {"@state", }"ngCordova"])
@@ -17,21 +17,21 @@ angular.module("starter", [@for(state <- stateList) {"@state", }"ngCordova"])
   $ionicPlatform.ready( function () {
     // When running on mobile, hide the accessory bar by default.
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      cordova.plugins.Keyboard.disableScroll(true);
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true)
+      cordova.plugins.Keyboard.disableScroll(true)
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
+      StatusBar.styleDefault()
     }
 
     if (window.cordova) { // If true, running in an emulator.
-      db = $cordovaSQLite.openDB("levels.db");
+      db = $cordovaSQLite.openDB("levels.db")
     } else { // If false, running in a browser.
-      db = window.openDatabase("levels.db", "1", "levels", 10000000);
+      db = window.openDatabase("levels.db", "1", "levels", 10000000)
     }
 
-    apidb = $cordovaSQLite;
+    apidb = $cordovaSQLite
 
-  });
-});
+  })
+})

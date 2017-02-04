@@ -74,7 +74,7 @@ $scope.initializeLevel = function() {
     [1, 2, 4, 0, 0],
     [2, 3, 4, 0, 0],
     [1, 6, 8, 0, 0],
-  ][$stateParams.levelNum];
+  ][$stateParams.levelNum]
   $scope.max = Math.max.apply(null, $scope.sliders)
 
   for (var i=0; i<$scope.sliders.length; i++) {
@@ -83,14 +83,14 @@ $scope.initializeLevel = function() {
 }
 
 $scope.callback = function(slider) {
-  var i = parseInt(slider.split('_')[2]);
+  var i = parseInt(slider.split('_')[2])
   var value = parseInt(document.getElementsByName('slider_'+$scope.levelNum+'_'+i)[0].value)
   if ($scope.sliders[i] == value) {
     return // User didn't change the slider
   } else {
     $scope.sliders[i] = value
   }
-  setSlider(i);
+  setSlider(i)
 
   if ($scope.checkComplete()) {
     $scope.completeLevel(true)

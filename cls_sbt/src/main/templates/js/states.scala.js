@@ -21,7 +21,7 @@ angular.module("states", ["ionic"])
     url: "/level/{levelNum:int}",
     templateUrl: "templates/game.html",
     controller: "LevelCtrl"
-  });
+  })
 
-  $urlRouterProvider.otherwise("/main");
-});
+  $urlRouterProvider.otherwise("/main")
+})

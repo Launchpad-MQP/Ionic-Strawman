@@ -29,7 +29,7 @@ $scope.successVals = [
 ][$stateParams.levelNum%2]
 
 $scope.checkComplete = function () {
-  console.log($scope.frankenVars);
+  console.log($scope.frankenVars)
   if($scope.frankenVars.toggle == $scope.successVals.toggle &&
     $scope.frankenVars.rBox == $scope.successVals.rBox &&
     $scope.frankenVars.cBox1 == $scope.successVals.cBox1 &&
@@ -37,6 +37,6 @@ $scope.checkComplete = function () {
     $scope.frankenVars.cBox3 == $scope.successVals.cBox3 &&
     $scope.frankenVars.range1 >= $scope.successVals.rangeMin &&
     $scope.frankenVars.range1 <= $scope.successVals.rangeMax) {
-      $scope.completeLevel();
+      $scope.completeLevel()
   }
 }

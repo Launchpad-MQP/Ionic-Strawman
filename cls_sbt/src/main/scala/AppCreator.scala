@@ -6,7 +6,7 @@ import de.tu_dortmund.cs.ls14.cls.interpreter.combinator
 import play.twirl.api.JavaScript
 import play.twirl.api.Html
 import scala.collection.JavaConverters._
-import ionicmqp2016._;
+import ionicmqp2016._
 import _root_.java.nio.file._
 
 object AppCreator extends App {
@@ -62,12 +62,12 @@ object AppCreator extends App {
     @combinator object Checkboxes {
       def apply(): checkboxType = {
         def buildChoices(models:Array[String], choices:Array[String]): String = {
-          var a = "";
-          var i = 0;
+          var a = ""
+          var i = 0
           for(i <- 0 until choices.length) {
             a += s"""\n\t<ion-checkbox ng-model="${models(i)}" ng-value="${models(i)}">${choices(i)}</ion-checkbox>"""
           }
-          return a;
+          return a
         }
         return (models:Array[String], choices:Array[String]) => new Html("<ion-list>" + buildChoices(models, choices) + "</ion-list>")
       }
@@ -78,12 +78,12 @@ object AppCreator extends App {
     @combinator object RadioButtons {
       def apply(): radioType = {
         def buildChoices(model:String, values:Array[String], choices:Array[String]): String = {
-          var a = "";
-          var i = 0;
+          var a = ""
+          var i = 0
           for(i <- 0 until choices.length) {
             a += s"""\n\t<ion-radio ng-model="$model" ng-value="${values(i)}">${choices(i)}</ion-radio>"""
           }
-          return a;
+          return a
         }
         return (model:String, values:Array[String], choices:Array[String]) => new Html("<ion-list>" + buildChoices(model, values, choices) + "</ion-list>")
       }
