@@ -1,4 +1,4 @@
-@(radioButtons:(String, Array[String], Array[String]) => Html, checkBoxes:(Array[String], Array[String]) => Html, button:(String, String, String) => Html, toggle:(String, String) => Html, range:(Int, Int, String, String, String, String, String) => Html)
+@(radioButtons:(String, Array[String], Array[String]) => Html, checkBoxes:(Array[String], Array[String]) => Html, button:(String, String, String) => Html, toggle:(String, String) => Html, range:(String, String, String, String, String, String, String) => Html)
 <div class="row">
   <div class="col" style="text-align:center">
     @toggle("frankenVars.toggle", "Alive?")
@@ -16,7 +16,7 @@
 </div>
 <div class="row">
   <div class="col" style="text-align:center">
-    @range(0, 75, "ion-flash-off", "ion-flash", "power", "frankenVars.range1", "rangeCallbackFcn")
+    @range("0", "75", "ion-flash-off", "ion-flash", "power", "frankenVars.range1", "rangeCallbackFcn")
   </div>
 </div>
 <div class="row">

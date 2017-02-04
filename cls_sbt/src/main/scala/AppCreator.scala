@@ -21,6 +21,7 @@ object AppCreator extends App {
       .addOption('lightsout)
       .addOption('dummy)
       .addOption('monster)
+      .addOption('nim)
 
     type buttonType = (String, String, String) => Html
     @combinator object Button {
@@ -45,13 +46,13 @@ object AppCreator extends App {
       val semanticType:Type = 'toggle
     }
 
-    type rangeType = (Int, Int, String, String, String, String, String) => Html
+    type rangeType = (String, String, String, String, String, String, String) => Html
     @combinator object Range {
       def apply(): rangeType = {
-        return (min:Int, max:Int, iconLeft:String, iconRight:String, name:String, model:String, callback:String) =>
+        return (min:String, max:String, iconLeft:String, iconRight:String, name:String, model:String, callback:String) =>
           new Html(s"""<div class="item range">
           <i class="icon $iconLeft"></i>
-          <input type="range" name="$name" min="$min" max="$max" ng-model="$model" ng-change="$callback($model)">
+          <input type="range" name="$name" min="$min" max="$max" ng-model="$model" on-release="$callback('$name')">
           <i class="icon $iconRight"></i></div>""")
       }
       val semanticType:Type = 'range
@@ -124,6 +125,13 @@ object AppCreator extends App {
       val semanticType:Type = 'radiobuttons =>: 'checkboxes =>: 'button =>: 'toggle =>: 'range =>: 'monster :&: 'html
     }
 
+    @combinator object NimHTML {
+      def apply(range:rangeType): String = {
+        return html.html.nim.render(range).toString()
+      }
+      val semanticType:Type = 'range =>: 'nim :&: 'html
+    }
+
     @combinator object GameHTML {
       def apply(contents:String): String = {
         return html.html.game.render(contents).toString()
@@ -157,6 +165,7 @@ object AppCreator extends App {
     @combinator object LightsOutTitle extends Title('lightsout, "Lights Out")
     @combinator object DummyTitle extends Title('dummy, "Dummy")
     @combinator object FrankensteinTitle extends Title('monster, "Beelzebub")
+    @combinator object NimTitle extends Title('nim, "Nim")
 
     @combinator object LevelList {
       def apply(): Array[Int] = {
@@ -254,6 +263,7 @@ object AppCreator extends App {
     @combinator object LightsOutJS extends RenderJS('lightsout :&: 'js, js.js.lightsout.render())
     @combinator object DummyJS extends RenderJS('dummy :&: 'js, js.js.dummy.render())
     @combinator object FrankensteinJS extends RenderJS('monster :&: 'js, js.js.frankenstein.render())
+    @combinator object NimJS extends RenderJS('nim :&: 'js, js.js.nim.render())
 
     class Bind(inputType:Type, filePath:String){
       def apply(expr:String) : Tuple = {
@@ -284,7 +294,7 @@ object AppCreator extends App {
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'monster)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'nim)
 
   // Pass the response into our defined output, currently just a printer
   val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
