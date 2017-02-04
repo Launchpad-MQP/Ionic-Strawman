@@ -32,6 +32,9 @@ angular.module("game", ["ionic", "sql"])
   $scope.$on("$ionicView.beforeLeave", function(scopes, states){
     console.log("Exited "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum]);
     $rootScope.levels[$stateParams.levelNum].time += Date.now()
+    if(typeof $scope.beforeLeave === "function"){
+      $scope.beforeLeave()
+    }
   });
 
   $scope.completeLevel = function(won) {
@@ -75,6 +78,9 @@ angular.module("game", ["ionic", "sql"])
 
   $scope.restart = function () {
     console.log("Restarting level...")
+    if(typeof $scope.restartLevel === "function"){
+      $scope.restartLevel()
+    }
     $state.reload()
   }
 })
