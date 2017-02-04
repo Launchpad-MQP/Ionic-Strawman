@@ -70,14 +70,6 @@ $scope.ai = function(mistake) {
   }
 }
 
-// This runs whenever a level is entered
-$scope.$on("$ionicView.afterEnter", function(scopes, states){
-  $scope.completed = false;
-  console.log("Entered "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum]);
-  $scope.initializeLevel();
-  $scope.levelStartTime = Date.now();
-});
-
 $scope.initializeLevel = function() {
   $scope.sliders = [
     [1, 2, 0, 0, 0],
@@ -89,13 +81,13 @@ $scope.initializeLevel = function() {
   $scope.max = Math.max.apply(null, $scope.sliders)
 
   for (var i=0; i<$scope.sliders.length; i++) {
-    setSlider(i);
+    setSlider(i)
   }
 }
 
 $scope.callback = function(slider) {
   var i = parseInt(slider.split('_')[2]);
-  $scope.sliders[i] = parseInt(document.getElementsByName('slider_'+$scope.levelNum+'_'+i)[0].value);
+  $scope.sliders[i] = parseInt(document.getElementsByName('slider_'+$scope.levelNum+'_'+i)[0].value)
   setSlider(i);
 
   if ($scope.checkComplete()) {
@@ -106,7 +98,7 @@ $scope.callback = function(slider) {
       $scope.ai(0.2)
 
       if ($scope.checkComplete()) {
-        $scope.loseLevel();
+        $scope.loseLevel()
       }
     }, 500)
   }

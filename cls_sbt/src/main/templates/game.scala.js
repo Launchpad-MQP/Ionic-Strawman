@@ -18,15 +18,29 @@ angular.module("game", ["ionic", "sql"])
 
   @(contents)
 
+  // This runs when the level is entered
+  $scope.$on("$ionicView.afterEnter", function(scopes, states){
+    console.log("Entered "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum])
+    $rootScope.levels[$stateParams.levelNum].time -= Date.now()
+
+    $scope.initializeLevel()
+  });
+
+  // This runs when the level is exited
+  $scope.$on("$ionicView.beforeLeave", function(scopes, states){
+    console.log("Exited "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum]);
+    $rootScope.levels[$stateParams.levelNum].time += Date.now()
+  });
+
   $scope.completeLevel = function() {
     button = document.getElementById("level_"+$stateParams.levelNum)
     button.setAttribute("class", "button button-dark ng-binding")
     sqlfactory.setLevelState($stateParams.levelNum, "Solved", 0)
     console.log($rootScope.levels)
-    $rootScope.levels[$stateParams.levelNum].time += Date.now() - $scope.levelStartTime
+    var time = $rootScope.levels[$stateParams.levelNum].time + Date.now()
 
     $ionicPopup.show({
-      title: "Level Complete!  Total time: " + $rootScope.levels[$stateParams.levelNum].time + " ms",
+      title: "Level Complete! Total time: " + time / 60 + " seconds",
       buttons: [
       {
         text: "Level Select",
@@ -44,8 +58,6 @@ angular.module("game", ["ionic", "sql"])
         }
       }]
     })
-
-    $rootScope.levels[$stateParams.levelNum].time = 0
   }
 
   $scope.loseLevel = function() {
