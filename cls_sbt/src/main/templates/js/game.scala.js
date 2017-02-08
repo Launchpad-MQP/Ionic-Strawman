@@ -3,47 +3,47 @@ angular.module("game", ["ionic", "sql"])
 
 .controller("LevelCtrl", function ($scope, $rootScope, $ionicPopup, $state, $stateParams, sqlfactory) {
   // Check for invalid state
-  if ($rootScope.levels === undefined) {
+  if ($rootScope.levelData === undefined) {
     console.log("Level loaded but level list undefined, going to main")
     $state.go("main")
-  } else if (!($stateParams.levelNum in $rootScope.levels)) {
-    console.log("Went to level " + $stateParams.levelNum + " redirecting to level select.")
-    $state.go("level_select")
   } else {
-    console.log("Now in level: " + $stateParams.levelNum)
+    try {
+      // Redefined so that it can be used in the HTML.
+      $scope.levelName = $rootScope.levelData[$stateParams.levelNum]["name"]
+      console.log("Now in " + $scope.levelName)
+    } catch (err) {
+      console.log("Tried to go to " + $stateParams.levelNum + ", redirecting to level select.")
+      $state.go("level_select")
+    }
   }
-
-  // Redefined so that it can be used in the HTML.
-  $scope.levelNum = $stateParams.levelNum
 
   @(contents)
 
   // This runs when the level is entered
   $scope.$on("$ionicView.afterEnter", function(scopes, states){
-    console.log("Entered "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum])
-    $rootScope.levels[$stateParams.levelNum].time -= Date.now()
-
-    if ($scope.initializeLevel != undefined) {
+    console.log("Entered "+$stateParams.levelName+":", $rootScope.levelData[$stateParams.levelNum])
+    $rootScope.levelData[$stateParams.levelNum]["time"] -= Date.now()
+    if (typeof $scope.initializeLevel == "function") {
       $scope.initializeLevel()
     }
   })
 
   // This runs when the level is exited
   $scope.$on("$ionicView.beforeLeave", function(scopes, states){
-    console.log("Exited "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum])
-    $rootScope.levels[$stateParams.levelNum].time += Date.now()
-    if(typeof $scope.beforeLeave === "function"){
+    console.log("Exited "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levelData[$stateParams.levelNum])
+    $rootScope.levelData[$stateParams.levelNum]["time"] += Date.now()
+    if (typeof $scope.beforeLeave === "function") {
       $scope.beforeLeave()
     }
   })
 
   $scope.completeLevel = function(won) {
-    var time = $rootScope.levels[$stateParams.levelNum].time + Date.now()
+    var time = $rootScope.levelData[$stateParams.levelNum]["time"] + Date.now()
     if (won) {
       sqlfactory.setLevelState($stateParams.levelNum, "Solved", 0)
       button = document.getElementById("level_"+$stateParams.levelNum)
       button.setAttribute("class", "button button-dark ng-binding")
-      var title = "Level Complete! Total time: " + time / 60 + " seconds"
+      var title = $scope.levelName + " Complete! Total time: " + time / 60 + " seconds"
       var levelOption = {
         text: "Next",
         type: "button-positive",
@@ -78,7 +78,7 @@ angular.module("game", ["ionic", "sql"])
 
   $scope.restart = function () {
     console.log("Restarting level...")
-    if(typeof $scope.restartLevel === "function"){
+    if (typeof $scope.restartLevel === "function") {
       $scope.restartLevel()
     }
     $state.reload()

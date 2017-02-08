@@ -168,8 +168,8 @@ object AppCreator extends App {
     @combinator object NimTitle extends Title('nim, "Nim")
 
     @combinator object LevelList {
-      def apply(): Array[Int] = {
-        return (1 to 20).toArray
+      def apply(): Array[String] = {
+        return (1 to 20).toArray.map("Level " + _)
       }
       val semanticType:Type = 'levelList
     }
@@ -228,7 +228,7 @@ object AppCreator extends App {
     }
 
     @combinator object Controllers {
-      def apply(levelList:Array[Int]): String = {
+      def apply(levelList:Array[String]): String = {
         return js.js.controllers.render(levelList).toString()
       }
       val semanticType:Type = 'levelList =>: 'controllers
