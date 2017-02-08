@@ -8,8 +8,9 @@ angular.module("game", ["ionic", "sql"])
     $state.go("main")
   } else {
     try {
-      // Redefined so that it can be used in the HTML.
+      // Redefined so that they can be used in the HTML
       $scope.levelName = $rootScope.levelData[$stateParams.levelNum]["name"]
+      $scope.levelNum = $stateParams.levelNum
       console.log("Now in " + $scope.levelName)
     } catch (err) {
       console.log("Tried to go to " + $stateParams.levelNum + ", redirecting to level select.")
