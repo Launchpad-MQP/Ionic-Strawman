@@ -23,7 +23,7 @@ angular.module("game", ["ionic", "sql"])
     console.log("Entered "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum])
     $rootScope.levels[$stateParams.levelNum].time -= Date.now()
 
-    if ($scope.initializeLevel != undefined) {
+    if (typeof $scope.initializeLevel === "function") {
       $scope.initializeLevel()
     }
   })
@@ -32,7 +32,7 @@ angular.module("game", ["ionic", "sql"])
   $scope.$on("$ionicView.beforeLeave", function(scopes, states){
     console.log("Exited "+states.stateName+" "+$stateParams.levelNum+":", $rootScope.levels[$stateParams.levelNum])
     $rootScope.levels[$stateParams.levelNum].time += Date.now()
-    if(typeof $scope.beforeLeave === "function"){
+    if (typeof $scope.beforeLeave === "function") {
       $scope.beforeLeave()
     }
   })
@@ -78,9 +78,11 @@ angular.module("game", ["ionic", "sql"])
 
   $scope.restart = function () {
     console.log("Restarting level...")
-    if(typeof $scope.restartLevel === "function"){
+    if(typeof $scope.restartLevel === "function") {
       $scope.restartLevel()
     }
+		$rootScope.states[$stateParams.levelNum-1] = 0
+		sqlfactory.setLevelState($stateParams.levelNum, 0)
     $state.reload()
   }
 })

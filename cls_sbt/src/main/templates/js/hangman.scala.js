@@ -8,7 +8,8 @@ $scope.guessesLeft = 7
 $scope.miss = true
 
 $scope.makeGuess = function () {
-  var guess = document.getElementById("letterguess_" + $scope.levelNum).value
+	var guessBox = document.getElementById("letterguess_" + $scope.levelNum)
+  var guess = guessBox.value
   var card = document.getElementById("guessed_" + $scope.levelNum)
 
   console.log("Guess", guess)
@@ -24,41 +25,55 @@ $scope.makeGuess = function () {
   if($scope.miss) {
     if(!card.innerHTML.includes(guess))
       $scope.guessesLeft--
-    if($scope.guessesLeft===0)
-      $scope.loseLevel()
+    if($scope.guessesLeft==0)
+      $scope.completeLevel(false)
   }
 
   $scope.miss = true
   if(!card.innerHTML.includes(guess))
     card.append(guess + " ")
   $scope.checkComplete()
-}
-
-$scope.loseLevel = function() {
-  $ionicPopup.show({
-    title: "You lose!",
-    buttons: [
-    {
-      text: "Level Select",
-      onTap: function () {
-        console.log("Back to level select.")
-        $state.go("level_select")
-      }
-    },
-    {
-      text: "Retry",
-      type: "button-positive",
-      onTap: function () {
-        console.log("Reloading...")
-        $scope.restart()
-      }
-    }]
-  })
+	guessBox.value = ""
 }
 
 $scope.checkComplete = function () {
   var correct = document.getElementsByClassName("discovered " + $scope.levelNum)
   console.log(correct.length)
   if(correct.length === $scope.myLetters.length)
-    $scope.completeLevel()
+    $scope.completeLevel(true)
+}
+
+$scope.beforeLeave = function() {
+	var card = document.getElementById("guessed_" + $scope.levelNum)
+	var guessed = card.innerHTML.split("")
+	$rootScope.states[$stateParams.levelNum-1] = guessed
+  sqlfactory.setLevelState($stateParams.levelNum, guessed)
+}
+
+$scope.initializeLevel = function() {
+	$scope.guessesLeft = 7
+	$scope.miss = true
+	var card = document.getElementById("guessed_" + $scope.levelNum)
+	var guessBox = document.getElementById("letterguess_" + $scope.levelNum)
+	card.innerHTML = ""
+	guessBox.value = ""
+	var fields = document.getElementsByClassName($scope.levelNum)
+	for(var i = 0; i<fields.length; i++) {
+		var letter = fields[i].className.slice(-1)
+		fields[i].className = "guessable " + $scope.levelNum + " " + letter
+	}
+
+	if($rootScope.states == undefined) {
+		$rootScope.states = []
+		for(var i = 0; i < 20; i++)
+			$rootScope.states.push(0);
+	} else {
+		 if($rootScope.states[$stateParams.levelNum-1] != 0){
+			 var letters = $rootScope.states[$stateParams.levelNum-1]
+			for(var j = 0; j < letters.length; j++) {
+				guessBox.value = letters[j]
+				$scope.makeGuess()
+			}
+		}
+	}
 }
