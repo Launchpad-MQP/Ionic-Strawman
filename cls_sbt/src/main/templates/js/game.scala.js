@@ -43,7 +43,7 @@ angular.module("game", ["ionic", "sql"])
       sqlfactory.setLevelState($stateParams.levelNum, "Solved", 0)
       button = document.getElementById("level_"+$stateParams.levelNum)
       button.setAttribute("class", "button button-dark ng-binding")
-      var title = "Level Complete! Total time: " + time / 60 + " seconds"
+      var title = "Level Complete! Total time: " + time / 1000 + " seconds"
       var levelOption = {
         text: "Next",
         type: "button-positive",
@@ -78,6 +78,7 @@ angular.module("game", ["ionic", "sql"])
 
   $scope.restart = function () {
     console.log("Restarting level...")
+    $rootScope.levels[$stateParams.levelNum].time += Date.now()
     if(typeof $scope.restartLevel === "function") {
       $scope.restartLevel()
     }
