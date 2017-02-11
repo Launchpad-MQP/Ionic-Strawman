@@ -38,43 +38,47 @@ angular.module("game", ["ionic", "sql"])
   })
 
   $scope.completeLevel = function(won) {
-    var time = $rootScope.levels[$stateParams.levelNum].time + Date.now()
-    if (won) {
-      sqlfactory.setLevelState($stateParams.levelNum, "Solved", 0)
-      button = document.getElementById("level_"+$stateParams.levelNum)
-      button.setAttribute("class", "button button-dark ng-binding")
-      var title = "Level Complete! Total time: " + time / 1000 + " seconds"
-      var levelOption = {
-        text: "Next",
-        type: "button-positive",
-        onTap: function () {
-          console.log("On to the next level.")
-          $state.go("level", {"levelNum": $stateParams.levelNum+1})
-        }
-      }
-    } else {
-      var title = "You lose!"
-      var levelOption = {
-        text: "Retry",
-        type: "button-positive",
-        onTap: function() {
-          $scope.restart()
-        }
-      }
-    }
+     var time = $rootScope.levels[$stateParams.levelNum].time + Date.now()
+     if (won) {
+       sqlfactory.setLevelState($stateParams.levelNum, "Solved", 0)
+       button = document.getElementById("level_"+$stateParams.levelNum)
+       button.setAttribute("class", "button button-dark ng-binding")
+       var title = "Level Complete! Total time: " + time / 1000 + " seconds"
+ 			if(typeof $scope.whenWin === "function")
+ 				$scope.whenWin()
+       var levelOption = {
+         text: "Next",
+         type: "button-positive",
+         onTap: function () {
+           console.log("On to the next level.")
+           $state.go("level", {"levelNum": $stateParams.levelNum+1})
+         }
+       }
+     } else {
+       var title = "You lose!"
+ 			if(typeof $scope.whenLose === "function")
+ 				$scope.whenLose()
+       var levelOption = {
+         text: "Retry",
+         type: "button-positive",
+         onTap: function() {
+           $scope.restart()
+         }
+       }
+     }
 
-    $ionicPopup.show({
-      title: title,
-      buttons: [
-      {
-        text: "Level Select",
-        onTap: function () {
-          console.log("Back to level select.")
-          $state.go("level_select")
-        }
-      }, levelOption]
-    })
-  }
+     $ionicPopup.show({
+       title: title,
+       buttons: [
+       {
+         text: "Level Select",
+         onTap: function () {
+           console.log("Back to level select.")
+           $state.go("level_select")
+         }
+       }, levelOption]
+     })
+   }
 
   $scope.restart = function () {
     console.log("Restarting level...")
