@@ -39,25 +39,25 @@ angular.module("controllers", ["ionic", "sql"])
   // Redefined so it can be acessed in HTML
   $scope.levelData = $rootScope.levelData
 
-  var i=0
-  for (var levelData of [@for(level <- levelList) {"@level", }]) {
+  var levelList = [@for(level <- levelList) {"@level", }]
+
+  for (var i=0; i<levelList.length; i++) {
     // Adds a level if it doesn't exist, e.g. the database was just created.
     // Otherwise, this line has no effect, i.e. the level retains its state.
-    sqlfactory.addLevel(i, levelData, "Unsolved", 0)
-    i++
+    sqlfactory.addLevel(i, levelList[i], "Unsolved", 0)
   }
 
   // For each level, if it is completed we need to recolor the button.
   // This uses a callback function, since talking to SQL is an async operation.
-  for (var levelData of $rootScope.levelData) {
-    sqlfactory.getLevelState(levelData["name"], function (level) {
+  for (var i=0; i<levelList.length; i++) {
+    sqlfactory.getLevelState(i, function (level) {
       console.log("Callback from getLevelState: ", level)
       if (level.state == "Solved") {
         button = document.getElementById("level_"+level.name)
         button.setAttribute("class", "button button-dark ng-binding")
       }
-      $rootScope.levelData[level.num]["time"] = level.time
-      $rootScope.levelData[level.num]["state"] = level.state
+      $rootScope.levelData[level.number]["time"] = level.time
+      $rootScope.levelData[level.number]["state"] = level.state
     })
   }
 })
