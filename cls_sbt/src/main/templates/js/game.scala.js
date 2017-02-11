@@ -45,6 +45,9 @@ angular.module("game", ["ionic", "sql"])
       button = document.getElementById("level_"+$stateParams.levelNum)
       button.setAttribute("class", "button button-dark ng-binding")
       var title = $scope.levelName + " Complete! Total time: " + time / 1000 + " seconds"
+      if(typeof $scope.onWin === "function") {
+ 			  $scope.onWin()
+ 			}
       var levelOption = {
         text: "Next",
         type: "button-positive",
@@ -55,6 +58,9 @@ angular.module("game", ["ionic", "sql"])
       }
     } else {
       var title = "You lose!"
+      if(typeof $scope.onLose === "function") {
+        $scope.onLose()
+      }
       var levelOption = {
         text: "Retry",
         type: "button-positive",
@@ -64,18 +70,18 @@ angular.module("game", ["ionic", "sql"])
       }
     }
 
-    $ionicPopup.show({
-      title: title,
-      buttons: [
-      {
-        text: "Level Select",
-        onTap: function () {
-          console.log("Back to level select.")
-          $state.go("level_select")
-        }
-      }, levelOption]
-    })
-  }
+     $ionicPopup.show({
+       title: title,
+       buttons: [
+       {
+         text: "Level Select",
+         onTap: function () {
+           console.log("Back to level select.")
+           $state.go("level_select")
+         }
+       }, levelOption]
+     })
+   }
 
   $scope.restart = function () {
     console.log("Restarting level...")
