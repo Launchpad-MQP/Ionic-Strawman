@@ -24,7 +24,7 @@ angular.module("game", ["ionic", "sql"])
   $scope.$on("$ionicView.afterEnter", function(scopes, states){
     console.log("Entered "+$stateParams.levelName+":", $rootScope.levelData[$stateParams.levelNum])
     $rootScope.levelData[$stateParams.levelNum]["time"] -= Date.now()
-    if (typeof $scope.initializeLevel == "function") {
+    if (typeof $scope.initializeLevel === "function") {
       $scope.initializeLevel()
     }
   })
@@ -82,6 +82,8 @@ angular.module("game", ["ionic", "sql"])
     if (typeof $scope.restartLevel === "function") {
       $scope.restartLevel()
     }
+		$rootScope.states[$stateParams.levelNum-1] = 0
+		sqlfactory.setLevelState($stateParams.levelNum, 0)
     $state.reload()
   }
 })
