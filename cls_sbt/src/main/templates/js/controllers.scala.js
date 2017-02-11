@@ -34,16 +34,17 @@ angular.module("controllers", ["ionic", "sql"])
       }
     }
   }
-  // Globally defined list of levels. Saved with a time
-  $rootScope.levelData = [@for(level <- levelList) {{"name":"@level", "time":null}, }]
-
   // Creates the database if it doesn't exist.
   sqlfactory.setupSQL()
+  // Redefined so it can be acessed in HTML
+  $scope.levelData = $rootScope.levelData
 
-  for (var levelData of $rootScope.levelData) {
+  var i=0
+  for (var levelData of [@for(level <- levelList) {"@level", }]) {
     // Adds a level if it doesn't exist, e.g. the database was just created.
     // Otherwise, this line has no effect, i.e. the level retains its state.
-    sqlfactory.addLevel(levelData["name"], "Unsolved", 0)
+    sqlfactory.addLevel(i, levelData, "Unsolved", 0)
+    i++
   }
 
   // For each level, if it is completed we need to recolor the button.
@@ -55,7 +56,8 @@ angular.module("controllers", ["ionic", "sql"])
         button = document.getElementById("level_"+level.name)
         button.setAttribute("class", "button button-dark ng-binding")
       }
-      // $rootScope.levelData[level.name]["time"] = level.time
+      $rootScope.levelData[level.num]["time"] = level.time
+      $rootScope.levelData[level.num]["state"] = level.state
     })
   }
 })
