@@ -3,7 +3,7 @@ $scope.myLetters = [
   'school', 'ruling', 'poison', 'tree', 'prison',
   'abacus', 'toothache', 'short', 'bacon', 'crossroads',
   'darkness', 'candle', 'quadruple', 'extraordinary', 'declaration'
-][$scope.levelNum-1].split("")
+][$scope.levelNum].split("")
 $scope.guessesLeft = 7
 $scope.miss = true
 
@@ -46,7 +46,6 @@ $scope.checkComplete = function () {
 $scope.beforeLeave = function() {
 	var card = document.getElementById("guessed_" + $scope.levelNum)
 	var guessed = card.innerHTML.split("")
-	$rootScope.states[$stateParams.levelNum-1] = guessed
   sqlfactory.setLevelState($stateParams.levelNum, guessed)
 }
 
@@ -63,17 +62,11 @@ $scope.initializeLevel = function() {
 		fields[i].className = "guessable " + $scope.levelNum + " " + letter
 	}
 
-	if($rootScope.states == undefined) {
-		$rootScope.states = []
-		for(var i = 0; i < 20; i++)
-			$rootScope.states.push(0);
-	} else {
-		 if($rootScope.states[$stateParams.levelNum-1] != 0){
-			 var letters = $rootScope.states[$stateParams.levelNum-1]
-			for(var j = 0; j < letters.length; j++) {
-				guessBox.value = letters[j]
-				$scope.makeGuess()
-			}
-		}
+  if ($rootScope.levelData[$stateParams.levelNum]["state"] != "Unsolved") {
+	  var letters = $rootScope.levelData[$stateParams.levelNum]["state"]
+	  for (var j = 0; j < letters.length; j++) {
+	    guessBox.value = letters[j]
+	    $scope.makeGuess()
+	  }
 	}
 }
