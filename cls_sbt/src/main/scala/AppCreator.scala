@@ -225,10 +225,10 @@ object AppCreator extends App {
     @combinator object NimTitle extends Title('nim, "Nim")
     @combinator object NimJS extends RenderJS('nim :&: 'js, js.js.nim.render())
     @combinator object NimHTML {
-      def apply(): String = {
-        return html.html.nim.render().toString()
+      def apply(range:rangeType): String = {
+        return html.html.nim.render(range).toString()
       }
-      val semanticType:Type = 'nim :&: 'html
+      val semanticType:Type = 'range =>: 'nim :&: 'html
     }
 
     class Bind(inputType:Type, filePath:String){
