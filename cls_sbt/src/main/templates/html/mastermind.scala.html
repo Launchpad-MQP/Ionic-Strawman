@@ -1,8 +1,0 @@
-@(button:(String, String, String) => Html)
-<div class="row">
-  <input class="item item-input" maxLength="{{word.length}}" id="guess_{{levelNum}}" placeholder="Guess a {{word.length}} letter word">
-  &nbsp; @button("makeGuess", "Guess", "positive")
-</div>
-<div class="row">
-  <h4>{{result}}</h4>
-</div>

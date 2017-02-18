@@ -16,12 +16,7 @@ object AppCreator extends App {
     val gameVar = Variable("gameName")
     lazy val kinding =
       Kinding(gameVar)
-      .addOption('mastermind)
-      .addOption('hangman)
-      .addOption('lightsout)
       .addOption('dummy)
-      .addOption('monster)
-      .addOption('nim)
 
     type buttonType = (String, String, String) => Html
     @combinator object Button {
@@ -90,48 +85,6 @@ object AppCreator extends App {
       val semanticType:Type = 'radiobuttons
     }
 
-    @combinator object MastermindHTML {
-      def apply(button:buttonType): String = {
-        return html.html.mastermind.render(button).toString()
-      }
-      val semanticType:Type = 'button =>: 'mastermind :&: 'html
-    }
-
-    @combinator object HangmanHTML {
-      def apply(button:buttonType): String = {
-        return html.html.hangman.render(button).toString()
-      }
-      val semanticType:Type = 'button =>: 'hangman :&: 'html
-    }
-
-    @combinator object LightsOutHTML {
-      def apply(): String = {
-        return html.html.lightsout.render().toString()
-      }
-      val semanticType:Type = 'lightsout :&: 'html
-    }
-
-    @combinator object DummyHTML {
-      def apply(): String = {
-        return html.html.dummy.render().toString()
-      }
-      val semanticType:Type = 'dummy :&: 'html
-    }
-
-    @combinator object FrankensteinHTML {
-      def apply(radioButtons:radioType, checkBoxes:checkboxType, endButton:buttonType, toggler:toggleType, rangey:rangeType): String = {
-        return html.html.frankenstein.render(radioButtons, checkBoxes, endButton, toggler, rangey).toString()
-      }
-      val semanticType:Type = 'radiobuttons =>: 'checkboxes =>: 'button =>: 'toggle =>: 'range =>: 'monster :&: 'html
-    }
-
-    @combinator object NimHTML {
-      def apply(range:rangeType): String = {
-        return html.html.nim.render(range).toString()
-      }
-      val semanticType:Type = 'range =>: 'nim :&: 'html
-    }
-
     @combinator object GameHTML {
       def apply(contents:String): String = {
         return html.html.game.render(contents).toString()
@@ -159,13 +112,6 @@ object AppCreator extends App {
       }
       val semanticType:Type = game :&: 'gameTitle
     }
-
-    @combinator object HangmanTitle extends Title('hangman, "Hangman")
-    @combinator object MastermindTitle extends Title('mastermind, "Mastermind")
-    @combinator object LightsOutTitle extends Title('lightsout, "Lights Out")
-    @combinator object DummyTitle extends Title('dummy, "Dummy")
-    @combinator object FrankensteinTitle extends Title('monster, "Beelzebub")
-    @combinator object NimTitle extends Title('nim, "Nim")
 
     @combinator object LevelList {
       def apply(): Array[String] = {
@@ -255,15 +201,20 @@ object AppCreator extends App {
       val semanticType:Type = inputType
     }
 
+    class RenderHTML(inputType:Type, output:Html) {
+      def apply(): Html = {
+        return output
+      }
+      val semanticType:Type = inputType
+    }
+
     @combinator object LevelSelect extends Render('levelSelect, html.html.levelselect.render().toString())
     @combinator object Settings extends Render('settings, html.html.settings.render().toString())
 
-    @combinator object HangmanJS extends RenderJS('hangman :&: 'js, js.js.hangman.render())
-    @combinator object MastermindJS extends RenderJS('mastermind :&: 'js, js.js.mastermind.render())
-    @combinator object LightsOutJS extends RenderJS('lightsout :&: 'js, js.js.lightsout.render())
+    // Your code goes here!
+    @combinator object DummyTitle extends Title('dummy, "Dummy")
     @combinator object DummyJS extends RenderJS('dummy :&: 'js, js.js.dummy.render())
-    @combinator object FrankensteinJS extends RenderJS('monster :&: 'js, js.js.frankenstein.render())
-    @combinator object NimJS extends RenderJS('nim :&: 'js, js.js.nim.render())
+    @combinator object DummyHTML extends Render('dummy :&: 'html, html.html.dummy.render().toString())
 
     class Bind(inputType:Type, filePath:String){
       def apply(expr:String) : Tuple = {
@@ -294,7 +245,7 @@ object AppCreator extends App {
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'hangman)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'dummy)
 
   // Pass the response into our defined output, currently just a printer
   val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
