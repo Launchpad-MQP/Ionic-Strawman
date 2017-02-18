@@ -17,6 +17,7 @@ object AppCreator extends App {
     lazy val kinding =
       Kinding(gameVar)
       .addOption('dummy)
+      .addOption('nim)
 
     type buttonType = (String, String, String) => Html
     @combinator object Button {
@@ -221,6 +222,15 @@ object AppCreator extends App {
       val semanticType:Type = 'dummy :&: 'html
     }
 
+    @combinator object NimTitle extends Title('nim, "Nim")
+    @combinator object NimJS extends RenderJS('nim :&: 'js, js.js.nim.render())
+    @combinator object NimHTML {
+      def apply(): String = {
+        return html.html.nim.render().toString()
+      }
+      val semanticType:Type = 'nim :&: 'html
+    }
+
     class Bind(inputType:Type, filePath:String){
       def apply(expr:String) : Tuple = {
         return new Tuple(expr, filePath)
@@ -250,7 +260,7 @@ object AppCreator extends App {
   val reflectedRepository = ReflectedRepository (repository, kinding=repository.kinding)
 
   // Get the interpreted response from CLS
-  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'dummy)
+  val reply = reflectedRepository.inhabit[Tuple] ('BoundFile :&: 'nim)
 
   // Pass the response into our defined output, currently just a printer
   val iter = reply.interpretedTerms.values.flatMap(_._2).iterator.asJava
