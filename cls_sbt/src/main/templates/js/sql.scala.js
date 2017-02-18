@@ -66,7 +66,7 @@ angular.module("sql", ["ionic"])
           console.log("Could not find level: "+num)
           return
         }
-        callback(ret.rows.item(0))
+        callback(ret.rows.item(0), num)
       }, function (err) {console.log(err)})
     },
 

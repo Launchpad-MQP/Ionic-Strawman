@@ -50,10 +50,10 @@ angular.module("controllers", ["ionic", "sql"])
   // For each level, if it is completed we need to recolor the button.
   // This uses a callback function, since talking to SQL is an async operation.
   for (var i=0; i<levelList.length; i++) {
-    sqlfactory.getLevelState(i, function (level) {
-      console.log("Callback from getLevelState: ", level)
+    sqlfactory.getLevelState(i, function (level, num) {
+      console.log("Callback from getLevelState: ", level, num)
       if (level.state == "Solved") {
-        button = document.getElementById("level_"+level.name)
+        button = document.getElementById("level_" + num)
         button.setAttribute("class", "button button-dark ng-binding")
       }
       $rootScope.levelData[level.number]["time"] = level.time
