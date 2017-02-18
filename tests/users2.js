@@ -7,6 +7,7 @@
     var Users = {};
 
     // Users.method = function() {};
+		Users.all = function(){};
 
     return Users;
   });

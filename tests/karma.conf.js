@@ -19,6 +19,10 @@ module.exports = function(config) {
 		'../www/lib/ionic/js/angular/angular.js',
 		'../www/lib/ionic/js/angular-ui/angular-ui-router.js',
 		'../www/lib/angular-mocks/angular-mocks.js',
+		'../www/lib/ionic/js/ionic.js',
+		'../www/lib/ionic/js/*.js',
+		'../www/js/app.js',
+		'../www/js/*.js',
     'users2.js',
 		'users.js'
   ],
