@@ -214,7 +214,12 @@ object AppCreator extends App {
     // Your code goes here!
     @combinator object DummyTitle extends Title('dummy, "Dummy")
     @combinator object DummyJS extends RenderJS('dummy :&: 'js, js.js.dummy.render())
-    @combinator object DummyHTML extends Render('dummy :&: 'html, html.html.dummy.render().toString())
+    @combinator object DummyHTML {
+      def apply(): String = {
+        return html.html.dummy.render().toString()
+      }
+      val semanticType:Type = 'dummy :&: 'html
+    }
 
     class Bind(inputType:Type, filePath:String){
       def apply(expr:String) : Tuple = {
