@@ -31,7 +31,7 @@ angular.module("sql", ["ionic"])
     // already exists, use setLevelState for that.
     addLevel: function (num, name, @columns.keys.mkString(", ")) {
       console.log("Setting level "+num+" to:", @columns.keys.mkString(", "))
-      $rootScope.levelData[num] = {"name":name, "state":state, "time":time}
+      $rootScope.levelData[num] = {"name":name @for(param <- columns.keys) {, "@param":@param}}
       apidb.execute(db, "INSERT INTO levels (number, @columns.keys.mkString(", ")) VALUES (@(Array.fill(columns.size+1)("?").mkString(", ")))", [num, @columns.keys.mkString(", ")])
       .then(function (ret) {
         console.log("Set "+name+" to:", @columns.keys.mkString(", "))
@@ -75,8 +75,9 @@ angular.module("sql", ["ionic"])
             button = document.getElementById("level_" + num)
             button.setAttribute("class", "button button-dark ng-binding")
           }
-          $rootScope.levelData[num]["time"] = level.time
-          $rootScope.levelData[num]["state"] = level.state
+          @for(param <- columns.keys) {
+            $rootScope.levelData[level.number]["@param"] = level.@param
+          }
           //callback(ret.rows.item(0), num)
         }, function (err) {console.log(err)})
       }

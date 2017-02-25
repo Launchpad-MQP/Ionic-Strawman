@@ -1,4 +1,4 @@
-@(contents:JavaScript)
+@(contents:JavaScript, columns:Map[String, String])
 angular.module("game", ["ionic", "sql"])
 
 .controller("LevelCtrl", function ($scope, $rootScope, $ionicPopup, $state, $stateParams, sqlfactory) {
@@ -23,7 +23,9 @@ angular.module("game", ["ionic", "sql"])
   // This runs when the level is entered
   $scope.$on("$ionicView.afterEnter", function(scopes, states){
     console.log("Entered "+$stateParams.levelName+":", $rootScope.levelData[$stateParams.levelNum])
-    $rootScope.levelData[$stateParams.levelNum]["time"] -= Date.now()
+    @if(columns.contains("time")){
+      $rootScope.levelData[$stateParams.levelNum]["time"] -= Date.now()
+    }
     if (typeof $scope.initializeLevel === "function") {
       $scope.initializeLevel()
     }
@@ -39,12 +41,18 @@ angular.module("game", ["ionic", "sql"])
   })
 
   $scope.completeLevel = function(won) {
-    var time = $rootScope.levelData[$stateParams.levelNum]["time"] + Date.now()
+    @if(columns.contains("time")){
+      var time = $rootScope.levelData[$stateParams.levelNum]["time"] + Date.now()
+    }
     if (won) {
       sqlfactory.setLevelState($stateParams.levelNum, "Solved", 0)
       button = document.getElementById("level_"+$stateParams.levelNum)
       button.setAttribute("class", "button button-dark ng-binding")
-      var title = $scope.levelName + " Complete! Total time: " + time / 1000 + " seconds"
+      @if(columns.contains("time")){
+        var title = $scope.levelName + " Complete! Total time: " + time / 1000 + " seconds"
+      } else {
+        var title = $scope.levelName + " Complete!"
+      }
       if(typeof $scope.onWin === "function") {
  			  $scope.onWin()
  			}
@@ -85,7 +93,9 @@ angular.module("game", ["ionic", "sql"])
 
   $scope.restart = function () {
     console.log("Restarting level...")
-    $rootScope.levelData[$stateParams.levelNum]["time"] += Date.now()
+    @if(columns.contains("time")){
+      $rootScope.levelData[$stateParams.levelNum]["time"] += Date.now()
+    }
     if(typeof $scope.restartLevel === "function") {
       $scope.restartLevel()
     }

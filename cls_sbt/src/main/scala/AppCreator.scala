@@ -140,10 +140,10 @@ object AppCreator extends App {
     }
 
     @combinator object GameJs {
-      def apply(contents:JavaScript): String = {
-        return js.js.game.render(contents).toString()
+      def apply(contents:JavaScript, sqlcolumns:Map[String, String]): String = {
+        return js.js.game.render(contents, sqlcolumns).toString()
       }
-      val semanticType:Type = gameVar :&: 'js =>: gameVar :&: 'gameJs
+      val semanticType:Type = gameVar :&: 'js =>: 'sqlcolumns =>: gameVar :&: 'gameJs
     }
 
     @combinator object MainPage {
