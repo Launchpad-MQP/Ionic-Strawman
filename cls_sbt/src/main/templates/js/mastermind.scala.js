@@ -34,11 +34,5 @@ $scope.makeGuess = function() {
       console.log(matches+" letters match between "+$scope.word+" and "+guess)
       $scope.result = matches+" matching letter"+(matches==1?"":"s")
     }
-<<<<<<< Updated upstream
   }
-=======
-    console.log(matches+" letters match between "+$scope.word+" and "+guess)
-    $scope.result = matches+" matching letter"+(matches==1?"":"s")
-  }, function (err) {console.log(err)})
->>>>>>> Stashed changes
 }
