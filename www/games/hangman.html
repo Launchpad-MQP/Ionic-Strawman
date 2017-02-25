@@ -1,29 +1,31 @@
-<ion-view view-title="Level {{levelNum}}">
+
+<ion-view view-title="{{levelName}}">
   <ion-header-bar class="bar bar-header bar-dark">
-    <h1 class="title">Level {{levelNum}}</h1>
+    <h1 class="title">{{levelName}}</h1>
   </ion-header-bar>
   <ion-content class="has-header" padding="true">
-		
-		<div class= "item row">
-			<div ng-repeat="letter in myLetters track by $index">
-				<div class= "guessable {{levelNum}} {{letter}}">{{letter}}</div>
-			</div>
-		</div>
-		<br>
-		<div class="row">
-			<ion-input class="item item-input item-stacked-label">
-				<input type="text" maxLength="1" class= "letterguess" id="letterguess_{{levelNum}}" placeholder="Guess a letter here">
-			</ion-input>
-			&nbsp; <button class="button button-positive levelBtn" ng-click="makeGuess()">Guess</button>
-		</div>
-		
-		<h4>Guessed Letters:</h4>
-		<div class = "row" id="guessed_{{levelNum}}"></div>
-		<h4>Tries Left: {{guessesLeft}}</h4>
+    
+
+<div class= "item row">
+  <div ng-repeat="letter in myLetters track by $index">
+    <div class= "guessable {{levelNum}} {{letter}}">{{letter}}</div>
+  </div>
+</div>
+<br>
+<div class="row">
+  <ion-input class="item item-input item-stacked-label">
+    <input type="text" maxLength="1" class= "letterguess" id="letterguess_{{levelNum}}" placeholder="Guess a letter here">
+  </ion-input>
+  &nbsp; <button class="button button-positive levelBtn" ng-click="makeGuess()">Guess</button>
+</div>
+
+<h4>Guessed Letters:</h4>
+  <div class = "row" id="guessed_{{levelNum}}"></div>
+<h4>Tries Left: {{guessesLeft}}</h4>
 
   </ion-content>
   <ion-footer-bar class="bar bar-footer bar-stable" align-title="left">
     <a class="button ion-home" href="#/level_select">&nbsp; BACK</a>
-    <button class="button button-calm" ng-click="restart()">RESTART</button>
+    <button class="button button-calm" ng-click="restart()">&nbsp; RESTART</button>
   </ion-footer-bar>
 </ion-view>

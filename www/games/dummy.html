@@ -1,11 +1,12 @@
-<ion-view view-title="Level {{levelNum}}">
+
+<ion-view view-title="{{levelName}}">
   <ion-header-bar class="bar bar-header bar-dark">
-    <h1 class="title">Level {{levelNum}}</h1>
+    <h1 class="title">{{levelName}}</h1>
   </ion-header-bar>
   <ion-content class="has-header" padding="true">
     <div class="col" style="text-align:center">
-      <button class="button button-assertive levelBtn" ng-click="completeLevel()">Click Me!</button>
-    </div>
+  <button class="button button-assertive levelBtn" ng-click="completeLevel(true)">Click Me!</button>
+</div>
 
   </ion-content>
   <ion-footer-bar class="bar bar-footer bar-stable" align-title="left">

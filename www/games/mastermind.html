@@ -1,19 +1,19 @@
-<ion-view view-title="Level {{levelNum}}">
-  <ion-header-bar class="bar bar-header bar-dark">
-    <h1 class="title">Level {{levelNum}}</h1>
-  </ion-header-bar>
-	
-  <ion-content class="has-header" padding="true">
-    <div class="row">
-      <input class="item item-input" maxLength="{{word.length}}" id="guess_{{levelNum}}" placeholder="Guess a {{word.length}} letter word">
-      &nbsp;
-      <button class="button button-positive" ng-click="makeGuess()">Guess</button>
-    </div>
-    <div class="row">
-      <h4>{{result}}</h4>
-    </div>
-  </ion-content>
 
+<ion-view view-title="{{levelName}}">
+  <ion-header-bar class="bar bar-header bar-dark">
+    <h1 class="title">{{levelName}}</h1>
+  </ion-header-bar>
+  <ion-content class="has-header" padding="true">
+    
+<div class="row">
+  <input class="item item-input" maxLength="{{word.length}}" id="guess_{{levelNum}}" placeholder="Guess a {{word.length}} letter word">
+  &nbsp; <button class="button button-positive levelBtn" ng-click="makeGuess()">Guess</button>
+</div>
+<div class="row">
+  <h4>{{result}}</h4>
+</div>
+
+  </ion-content>
   <ion-footer-bar class="bar bar-footer bar-stable" align-title="left">
     <a class="button ion-home" href="#/level_select">&nbsp; BACK</a>
     <button class="button button-calm" ng-click="restart()">&nbsp; RESTART</button>
