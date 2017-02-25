@@ -67,6 +67,8 @@ $scope.ai = function(mistake) {
   }
 }
 
+$scope.finished = false
+
 $scope.initializeLevel = function() {
   $scope.sliders = [
     [1, 2, 0, 0, 0],
@@ -76,7 +78,15 @@ $scope.initializeLevel = function() {
     [1, 6, 8, 0, 0],
   ][$stateParams.levelNum]
   $scope.max = Math.max.apply(null, $scope.sliders)
-
+  var levelState = $rootScope.levelData[$scope.levelNum]["state"]
+  if(levelState != "Solved" && levelState != "Unsolved" &&
+      levelState != "0 0 0 0 0" && levelState != "") {
+        var slides = $rootScope.levelData[$scope.levelNum]["state"]
+        console.log("Slide info")
+        console.log(slides)
+        $scope.sliders = slides.split(" ")
+        console.log($scope.sliders)
+      }
   for (var i=0; i<$scope.sliders.length; i++) {
     setSlider(i)
   }
@@ -104,6 +114,28 @@ $scope.callback = function(slider) {
       }
     }, 500)
   }
+}
+
+$scope.beforeLeave = function() {
+  var slidersState = "";
+  for(var i = 0; i < $scope.sliders.length; i++) {
+    slidersState += $scope.sliders[i]
+    if(i != $scope.sliders.length - 1)
+      slidersState += " "
+  }
+  if(!$scope.finished)
+    sqlfactory.setLevelState($stateParams.levelNum, slidersState)
+}
+
+$scope.onWin = function() {
+  console.log("On Win")
+  $scope.finished = true
+  sqlfactory.setLevelState($stateParams.levelNum, "Solved", 0)
+}
+
+$scope.onLose = function() {
+  console.log("losing")
+  sqlfactory.setLevelState($stateParams.levelNum, "Lost")
 }
 
 $scope.checkComplete = function() {

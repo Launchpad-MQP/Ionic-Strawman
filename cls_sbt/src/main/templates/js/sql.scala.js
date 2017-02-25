@@ -31,7 +31,7 @@ angular.module("sql", ["ionic"])
     // already exists, use setLevelState for that.
     addLevel: function (num, name, @columns.keys.mkString(", ")) {
       console.log("Setting level "+num+" to:", @columns.keys.mkString(", "))
-      $rootScope.levelData[num] = {"name":name, "state":state, "time":time}
+      $rootScope.levelData[num] = {"name":name @for(param <- columns.keys) {, "@param":@param}}
       apidb.execute(db, "INSERT INTO levels (number, @columns.keys.mkString(", ")) VALUES (@(Array.fill(columns.size+1)("?").mkString(", ")))", [num, @columns.keys.mkString(", ")])
       .then(function (ret) {
         console.log("Set "+name+" to:", @columns.keys.mkString(", "))
@@ -58,16 +58,29 @@ angular.module("sql", ["ionic"])
     // Gets a level state. Warning: To get a return from this function, you'll
     // need to use a callback, which means passing in an anonymous function
     // that will be called when SQL returns.
-    getLevelState: function (num, callback) {
+    getLevelState: function (num) {
       console.log("Getting state for level: "+num)
-      apidb.execute(db, "SELECT * FROM levels WHERE number=?", [num])
-      .then(function (ret) {
-        if (ret.rows.length == 0) {
-          console.log("Could not find level: "+num)
-          return
-        }
-        callback(ret.rows.item(0), num)
-      }, function (err) {console.log(err)})
+      //FIXME Update state from rootscope.leveldata, merge with callback
+      console.log($rootScope.levelData[num])
+      if($rootScope.levelData[num] != undefined) {
+        apidb.execute(db, "SELECT * FROM levels WHERE number=?", [num])
+        .then(function (ret) {
+          if (ret.rows.length == 0) {
+            console.log("Could not find level: "+num)
+            return
+          }
+          var level = ret.rows.item(0)
+          console.log("Callback from getLevelState: ", level, num)
+          if (level.state == "Solved") {
+            button = document.getElementById("level_" + num)
+            button.setAttribute("class", "button button-dark ng-binding")
+          }
+          @for(param <- columns.keys) {
+            $rootScope.levelData[level.number]["@param"] = level.@param
+          }
+          //callback(ret.rows.item(0), num)
+        }, function (err) {console.log(err)})
+      }
     },
 
     // Sets a level state. Again, the return from this is asynchronous, but at
