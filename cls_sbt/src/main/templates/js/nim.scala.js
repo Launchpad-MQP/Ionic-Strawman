@@ -76,7 +76,7 @@ $scope.initializeLevel = function() {
     [1, 2, 4, 0, 0],
     [2, 3, 4, 0, 0],
     [1, 6, 8, 0, 0],
-  ][$stateParams.levelNum]
+  ][$scope.levelNum]
   $scope.max = Math.max.apply(null, $scope.sliders)
   var levelState = $rootScope.levelData[$scope.levelNum]["state"]
   if(levelState != "Solved" && levelState != "Unsolved" &&
@@ -124,18 +124,18 @@ $scope.beforeLeave = function() {
       slidersState += " "
   }
   if(!$scope.finished)
-    sqlfactory.setLevelState($stateParams.levelNum, slidersState)
+    sqlfactory.setLevelState($scope.levelNum, slidersState)
 }
 
 $scope.onWin = function() {
   console.log("On Win")
   $scope.finished = true
-  sqlfactory.setLevelState($stateParams.levelNum, "Solved", 0)
+  sqlfactory.setLevelState($scope.levelNum, "Solved", 0)
 }
 
 $scope.onLose = function() {
   console.log("losing")
-  sqlfactory.setLevelState($stateParams.levelNum, "Lost")
+  sqlfactory.setLevelState($scope.levelNum, "Lost")
 }
 
 $scope.checkComplete = function() {

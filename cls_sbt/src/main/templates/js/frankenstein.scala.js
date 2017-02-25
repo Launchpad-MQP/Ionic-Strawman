@@ -26,7 +26,7 @@ $scope.successVals = [
   rangeMin: 60,
   rangeMax: 100
 }
-][$stateParams.levelNum%2]
+][$scope.levelNum%2]
 
 $scope.checkComplete = function () {
   console.log($scope.frankenVars)

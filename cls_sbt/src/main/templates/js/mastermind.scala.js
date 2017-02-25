@@ -4,12 +4,12 @@ $scope.word = [
    "wolf",  "milk",  "yaks",  "know",  "sync",
   "spade", "exist", "group", "topic", "fruit",
   "movie", "style", "vital", "lynch", "rythm"
-][$stateParams.levelNum-1]
+][$scope.levelNum-1]
 console.log("Word for this level:", $scope.word)
 
 $scope.result = ""
 $scope.submit = function() {
-  guess = document.getElementById("guess_"+$stateParams.levelNum).value
+  guess = document.getElementById("guess_"+$scope.levelNum).value
   console.log("Guess: "+guess)
   if (guess.length != $scope.word.length) {
     console.log(guess.length, "didn't match", $scope.word.length)

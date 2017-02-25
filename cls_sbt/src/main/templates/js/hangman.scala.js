@@ -52,18 +52,18 @@
   console.log("before leaving")
   console.log(guessed)
   if(!$scope.finished)
-    sqlfactory.setLevelState($stateParams.levelNum, guessed[0])
+    sqlfactory.setLevelState($scope.levelNum, guessed[0])
   }
 
   $scope.onWin = function() {
   console.log("On Win")
   $scope.finished = true
-  sqlfactory.setLevelState($stateParams.levelNum, "Solved", 0)
+  sqlfactory.setLevelState($scope.levelNum, "Solved", 0)
   }
 
   $scope.onLose = function() {
   console.log("losing")
-  sqlfactory.setLevelState($stateParams.levelNum, "Lost")
+  sqlfactory.setLevelState($scope.levelNum, "Lost")
   document.getElementById("guessed_" + $scope.levelNum).innerHTML = "";
   }
 
@@ -80,10 +80,10 @@
    fields[i].className = "guessable " + $scope.levelNum + " " + letter
   }
 
-  if ($rootScope.levelData[$stateParams.levelNum]["state"] != "Unsolved" &&
-        $rootScope.levelData[$stateParams.levelNum]["state"] != "Solved") {
-    console.log($rootScope.levelData[$stateParams.levelNum]["state"])
-    var letters = $rootScope.levelData[$stateParams.levelNum]["state"].split("")
+  if ($rootScope.levelData[$scope.levelNum]["state"] != "Unsolved" &&
+        $rootScope.levelData[$scope.levelNum]["state"] != "Solved") {
+    console.log($rootScope.levelData[$scope.levelNum]["state"])
+    var letters = $rootScope.levelData[$scope.levelNum]["state"].split("")
 
     for (var j = 0; j < letters.length; j++) {
       guessBox.value = letters[j]
