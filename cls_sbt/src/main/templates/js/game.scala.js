@@ -86,10 +86,10 @@ angular.module("game", ["ionic", "sql"])
   $scope.restart = function () {
     console.log("Restarting level...")
     $rootScope.levelData[$stateParams.levelNum]["time"] += Date.now()
+    sqlfactory.setLevelState($stateParams.levelNum, "")
     if(typeof $scope.restartLevel === "function") {
       $scope.restartLevel()
     }
-		sqlfactory.setLevelState($stateParams.levelNum, "")
     $state.reload()
   }
 })
