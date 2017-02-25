@@ -89,8 +89,7 @@ angular.module("game", ["ionic", "sql"])
     if(typeof $scope.restartLevel === "function") {
       $scope.restartLevel()
     }
-		$rootScope.states[$stateParams.levelNum-1] = 0
-		sqlfactory.setLevelState($stateParams.levelNum, 0)
+		sqlfactory.setLevelState($stateParams.levelNum, "")
     $state.reload()
   }
 })

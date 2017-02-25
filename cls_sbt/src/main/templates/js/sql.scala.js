@@ -60,6 +60,7 @@ angular.module("sql", ["ionic"])
     // that will be called when SQL returns.
     getLevelState: function (num, callback) {
       console.log("Getting state for level: "+num)
+      //FIXME Update state from rootscope.leveldata, merge with callback
       apidb.execute(db, "SELECT * FROM levels WHERE number=?", [num])
       .then(function (ret) {
         if (ret.rows.length == 0) {
