@@ -3,10 +3,10 @@ angular.module("dictionary", ["ionic"])
 .factory("dictionary", function ($rootScope) {
   return {
     isWord: function (word) {
-      return $scope.wordList.includes(word)
+      return $rootScope.wordList.includes(word)
     },
     setup: function () {
-      $scope.wordList = "aa\
+      $rootScope.wordList = "aa\
 aah\
 aahed\
 aahing\
