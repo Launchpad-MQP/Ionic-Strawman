@@ -1,15 +1,16 @@
-<ion-view view-title="Level {{levelNum}}">
+
+<ion-view view-title="{{levelName}}">
   <ion-header-bar class="bar bar-header bar-dark">
-    <h1 class="title">Level {{levelNum}}</h1>
+    <h1 class="title">{{levelName}}</h1>
   </ion-header-bar>
   <ion-content class="has-header" padding="true">
     <div class="row" ng-repeat="row in buttons">
-      <div class="col col-25"> </div>
-      <div class="col" ng-repeat="button in row">
-        <a class="button button-dark" ng-click="toggle('{{button}}')" id="{{levelNum}}_{{button}}">&nbsp</a>
-      </div>
-      <div class="col col-25"> </div>
-    </div>
+  <div class="col col-25"></div>
+  <div class="col" ng-repeat="button in row">
+    <a class="button button-dark" ng-click="toggle('{{button}}')" id="{{levelNum}}_{{button}}">&nbsp</a>
+  </div>
+  <div class="col col-25"></div>
+</div>
 
   </ion-content>
   <ion-footer-bar class="bar bar-footer bar-stable" align-title="left">
