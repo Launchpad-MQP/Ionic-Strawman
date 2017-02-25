@@ -64,7 +64,7 @@
   $scope.onLose = function() {
   console.log("losing")
   sqlfactory.setLevelState($scope.levelNum, "Lost")
-  document.getElementById("guessed_" + $scope.levelNum).innerHTML = "";
+  document.getElementById("guessed_" + $scope.levelNum).innerHTML = ""
   }
 
   $scope.initializeLevel = function() {
