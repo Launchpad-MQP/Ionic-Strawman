@@ -1,0 +1,40 @@
+
+<ion-view view-title="{{levelName}}">
+  <ion-header-bar class="bar bar-header bar-dark">
+    <h1 class="title">{{levelName}}</h1>
+  </ion-header-bar>
+  <ion-content class="has-header" padding="true">
+    
+<div class="row">
+  <div class="item range">
+          <i class="icon "></i>
+          <input type="range" name="slider_{{levelNum}}_0" min="0" max="1" ng-model="test.blah0" on-release="callback('slider_{{levelNum}}_0')">
+          <i class="icon "></i></div>
+</div><div class="row">
+  <div class="item range">
+          <i class="icon "></i>
+          <input type="range" name="slider_{{levelNum}}_1" min="0" max="1" ng-model="test.blah1" on-release="callback('slider_{{levelNum}}_1')">
+          <i class="icon "></i></div>
+</div><div class="row">
+  <div class="item range">
+          <i class="icon "></i>
+          <input type="range" name="slider_{{levelNum}}_2" min="0" max="1" ng-model="test.blah2" on-release="callback('slider_{{levelNum}}_2')">
+          <i class="icon "></i></div>
+</div><div class="row">
+  <div class="item range">
+          <i class="icon "></i>
+          <input type="range" name="slider_{{levelNum}}_3" min="0" max="1" ng-model="test.blah3" on-release="callback('slider_{{levelNum}}_3')">
+          <i class="icon "></i></div>
+</div><div class="row">
+  <div class="item range">
+          <i class="icon "></i>
+          <input type="range" name="slider_{{levelNum}}_4" min="0" max="1" ng-model="test.blah4" on-release="callback('slider_{{levelNum}}_4')">
+          <i class="icon "></i></div>
+</div>
+
+  </ion-content>
+  <ion-footer-bar class="bar bar-footer bar-stable" align-title="left">
+    <a class="button ion-home" href="#/level_select">&nbsp; BACK</a>
+    <button class="button button-calm" ng-click="restart()">&nbsp; RESTART</button>
+  </ion-footer-bar>
+</ion-view>
