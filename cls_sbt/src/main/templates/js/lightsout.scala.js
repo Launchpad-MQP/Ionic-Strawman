@@ -1,13 +1,21 @@
 
 // Used by the HTML to name the buttons
-$scope.buttons = [
-  ["0_0", "0_1", "0_2", "0_3", "0_4", "0_5"],
-  ["1_0", "1_1", "1_2", "1_3", "1_4", "1_5"],
-  ["2_0", "2_1", "2_2", "2_3", "2_4", "2_5"],
-  ["3_0", "3_1", "3_2", "3_3", "3_4", "3_5"],
-  ["4_0", "4_1", "4_2", "4_3", "4_4", "4_5"],
-  ["5_0", "5_1", "5_2", "5_3", "5_4", "5_5"]
-]
+$scope.buttons = []
+for (var i=0; i<6; i++) {
+  var row = []
+  for (var j=0; j<6; j++) {
+    row[j] = i+"_"+j
+  }
+  $scope.buttons[i] = row
+}
+// $scope.buttons = [
+//   ["0_0", "0_1", "0_2", "0_3", "0_4", "0_5"],
+//   ["1_0", "1_1", "1_2", "1_3", "1_4", "1_5"],
+//   ["2_0", "2_1", "2_2", "2_3", "2_4", "2_5"],
+//   ["3_0", "3_1", "3_2", "3_3", "3_4", "3_5"],
+//   ["4_0", "4_1", "4_2", "4_3", "4_4", "4_5"],
+//   ["5_0", "5_1", "5_2", "5_3", "5_4", "5_5"]
+// ]
 
 function convertTo(longState) {
   arr = []
@@ -34,37 +42,27 @@ function convertFrom(arr) {
 }
 
 $scope.beforeLeave = function () {
-  var s = convertFrom($scope.buttonsList)
+  var state = convertFrom($scope.buttonsList)
   //console.log("State before leave: " + $scope.buttonsList)
-  $rootScope.states[$stateParams.levelNum-1] = s
-  sqlfactory.setLevelState($stateParams.levelNum, s)
+  sqlfactory.setLevelState($scope.levelNum, state)
 }
 
 $scope.initializeLevel = function () {
-    if(typeof $rootScope.states === "undefined"){
-    $rootScope.states = [
-      0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0
-    ]
-    $rootScope.defaultStates = [
+  if ($rootScope.levelData[$scope.levelNum]["state"] == "Unsolved" ||
+      $rootScope.levelData[$scope.levelNum]["state"] == 0) {
+    var defaultState = [
       18123587584, 18119623680, 480887296, 8738341376, 315360000,
        2684356643,      524288,  34873344,  807600128, 137561088,
                 0,           0,         0,          0,         0,
                 0,           0,         0,          0,         0
-    ]
+    ][$scope.levelNum]
+    sqlfactory.setLevelState($scope.levelNum, defaultState)
   }
-  if($rootScope.states[$stateParams.levelNum-1] != 0){
-    $scope.buttonsList = convertTo($rootScope.states[$stateParams.levelNum-1])
-  }
-  else{
-    $scope.buttonsList = convertTo($rootScope.defaultStates[$stateParams.levelNum-1])
-  }
-  console.log("State for level "+$stateParams.levelNum + ":"+$scope.buttonsList)
+  $scope.buttonsList = convertTo($rootScope.levelData[$scope.levelNum]["state"])
+  console.log("State for "+$scope.levelName+": "+$scope.buttonsList)
   for (var row=0; row<6; row++) {
     for (var col=0; col<6; col++) {
-      var name = $stateParams.levelNum + "_" + row + "_" + col
+      var name = $scope.levelNum + "_" + row + "_" + col
       var button = document.getElementById(name)
       if (button === null) {
         console.log("Couldn't find button "+name)
@@ -77,11 +75,8 @@ $scope.initializeLevel = function () {
   }
 }
 
-$scope.restartLevel = function () {
-}
-
 $scope.toggleButton = function (row, col) {
-  var name = $stateParams.levelNum + "_" + row + "_" + col
+  var name = $scope.levelNum + "_" + row + "_" + col
   var button = document.getElementById(name)
   if (button === null) {
     return
@@ -112,7 +107,7 @@ $scope.toggle = function (button_name) {
   // Check for game completion
   for (var row=0; row < $scope.buttonsList.length; row++) {
     for (var col=0; col < $scope.buttonsList[0].length; col++) {
-      var name = $stateParams.levelNum + "_" + row + "_" + col
+      var name = $scope.levelNum + "_" + row + "_" + col
       var button = document.getElementById(name)
       if (button.className.includes("button-energized")) {
         // Found a button which wasn't off, level not complete
@@ -121,6 +116,5 @@ $scope.toggle = function (button_name) {
     }
   }
   console.log("All lights out, completing level.")
-  $scope.completed = true
-  $scope.completeLevel($state, $stateParams.levelNum, $scope.levelStartTime)
+  $scope.completeLevel(true)
 }

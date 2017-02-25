@@ -73,9 +73,14 @@ angular.module("sql", ["ionic"])
     // Sets a level state. Again, the return from this is asynchronous, but at
     // present we don't need to do anything with it.
     setLevelState: function (num, @columns.keys.mkString(", ")) {
-      console.log("Setting state for level "+num+" to:"+state)
-      $rootScope.levelData[num]["time"] = time
-      $rootScope.levelData[num]["state"] = state
+      console.log("Setting state for level "+num+" to:"@for(param <- colums.keys) {, @param})
+      // If you pass in a paremter as undefined, don't change it.
+      @for(param <- columns.keys) {
+        if (@param == undefined) {
+          @param = $rootScope.levelData[num]["@param"]
+        } else {
+          $rootScope.levelData[num]["@param"] = @param
+        }}
       apidb.execute(db, "UPDATE levels SET @columns.keys.mkString("=?, ")=? WHERE number=?", [@columns.keys.mkString(", "), num])
       .then(function (ret) {
         console.log("Set state for level "+num+ " to:", @columns.keys.mkString(", "))
