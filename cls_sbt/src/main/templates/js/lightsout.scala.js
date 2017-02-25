@@ -36,8 +36,8 @@ function convertFrom(arr) {
 $scope.beforeLeave = function () {
   var s = convertFrom($scope.buttonsList)
   //console.log("State before leave: " + $scope.buttonsList)
-  $rootScope.states[$stateParams.levelNum-1] = s
-  sqlfactory.setLevelState($stateParams.levelNum, s)
+  $rootScope.states[$scope.levelNum-1] = s
+  sqlfactory.setLevelState($scope.levelNum, s)
 }
 
 $scope.initializeLevel = function () {
@@ -55,16 +55,16 @@ $scope.initializeLevel = function () {
                 0,           0,         0,          0,         0
     ]
   }
-  if($rootScope.states[$stateParams.levelNum-1] != 0){
-    $scope.buttonsList = convertTo($rootScope.states[$stateParams.levelNum-1])
+  if($rootScope.states[$scope.levelNum] != 0){
+    $scope.buttonsList = convertTo($scope.states[$scope.levelNum])
   }
   else{
-    $scope.buttonsList = convertTo($rootScope.defaultStates[$stateParams.levelNum-1])
+    $scope.buttonsList = convertTo($rootScope.defaultStates[$scope.levelNum])
   }
-  console.log("State for level "+$stateParams.levelNum + ":"+$scope.buttonsList)
+  console.log("State for level "+$scope.levelNum + ":"+$scope.buttonsList)
   for (var row=0; row<6; row++) {
     for (var col=0; col<6; col++) {
-      var name = $stateParams.levelNum + "_" + row + "_" + col
+      var name = $scope.levelNum + "_" + row + "_" + col
       var button = document.getElementById(name)
       if (button === null) {
         console.log("Couldn't find button "+name)
@@ -81,7 +81,7 @@ $scope.restartLevel = function () {
 }
 
 $scope.toggleButton = function (row, col) {
-  var name = $stateParams.levelNum + "_" + row + "_" + col
+  var name = $scope.levelNum + "_" + row + "_" + col
   var button = document.getElementById(name)
   if (button === null) {
     return
@@ -112,7 +112,7 @@ $scope.toggle = function (button_name) {
   // Check for game completion
   for (var row=0; row < $scope.buttonsList.length; row++) {
     for (var col=0; col < $scope.buttonsList[0].length; col++) {
-      var name = $stateParams.levelNum + "_" + row + "_" + col
+      var name = $scope.levelNum + "_" + row + "_" + col
       var button = document.getElementById(name)
       if (button.className.includes("button-energized")) {
         // Found a button which wasn't off, level not complete
@@ -121,6 +121,5 @@ $scope.toggle = function (button_name) {
     }
   }
   console.log("All lights out, completing level.")
-  $scope.completed = true
-  $scope.completeLevel($state, $stateParams.levelNum, $scope.levelStartTime)
+  $scope.completeLevel(true)
 }
