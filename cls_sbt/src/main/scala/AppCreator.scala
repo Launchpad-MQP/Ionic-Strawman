@@ -185,7 +185,7 @@ object AppCreator extends App {
     @combinator object ScriptList {
       def apply(): Array[String] = {
         // sql is a library, so it must be listed before controllers
-        return Array("sql", "states", "controllers", "game")
+        return Array("sql", "dictionary", "states", "controllers", "game")
       }
       val semanticType:Type = 'scriptList
     }
@@ -241,6 +241,13 @@ object AppCreator extends App {
       val semanticType:Type = 'sqlcolumns =>: 'sql
     }
 
+    @combinator object Dictionary {
+      def apply(): String = {
+        return js.js.dictionary.render().toString()
+      }
+      val semanticType:Type = 'dictionary
+    }
+
     class Render(inputType:Type, output:String) {
       def apply(): String = {
         return output
@@ -278,14 +285,15 @@ object AppCreator extends App {
     @combinator object Bind2 extends Bind('appJs, "www/js/app.js")
     @combinator object Bind3 extends Bind('controllers, "www/js/controllers.js")
     @combinator object Bind4 extends Bind('sql, "www/js/sql.js")
-    @combinator object Bind5 extends Bind('gameHtml :&: gameVar, "www/templates/game.html")
-    @combinator object Bind6 extends Bind('gameJs :&: gameVar, "www/js/game.js")
+    @combinator object Bind5 extends Bind('dictionary, "www/js/dictionary.js")
+    @combinator object Bind6 extends Bind('gameHtml :&: gameVar, "www/templates/game.html")
+    @combinator object Bind7 extends Bind('gameJs :&: gameVar, "www/js/game.js")
 
-    @combinator object Bind7 extends Bind('levelSelect, "www/templates/level_select.html")
-    @combinator object Bind8 extends Bind('mainPage :&: gameVar, "www/templates/main.html")
-    @combinator object Bind9 extends Bind('settings, "www/templates/settings.html")
+    @combinator object Bind8 extends Bind('levelSelect, "www/templates/level_select.html")
+    @combinator object Bind9 extends Bind('mainPage :&: gameVar, "www/templates/main.html")
+    @combinator object BindA extends Bind('settings, "www/templates/settings.html")
 
-    @combinator object BindA extends Bind('css, "www/css/style.css")
+    @combinator object BindB extends Bind('css, "www/css/style.css")
 
   }
 

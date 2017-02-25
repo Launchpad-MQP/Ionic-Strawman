@@ -4,7 +4,7 @@
 * Each of these should be (mostly) scoped to the page they operate on.
 **/
 
-angular.module("controllers", ["ionic", "sql"])
+angular.module("controllers", ["ionic", "sql", "dictionary"])
 
 /* Controller for the main page */
 .controller("MainCtrl", function ($scope) {
@@ -23,7 +23,7 @@ angular.module("controllers", ["ionic", "sql"])
 })
 
 /* Controller for the level select, aka list of levels */
-.controller("LevelSelectCtrl", function ($scope, $rootScope, $state, $ionicPopup, sqlfactory) {
+.controller("LevelSelectCtrl", function ($scope, $rootScope, $state, $ionicPopup, sqlfactory, dictionary) {
   console.log("Now in the Level Select")
   $scope.loadLevel = function (name) {
     console.log("Entering " + name)
@@ -36,6 +36,8 @@ angular.module("controllers", ["ionic", "sql"])
   }
   // Creates the database if it doesn't exist.
   sqlfactory.setupSQL()
+  // Init the dictionary into memory
+  dictionary.setup()
   // Redefined so it can be acessed in HTML
   $scope.levelData = $rootScope.levelData
 

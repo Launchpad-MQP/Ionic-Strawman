@@ -1,7 +1,7 @@
 @(contents:JavaScript)
-angular.module("game", ["ionic", "sql"])
+angular.module("game", ["ionic", "sql", "dictionary"])
 
-.controller("LevelCtrl", function ($scope, $rootScope, $ionicPopup, $state, $stateParams, sqlfactory) {
+.controller("LevelCtrl", function ($scope, $rootScope, $ionicPopup, $state, $stateParams, sqlfactory, dictionary) {
   // Check for invalid state
   if ($rootScope.levelData === undefined) {
     console.log("Level loaded but level list undefined, going to main")
