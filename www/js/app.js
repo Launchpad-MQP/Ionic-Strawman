@@ -5,8 +5,8 @@
 
 // Initialize SQL database and database access so that they
 // are available at global scope
-var db = undefined;
-var apidb = undefined;
+var db = undefined
+var apidb = undefined
 
 // A list of other javascript files to include
 angular.module("starter", [
@@ -24,10 +24,10 @@ angular.module("starter", [
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true)
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
     }
 
     if (window.cordova) { // If true, running in an emulator.

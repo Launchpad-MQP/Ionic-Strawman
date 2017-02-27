@@ -20,18 +20,19 @@ angular.module("states", ["ionic"])
     templateUrl: "templates/level_select.html",
     controller: "LevelSelectCtrl"
   })
-
-  .state("level", {
-    url: "/level/{levelNum:int}",
-    templateUrl: "games/dummy.html",
-    controller: "LevelCtrl"
-  })
+  
 
   .state("settings", {
     url: "/settings",
     templateUrl: "templates/settings.html",
     controller: "SettingsCtrl"
-  });
+  })
+  
+  .state("level", {
+    url: "/level/{levelNum:int}",
+    templateUrl: "templates/game.html",
+    controller: "LevelCtrl"
+  })
 
-  $urlRouterProvider.otherwise("/main");
-});
+  $urlRouterProvider.otherwise("/main")
+})
