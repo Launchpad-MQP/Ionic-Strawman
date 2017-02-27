@@ -1,5 +1,5 @@
 
-angular.module("game", ["ionic", "sql", "dictionary"])
+angular.module("lightsout", ["ionic", "sql", "dictionary"])
 
 .controller("LevelCtrl", function ($scope, $rootScope, $ionicPopup, $state, $stateParams, sqlfactory, dictionary) {
   // Check for invalid state
