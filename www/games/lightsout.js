@@ -70,10 +70,10 @@ $scope.initializeLevel = function () {
   if ($rootScope.levelData[$scope.levelNum]["state"] == "Unsolved" ||
       $rootScope.levelData[$scope.levelNum]["state"] == 0) {
     var defaultState = [
-      18123587584, 18119623680, 480887296, 8738341376, 315360000,
-       2684356643,      524288,  34873344,  807600128, 137561088,
-                0,           0,         0,          0,         0,
-                0,           0,         0,          0,         0
+      18123587584,   18119623680,   349703572,   8738341376,   315360000,
+      20186262387,   46182173418,   484093340,  32774690910, 26754334360,
+      20087122770,   35738666145, 13103002380,  13099807500, 67956511935,
+      20186189010,   67645734912, 32980810590,  68518150143, 68719476735
     ][$scope.levelNum]
     sqlfactory.setLevelState($scope.levelNum, defaultState)
   }
