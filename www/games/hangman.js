@@ -18,124 +18,128 @@ angular.module("hangman", ["ionic", "sql", "dictionary"])
     }
   }
 
-  $scope.myLetters = [
-  'hello', 'wolf', 'rat', 'xylophone', 'attention',
-  'school', 'ruling', 'poison', 'tree', 'prison',
-  'abacus', 'toothache', 'short', 'bacon', 'crossroads',
-  'darkness', 'candle', 'quadruple', 'extraordinary', 'declaration'
-  ][$scope.levelNum].split("")
-  $scope.guessesLeft = 7
-  $scope.miss = true
-  $scope.finished = false
-
   $scope.makeGuess = function () {
-  var guessBox = document.getElementById("letterguess_" + $scope.levelNum)
-  var guess = guessBox.value
-  var card = document.getElementById("guessed_" + $scope.levelNum)
+    var guessBox = document.getElementById("letterguess_" + $scope.levelNum)
+    var guess = guessBox.value
+    var card = document.getElementById("guessed_" + $scope.levelNum)
 
-  console.log("Guess", guess)
-  // Fields are the elements which match the letter guessed.
-  var fields = document.getElementsByClassName(guess)
-  console.log("Fields", fields)
-  for(var i = 0; i<fields.length; i++) {
-     if(!fields[i].className.includes("discovered")) {
-       fields[i].className = "discovered " + $scope.levelNum + " " + guess
+    console.log("Guess", guess)
+    // Fields are the elements which match the letter guessed.
+    var fields = document.getElementsByClassName(guess)
+    console.log("Fields", fields)
+    for(var i = 0; i<fields.length; i++) {
+       if(!fields[i].className.includes("discovered")) {
+         fields[i].className = "discovered " + $scope.levelNum + " " + guess
+       }
+       $scope.miss = false
+    }
+    if($scope.miss) {
+     if(!card.innerHTML.includes(guess)) {
+       $scope.guessesLeft--
+       card.append(guess + " ")
      }
-     $scope.miss = false
-  }
-  if($scope.miss) {
-   if(!card.innerHTML.includes(guess)) {
-     $scope.guessesLeft--
-     card.append(guess + " ")
-   }
-   if($scope.guessesLeft==0)
-     $scope.completeLevel(false)
-  } else {
-   if(!card.innerHTML.includes(guess))
-     card.append(guess + " ")
-   $scope.checkComplete()
-  }
-  guessBox.value = ""
-  $scope.miss = true
+     if($scope.guessesLeft==0)
+       $scope.completeLevel(false)
+    } else {
+     if(!card.innerHTML.includes(guess))
+       card.append(guess + " ")
+     $scope.checkComplete()
+    }
+    guessBox.value = ""
+    $scope.miss = true
   }
 
   $scope.checkComplete = function () {
-  var correct = document.getElementsByClassName("discovered " + $scope.levelNum)
-  console.log(correct.length)
-  if(correct.length === $scope.myLetters.length)
-   $scope.completeLevel(true)
+    var correct = document.getElementsByClassName("discovered " + $scope.levelNum)
+    console.log(correct.length)
+    if(correct.length === $scope.myLetters.length)
+     $scope.completeLevel(true)
   }
 
   $scope.beforeLeave = function() {
-  var card = document.getElementById("guessed_" + $scope.levelNum)
-  var guessed = card.innerHTML.split(", ")
-  console.log("before leaving")
-  console.log(guessed)
-  if(!$scope.finished)
-    sqlfactory.setLevelState($scope.levelNum, guessed[0])
+    var card = document.getElementById("guessed_" + $scope.levelNum)
+    var guessed = card.innerHTML.split(", ")
+    console.log("before leaving")
+    console.log(guessed)
+    if(!$scope.finished)
+      sqlfactory.setLevelState($scope.levelNum, guessed[0])
   }
 
   $scope.onWin = function() {
-  console.log("On Win")
-  $scope.finished = true
-  sqlfactory.setLevelState($scope.levelNum, "Solved", 0)
+    console.log("On Win")
+    $scope.finished = true
+    sqlfactory.setLevelState($scope.levelNum, "Solved", 0)
   }
 
   $scope.onLose = function() {
-  console.log("losing")
-  sqlfactory.setLevelState($scope.levelNum, "Lost")
-  document.getElementById("guessed_" + $scope.levelNum).innerHTML = ""
+    console.log("losing")
+    sqlfactory.setLevelState($scope.levelNum, "Lost")
+    document.getElementById("guessed_" + $scope.levelNum).innerHTML = ""
   }
 
   $scope.initializeLevel = function() {
-  $scope.guessesLeft = 7
-  $scope.miss = true
-  var card = document.getElementById("guessed_" + $scope.levelNum)
-  var guessBox = document.getElementById("letterguess_" + $scope.levelNum)
-  card.innerHTML = ""
-  guessBox.value = ""
-  var fields = document.getElementsByClassName($scope.levelNum)
-  for(var i = 0; i<fields.length; i++) {
-   var letter = fields[i].className.slice(-1)
-   fields[i].className = "guessable " + $scope.levelNum + " " + letter
-  }
+    $scope.myLetters = [
+    'rat', 'wolf', 'hello', 'tree', 'bacon',
+    'school', 'ruling', 'poison', 'short', 'prison',
+    'candle', 'toothache', 'xylophone', 'attention', 'crossroads',
+    'darkness', 'abacus', 'quadruple', 'extraordinary', 'declaration'
+    ][$scope.levelNum].split("")
+    $scope.guessesLeft = 7
+    $scope.miss = true
+    $scope.finished = false
+    $scope.guessesLeft = 7
+    $scope.miss = true
+    var card = document.getElementById("guessed_" + $scope.levelNum)
+    var guessBox = document.getElementById("letterguess_" + $scope.levelNum)
+    card.innerHTML = ""
+    guessBox.value = ""
+    var fields = document.getElementsByClassName($scope.levelNum)
+    for(var i = 0; i<fields.length; i++) {
+     var letter = fields[i].className.slice(-1)
+     fields[i].className = "guessable " + $scope.levelNum + " " + letter
+    }
 
-  if ($rootScope.levelData[$scope.levelNum]["state"] != "Unsolved" &&
+    if ($rootScope.levelData[$scope.levelNum]["state"] != "Unsolved" &&
         $rootScope.levelData[$scope.levelNum]["state"] != "Solved") {
-    console.log($rootScope.levelData[$scope.levelNum]["state"])
-    var letters = $rootScope.levelData[$scope.levelNum]["state"].split("")
+      console.log($rootScope.levelData[$scope.levelNum]["state"])
+      var letters = $rootScope.levelData[$scope.levelNum]["state"].split("")
 
-    for (var j = 0; j < letters.length; j++) {
-      guessBox.value = letters[j]
-      $scope.makeGuess()
+      for (var j = 0; j < letters.length; j++) {
+        guessBox.value = letters[j]
+        $scope.makeGuess()
+      }
     }
   }
-}
 
 
   // This runs when the level is entered
   $scope.$on("$ionicView.afterEnter", function(scopes, states){
     console.log("Entered "+$scope.levelName+":", $rootScope.levelData[$scope.levelNum])
     
-      $rootScope.levelData[$scope.levelNum]["time"] -= Date.now()
+			if($rootScope.levelData[$scope.levelNum] !== undefined) {
+				$rootScope.levelData[$scope.levelNum]["time"] -= Date.now()
+				if (typeof $scope.initializeLevel === "function") {
+					$scope.initializeLevel()
+				}
+			}
     
-    if (typeof $scope.initializeLevel === "function") {
-      $scope.initializeLevel()
-    }
   })
 
   // This runs when the level is exited
   $scope.$on("$ionicView.beforeLeave", function(scopes, states){
     console.log("Exited "+states.stateName+" "+$scope.levelNum+":", $rootScope.levelData[$scope.levelNum])
-    $rootScope.levelData[$scope.levelNum]["time"] += Date.now()
-    if (typeof $scope.beforeLeave === "function") {
-      $scope.beforeLeave()
-    }
+		
+    if($rootScope.levelData[$scope.levelNum] !== undefined) {
+				$rootScope.levelData[$scope.levelNum]["time"] += Date.now()
+				if (typeof $scope.beforeLeave === "function") {
+					$scope.beforeLeave()
+				}
+		}
   })
 
   $scope.completeLevel = function(won) {
     
-      var time = $rootScope.levelData[$scope.levelNum]["time"] + Date.now()
+    var time = $rootScope.levelData[$scope.levelNum]["time"] + Date.now()
     
     if (won) {
       sqlfactory.setLevelState($scope.levelNum, "Solved", 0)
