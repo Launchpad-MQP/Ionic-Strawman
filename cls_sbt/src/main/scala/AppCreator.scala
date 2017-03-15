@@ -279,21 +279,21 @@ object AppCreator extends App {
       val semanticType:Type = inputType =>: 'BoundFile :&: inputType :&: gameVar
     }
 
-    @combinator object Bind0 extends Bind('indexHtml, "www/index.html")
-    @combinator object Bind1 extends Bind('states, "www/js/states.js")
+    @combinator object BindHTML extends Bind('indexHtml, "www/index.html")
+    @combinator object BindJS extends Bind('states, "www/js/states.js")
 
-    @combinator object Bind2 extends Bind('appJs, "www/js/app.js")
-    @combinator object Bind3 extends Bind('controllers, "www/js/controllers.js")
-    @combinator object Bind4 extends Bind('sql, "www/js/sql.js")
-    @combinator object Bind5 extends Bind('dictionary, "www/js/dictionary.js")
-    @combinator object Bind6 extends Bind('gameHtml :&: gameVar, "www/templates/game.html")
-    @combinator object Bind7 extends Bind('gameJs :&: gameVar, "www/js/game.js")
+    @combinator object BindAppJS extends Bind('appJs, "www/js/app.js")
+    @combinator object BindCtrlJS extends Bind('controllers, "www/js/controllers.js")
+    @combinator object BindSqlJS extends Bind('sql, "www/js/sql.js")
+    @combinator object BindDict extends Bind('dictionary, "www/js/dictionary.js")
+    @combinator object BindGameHTML extends Bind('gameHtml :&: gameVar, "www/templates/game.html")
+    @combinator object BindGameJS extends Bind('gameJs :&: gameVar, "www/js/game.js")
 
-    @combinator object Bind8 extends Bind('levelSelect, "www/templates/level_select.html")
-    @combinator object Bind9 extends Bind('mainPage :&: gameVar, "www/templates/main.html")
-    @combinator object BindA extends Bind('settings, "www/templates/settings.html")
+    @combinator object BindLevelSelect extends Bind('levelSelect, "www/templates/level_select.html")
+    @combinator object BindMainPage extends Bind('mainPage :&: gameVar, "www/templates/main.html")
+    @combinator object BindSettings extends Bind('settings, "www/templates/settings.html")
 
-    @combinator object BindB extends Bind('css, "www/css/style.css")
+    @combinator object BindCSS extends Bind('css, "www/css/style.css")
 
   }
 
